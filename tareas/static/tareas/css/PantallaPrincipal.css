@@ -1,0 +1,49 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.perfil-icono {
+    cursor: pointer;
+    color: #2d6a4f;
+}
+
+.perfil-contenedor {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f0fdf4;
+    max-width: 500px;
+    transition: all 0.3s ease;
+}
+
+.oculto {
+    display: none;
+}
+
+.perfil-contenedor ul {
+    list-style: none;
+    padding: 0;
+}
+
+.perfil-contenedor li {
+    margin-bottom: 10px;
+}
+.icono-registro {
+    width: 80px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.icono-registro:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+

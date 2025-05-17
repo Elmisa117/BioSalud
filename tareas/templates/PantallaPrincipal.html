@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Principal</title>
+</head>
+<body>
+    <h1>Bienvenido a BioSalud</h1>
+
+
+    <a href="{% url 'perfil' %}">
+        <img src="{% static 'tareas/img/iconoPerfil.png' %}" alt="Perfil" width="60px" style="cursor: pointer;" title="Ver perfil">
+    </a>
+
+    <a href="{% url 'registrar_paciente' %}">
+    <img src="{% static 'tareas/img/iconoDeAñadir.png' %}" alt="Registrar Paciente"
+         class="icono-registro" title="Registrar nuevo paciente">
+    </a>
+
+    <link rel="stylesheet" href="{% static 'tareas/css/PantallaPrincipal.css' %}">
+
+</body>
+</html>
