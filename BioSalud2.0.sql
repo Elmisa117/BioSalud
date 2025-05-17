@@ -1,12 +1,11 @@
 --
 -- PostgreSQL database dump
 --
-
+--CRISTIAN CAPIBARA
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.4
-
 -- Started on 2025-05-14 02:46:11
-
+--MISAEL SEJAS VEIZADAGVSGAVSJABVJVHVHJASDVJADADS
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
