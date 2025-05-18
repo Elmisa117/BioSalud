@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'BioSaludCRUD.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'BioSalud2.0',
+        'NAME': 'BioSalud',
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',

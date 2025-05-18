@@ -3,59 +3,150 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Paciente</title>
+    <title>Registro de Paciente</title>
+    <link rel="stylesheet" href="{% static 'tareas/css/registro_paciente.css' %}">
 </head>
 <body>
-    <h1>Registro de Paciente</h1>
-    <form method="post">
-        {% csrf_token %}
 
-        <label for="idioma_hablado">Idioma hablado</label>
-        <input name="idioma_hablado" required>
+<h1>REGISTRO DE PACIENTE</h1>
 
-        <label for="cedula_identidad">Cédula de Identidad</label>
-        <input name="cedula_identidad" required>
+<form method="POST">
+    {% csrf_token %}
 
-        <label for="nombres">Nombres</label>
-        <input name="nombres" required>
+    <!-- Línea 1: Nombre, Apellidos, CI -->
+    <div class="fila">
+        <div>
+            <label for="nombres">Nombres:</label>
+            <input type="text" name="nombres" required>
+        </div>
+        <div>
+            <label for="apellidos">Apellidos (Paterno y Materno):</label>
+            <input type="text" name="apellidos" required>
+        </div>
+        <div>
+            <label for="cedula_identidad">Cédula de Identidad:</label>
+            <input type="text" name="cedula_identidad" maxlength="9" required>
+        </div>
+    </div>
 
-        <label for="apellidos">Apellidos</label>
-        <input name="apellidos" required>
+    <!-- Línea 2: Fecha de nacimiento, Sexo, Teléfono -->
+    <div class="fila">
+        <div>
+            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+            <input type="date" name="fecha_nacimiento" required>
+        </div>
+        <div>
+            <label for="sexo">Sexo:</label>
+            <input type="text" name="sexo" required>
+        </div>
+        <div>
+            <label for="telefono">Teléfono:</label>
+            <input type="text" name="telefono">
+        </div>
+    </div>
 
-        <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-        <input type="date" name="fecha_nacimiento" required>
+    <!-- Línea 3: Idioma, Dirección, N° de Emergencia -->
+    <div class="fila">
+        <div>
+            <label for="idioma_hablado">Idioma Hablado:</label>
+            <input type="text" name="idioma_hablado">
+        </div>
+        <div>
+            <label for="direccion">Dirección:</label>
+            <input type="text" name="direccion">
+        </div>
+        <div>
+            <label for="numero_emergencia">Número de Emergencia:</label>
+            <input type="text" name="numero_emergencia">
+        </div>
+    </div>
 
-        <label for="sexo">Sexo</label>
-        <select name="sexo" required>
-            <option value="">Seleccione Sexo</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Femenino">Femenino</option>
-        </select>
+    <!-- Línea 4: Correo, Grupo Sanguíneo -->
+    <div class="fila">
+        <div>
+            <label for="correo">Correo:</label>
+            <input type="email" name="correo">
+        </div>
+        <div>
+            <label for="grupo_sanguineo">Grupo Sanguíneo:</label>
+            <input type="text" name="grupo_sanguineo">
+        </div>
+    </div>
 
-        <label for="direccion">Dirección</label>
-        <input name="direccion" required>
+    <!-- Línea 5: Alergias -->
+    <div class="fila-doble">
+        <div>
+            <label for="alergias">Alergias:</label>
+            <textarea name="alergias"></textarea>
+        </div>
+    </div>
 
-        <label for="telefono">Teléfono</label>
-        <input name="telefono" required>
+    <!-- Línea 6: Enfermedades de base -->
+    <div class="fila-doble">
+        <div>
+            <label for="enfermedades_base">Enfermedades Base:</label>
+            <textarea name="enfermedades_base"></textarea>
+        </div>
+    </div>
 
-        <label for="numero_emergencia">Número de Emergencia</label>
-        <input name="numero_emergencia" required>
+    <!-- Sección visual de manos y dedos SIEMPRE visible -->
+    <div id="seccionHuellas">
+        <h2>Selecciona los dedos a registrar</h2>
 
-        <label for="correo">Correo Electrónico</label>
-        <input name="correo" type="email">
+        <div class="mano" id="manoDerecha">
+            <h3>Mano Derecha</h3>
+            {% for dedo, nombre in dedos_derecha %}
+            <div class="dedo-container">
+                <div class="huella-visual" id="huella_preview_{{ dedo }}">
+                    <img src="{% static 'tareas/img/HuellaDactilar.png' %}" class="icono-huella" id="img_huella_{{ dedo }}" style="display: none;">
+                </div>
+                <div class="dedo" id="{{ dedo }}" onclick="seleccionarDedo(this)">{{ nombre }}</div>
+            </div>
+            {% endfor %}
+        </div>
 
-        <label for="grupo_sanguineo">Grupo Sanguíneo</label>
-        <input name="grupo_sanguineo">
+        <div class="mano" id="manoIzquierda">
+            <h3>Mano Izquierda</h3>
+            {% for dedo, nombre in dedos_izquierda %}
+            <div class="dedo-container">
+                <div class="huella-visual" id="huella_preview_{{ dedo }}">
+                    <img src="{% static 'tareas/img/HuellaDactilar.png' %}" class="icono-huella" id="img_huella_{{ dedo }}" style="display: none;">
+                </div>
+                <div class="dedo" id="{{ dedo }}" onclick="seleccionarDedo(this)">{{ nombre }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 
-        <label for="alergias">Alergias</label>
-        <textarea name="alergias" rows="3"></textarea>
+    <!-- Campos ocultos para las huellas seleccionadas -->
+    {% for dedo, _ in dedos_derecha %}
+    <input type="hidden" name="huella_{{ dedo }}">
+    {% endfor %}
+    {% for dedo, _ in dedos_izquierda %}
+    <input type="hidden" name="huella_{{ dedo }}">
+    {% endfor %}
 
-        <label for="enfermedades_base">Enfermedades Base</label>
-        <textarea name="enfermedades_base" rows="3"></textarea>
+    <!-- Botón principal -->
+    <button type="submit">GUARDAR PACIENTE</button>
+</form>
 
-        <button type="submit">Guardar Paciente</button>
-    </form>
-<link rel="stylesheet" href="{% static 'tareas/css/registro_paciente.css' %}">
+<script>
+function seleccionarDedo(elem) {
+    elem.classList.toggle("activo");
+
+    const dedoId = elem.id;
+    const input = document.querySelector(`input[name="huella_${dedoId}"]`);
+    const imgHuella = document.getElementById(`img_huella_${dedoId}`);
+
+    if (elem.classList.contains("activo")) {
+        input.value = "template_" + dedoId;  // Simula captura de huella
+        if (imgHuella) imgHuella.style.display = "block";
+    } else {
+        input.value = "";
+        if (imgHuella) imgHuella.style.display = "none";
+    }
+}
+</script>
 
 </body>
 </html>

@@ -3,6 +3,7 @@ from django.db import connection
 from django.contrib import messages
 from django.utils import timezone
 
+
 def login_view(request):
     if request.method == 'POST':
         usuario = request.POST.get('usuario')
@@ -67,19 +68,18 @@ def cerrar_sesion(request):
     request.session.flush()
     return redirect('login')
 
-
 def registrar_paciente(request):
     if request.method == 'POST':
         datos = {
-            'idioma_hablado': request.POST['idioma_hablado'],
-            'cedula_identidad': request.POST['cedula_identidad'],
-            'nombres': request.POST['nombres'],
-            'apellidos': request.POST['apellidos'],
-            'fecha_nacimiento': request.POST['fecha_nacimiento'],
-            'sexo': request.POST['sexo'],
-            'direccion': request.POST['direccion'],
-            'telefono': request.POST['telefono'],
-            'numero_emergencia': request.POST['numero_emergencia'],
+            'idioma_hablado': request.POST.get('idioma_hablado', ''),
+            'cedula_identidad': request.POST.get('cedula_identidad', ''),
+            'nombres': request.POST.get('nombres', ''),
+            'apellidos': request.POST.get('apellidos', ''),
+            'fecha_nacimiento': request.POST.get('fecha_nacimiento', ''),
+            'sexo': request.POST.get('sexo', ''),
+            'direccion': request.POST.get('direccion', ''),
+            'telefono': request.POST.get('telefono', ''),
+            'numero_emergencia': request.POST.get('numero_emergencia', ''),
             'correo': request.POST.get('correo', ''),
             'grupo_sanguineo': request.POST.get('grupo_sanguineo', ''),
             'alergias': request.POST.get('alergias', ''),
@@ -88,7 +88,6 @@ def registrar_paciente(request):
             'fecha_actualizacion': timezone.now()
         }
 
-        # Insertar datos en la base de datos
         with connection.cursor() as cursor:
             cursor.execute("""
                 INSERT INTO registro_paciente (
@@ -97,9 +96,53 @@ def registrar_paciente(request):
                     alergias, enfermedades_base, fecha_registro, fecha_actualizacion
                 )
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id_paciente
             """, list(datos.values()))
+            id_paciente = cursor.fetchone()[0]
 
-        return redirect('inicio')  # Redirige a la pantalla principal después de guardar
+            # Lista de dedos (nombre técnico + nombre para mostrar)
+            dedos = [
+                ('pulgar_derecho', 'Pulgar'),
+                ('indice_derecho', 'Índice'),
+                ('medio_derecho', 'Medio'),
+                ('anular_derecho', 'Anular'),
+                ('menique_derecho', 'Meñique'),
+                ('pulgar_izquierdo', 'Pulgar'),
+                ('indice_izquierdo', 'Índice'),
+                ('medio_izquierdo', 'Medio'),
+                ('anular_izquierdo', 'Anular'),
+                ('menique_izquierdo', 'Meñique'),
+            ]
 
-    # Si es GET, muestra el formulario vacío
-    return render(request, 'registro_paciente.html')
+            for dedo, _ in dedos:
+                template = request.POST.get(f'huella_{dedo}')
+                if template:
+                    cursor.execute("""
+                        INSERT INTO huella_dactilar (id_paciente, dedo, template, fecha_captura)
+                        VALUES (%s, %s, %s, %s)
+                    """, (id_paciente, dedo, template, timezone.now()))
+
+        return redirect('inicio')
+
+    # Para mostrar los dedos y nombres en el HTML
+    dedos_derecha = [
+        ('pulgar_derecho', 'Pulgar'),
+        ('indice_derecho', 'Índice'),
+        ('medio_derecho', 'Medio'),
+        ('anular_derecho', 'Anular'),
+        ('menique_derecho', 'Meñique'),
+    ]
+
+    dedos_izquierda = [
+        ('pulgar_izquierdo', 'Pulgar'),
+        ('indice_izquierdo', 'Índice'),
+        ('medio_izquierdo', 'Medio'),
+        ('anular_izquierdo', 'Anular'),
+        ('menique_izquierdo', 'Meñique'),
+    ]
+
+    return render(request, 'registro_paciente.html', {
+        'dedos_derecha': dedos_derecha,
+        'dedos_izquierda': dedos_izquierda,
+    })
+
