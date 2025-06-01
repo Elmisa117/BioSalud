@@ -51,7 +51,13 @@ ROOT_URLCONF = 'BioSaludCRUD.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'tareas' / 'templates',
+            BASE_DIR / 'tareas' / 'admin' / 'templates',
+            BASE_DIR / 'tareas' / 'doctor' / 'templates',
+            BASE_DIR / 'tareas' / 'enfermeria' / 'templates',
+            BASE_DIR / 'tareas' / 'cajero' / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -60,6 +66,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = 'BioSaludCRUD.wsgi.application'
 
