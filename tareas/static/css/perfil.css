@@ -1,0 +1,14 @@
+.btn-cerrar {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #b91c1c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-cerrar:hover {
+    background-color: #991b1b;
+}

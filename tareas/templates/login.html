@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bienvenido a BioSalud</title>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <script src="https://kit.fontawesome.com/a2e0b2b3aa.js" crossorigin="anonymous"></script>
+  <script src="{% static 'tareas/js/login.js' %}" defer></script>
+</head>
+<body>
+  <div class="login-wrapper">
+    <h1>Bienvenido a <span>BioSalud</span></h1>
+    <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" alt="Cruz Roja" class="doctor-image" />
+
+    <div class="login-form">
+      <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" name="usuario" placeholder="Usuario" required class="input-field">
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" name="contrasena" placeholder="Contraseña" required class="input-field" id="passwordField">
+        </div>
+        <div class="show-password">
+          <input type="checkbox" id="togglePassword">
+          <label for="togglePassword">Mostrar contraseña</label>
+        </div>
+        <button type="submit">Entrar</button>
+      </form>
+
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <p style="color: red;">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

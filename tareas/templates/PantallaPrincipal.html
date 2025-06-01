@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pantalla Principal</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/PantallaPrincipal.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- BARRA LATERAL -->
+    <div class="sidebar">
+        <h2>BioSalud</h2>
+        <div class="menu-vertical">
+            <a href="#" onclick="mostrarInicio()"><i class="fas fa-home"></i> Inicio</a>
+            <a href="#" onclick="cargarContenido('/vista_registrar_paciente/')"><i class="fas fa-user-plus"></i> Registrar Paciente</a>
+            <a href="#" onclick="mostrarContenido('emergencia')"><i class="fas fa-ambulance"></i> Emergencias</a>
+            <a href="#" onclick="mostrarContenido('consultas')"><i class="fas fa-stethoscope"></i> Consultas Externas</a>
+            <a href="#" onclick="mostrarContenido('internaciones')"><i class="fas fa-procedures"></i> Internaciones</a>
+            <a href="#" onclick="mostrarContenido('historial')"><i class="fas fa-file-medical"></i> Historial Clínico</a>
+            <a href="#" onclick="mostrarContenido('transferencias')"><i class="fas fa-exchange-alt"></i> Transferencias</a>
+            <form action="{% url 'cerrar' %}" method="post" class="w-100 text-center">
+                {% csrf_token %}
+                <button type="submit" class="btn-menu"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+            </form>
+        </div>
+        <div class="hospital-nombre">Nombre del hospital</div>
+    </div>
+
+    <!-- ÁREA DE CONTENIDO DINÁMICO -->
+    <div id="contenido-dinamico" class="main-content">
+        <h1>Diseño principal</h1>
+        <p class="subtitulo">Bienvenido al sistema de gestión de historias clínicas</p>
+    </div>
+</div>
+
+<script>
+function mostrarInicio() {
+    const cont = document.getElementById('contenido-dinamico');
+    cont.innerHTML = `
+        <h2>Inicio</h2>
+        <p>Bienvenido a BioSalud</p>
+    `;
+}
+
+function mostrarContenido(seccion) {
+    const cont = document.getElementById('contenido-dinamico');
+    let html = '';
+    switch(seccion) {
+        case 'emergencia':
+            html = '<h2>Emergencias</h2><p>Sección de emergencias.</p>'; break;
+        case 'consultas':
+            html = '<h2>Consultas Externas</h2><p>Listado de consultas.</p>'; break;
+        case 'internaciones':
+            html = '<h2>Internaciones</h2><p>Pacientes internados.</p>'; break;
+        case 'historial':
+            html = '<h2>Historial Clínico</h2><p>Accede al historial de pacientes.</p>'; break;
+        case 'transferencias':
+            html = '<h2>Transferencias</h2><p>Pacientes transferidos.</p>'; break;
+    }
+    cont.innerHTML = html;
+}
+
+function cargarContenido(url) {
+    fetch(url)
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('contenido-dinamico').innerHTML = data;
+    })
+    .catch(error => {
+        console.error('Error al cargar contenido:', error);
+        document.getElementById('contenido-dinamico').innerHTML = '<p>Error al cargar el contenido.</p>';
+    });
+}
+</script>
+
+</body>
+</html>
