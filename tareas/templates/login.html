@@ -41,5 +41,35 @@
       {% endif %}
     </div>
   </div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    fetch("", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.rol) {
+            let url = "";
+            switch (data.rol) {
+                case "Administrador": url = "/admin_dashboard/"; break;
+                case "Doctor": url = "/doctor_panel/"; break;
+                case "Enfermería": url = "/enfermeria_panel/"; break;
+                case "Cajero": url = "/caja_panel/"; break;
+                default: url = "/inicio/";
+            }
+            window.open(url, "_blank");
+        } else {
+            alert(data.error || "Error de autenticación");
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+</script>
+
 </body>
 </html>

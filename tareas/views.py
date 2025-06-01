@@ -15,6 +15,10 @@ def pantalla_principal(request):
         'profesional': profesional
     })
 
+from django.shortcuts import render, redirect
+from django.db import connection
+from django.http import JsonResponse
+
 def login_view(request):
     if request.method == 'POST':
         usuario = request.POST.get('usuario')
@@ -22,21 +26,34 @@ def login_view(request):
 
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT id_profesional, rol, nombres, apellidos
-                FROM registro_profesional
+                SELECT personalid, rol, nombres, apellidos
+                FROM personal
                 WHERE usuario = %s AND contrasena = %s
             """, [usuario, contrasena])
-            profesional = cursor.fetchone()
+            personal = cursor.fetchone()
 
-        if profesional:
-            request.session['usuario_id'] = profesional[0]
-            request.session['rol'] = profesional[1]
-            request.session['nombre'] = profesional[2] + " " + profesional[3]
-            return redirect('inicio')
+        if personal:
+            request.session['usuario_id'] = personal[0]
+            request.session['rol'] = personal[1]
+            request.session['nombre'] = personal[2] + " " + personal[3]
+            return JsonResponse({'rol': personal[1]}, status=200)
         else:
-            messages.error(request, "Usuario o contraseña incorrectos.")
+            return JsonResponse({'error': 'Usuario o contraseña incorrectos'}, status=401)
 
     return render(request, 'login.html')
+
+
+def panel_admin(request):
+    return render(request, 'paneles/admin_panel.html')
+
+def panel_doctor(request):
+    return render(request, 'paneles/doctor_panel.html')
+
+def panel_enfermeria(request):
+    return render(request, 'paneles/enfermeria_panel.html')
+
+def panel_cajero(request):
+    return render(request, 'paneles/caja_panel.html')
 
 
 def inicio_view(request):
