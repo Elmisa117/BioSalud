@@ -1,4 +1,9 @@
 {% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
 
 {% block title %}Listado de Personal - BioSalud{% endblock %}
 
@@ -33,6 +38,10 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
 </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'admin/js/listar_personal.js' %}"></script>
 {% endblock %}

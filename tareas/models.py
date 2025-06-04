@@ -209,6 +209,7 @@ class Pacientes(models.Model):
     direccion = models.CharField(max_length=200, blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(max_length=100, blank=True, null=True)
+    seguro = models.CharField(max_length=100, blank=True, null=True)
     gruposanguineo = models.CharField(max_length=5, blank=True, null=True)
     alergias = models.TextField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
@@ -219,6 +220,17 @@ class Pacientes(models.Model):
         managed = False
         db_table = 'pacientes'
         unique_together = (('numerodocumento', 'tipodocumento'),)
+
+
+class PacienteAudit(models.Model):
+    paciente = models.ForeignKey(Pacientes, on_delete=models.CASCADE)
+    usuario = models.CharField(max_length=100)
+    accion = models.CharField(max_length=50)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        managed = False
+        db_table = 'paciente_audit'
 
 
 class Pagos(models.Model):
