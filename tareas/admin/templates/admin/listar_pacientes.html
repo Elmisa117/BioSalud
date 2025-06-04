@@ -27,8 +27,9 @@
         <div class="form-field">
             <select name="estado">
                 <option value="">Estado...</option>
-                <option value="activo" {% if estado=='activo' %}selected{% endif %}>Activo</option>
-                <option value="inactivo" {% if estado=='inactivo' %}selected{% endif %}>Inactivo</option>
+                <option value="activo" {% if estado == 'activo' %}selected{% endif %}>Activo</option>
+                <option value="inactivo" {% if estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+
             </select>
         </div>
         <div class="form-field">
