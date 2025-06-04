@@ -56,3 +56,9 @@ class PersonalForm(forms.ModelForm):
             choices=[(True, 'Activo'), (False, 'Inactivo')],
             widget=forms.Select()
         )
+
+class PersonalEditForm(PersonalForm):
+    """Formulario para editar personal sin requerir la contraseña"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['contrasena'].required = False

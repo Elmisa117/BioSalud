@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   const toggle = document.getElementById("togglePassword");
   const passField = document.getElementById("passwordField");
+  const messageBox = document.getElementById("loginMessage");
 
   toggle.addEventListener("change", function () {
     passField.type = this.checked ? "text" : "password";
   });
 
-  document.querySelector('.login-form form').addEventListener('submit', function (e) {
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const formData = new FormData(this);
@@ -25,14 +26,23 @@ document.addEventListener("DOMContentLoaded", function () {
             case "Cajero": url = "/cajero/"; break;
             default: url = "/inicio/";
           }
-          window.location.href = url;
+          messageBox.textContent = "¡Bienvenido! Redirigiendo...";
+          messageBox.className = "login-message success";
+          messageBox.style.display = "block";
+          setTimeout(() => { window.location.href = url; }, 800);
         } else {
-          alert(data.error || "Credenciales incorrectas");
+          messageBox.textContent = data.error || "Credenciales incorrectas";
+          messageBox.className = "login-message error";
+          messageBox.style.display = "block";
+          setTimeout(() => { messageBox.style.display = "none"; }, 3000);
         }
       })
       .catch(error => {
         console.error("Error:", error);
-        alert("Error de conexión");
+        messageBox.textContent = "Error de conexión";
+        messageBox.className = "login-message error";
+        messageBox.style.display = "block";
+        setTimeout(() => { messageBox.style.display = "none"; }, 3000);
       });
   });
 });

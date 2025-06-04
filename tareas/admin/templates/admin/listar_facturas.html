@@ -1,0 +1,38 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Facturas - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Facturas Emitidas</h2>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Paciente</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in facturas %}
+                <tr>
+                    <td>{{ f.numerofactura }}</td>
+                    <td>{{ f.pacienteid.nombres }} {{ f.pacienteid.apellidos }}</td>
+                    <td>{{ f.total }}</td>
+                    <td>{{ f.estado }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No hay facturas</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
