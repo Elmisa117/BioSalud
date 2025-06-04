@@ -1,0 +1,44 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Servicios Médicos - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Servicios Médicos</h2>
+    <div class="top-actions">
+        <a href="{% url 'registrar_servicio' %}" class="btn-nuevo">+ Nuevo servicio</a>
+    </div>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Costo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in servicios %}
+                <tr>
+                    <td>{{ s.nombre }}</td>
+                    <td>{{ s.costo }}</td>
+                    <td class="{{ s.estado|yesno:'activo,inactivo'|lower }}">{{ s.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        <a href="{% url 'editar_servicio' s.servicioid %}">Editar</a>
+                        <a href="{% url 'eliminar_servicio' s.servicioid %}" onclick="return confirm('¿Eliminar este servicio?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No hay servicios registrados</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

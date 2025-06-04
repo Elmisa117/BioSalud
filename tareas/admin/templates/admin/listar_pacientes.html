@@ -44,6 +44,7 @@
                     <th>Edad</th>
                     <th>Sexo</th>
                     <th>Seguro</th>
+                    <th>Grupo Sanguíneo</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -56,9 +57,11 @@
                     <td>{{ p.edad }}</td>
                     <td>{{ p.genero }}</td>
                     <td>{{ p.seguro }}</td>
+                    <td>{{ p.gruposanguineo }}</td>
                     <td class="{{ p.estado|yesno:'activo,inactivo'|lower }}">{{ p.estado|yesno:"Activo,Inactivo" }}</td>
                     <td>
                         <a href="{% url 'ver_paciente' p.pacienteid %}">Ver</a>
+                        <a href="{% url 'historial_paciente' p.pacienteid %}">Historial</a>
                         <a href="{% url 'editar_paciente' p.pacienteid %}">Editar</a>
                         {% if p.estado %}
                         <a href="{% url 'inactivar_paciente' p.pacienteid %}">Inactivar</a>
@@ -68,7 +71,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="7">No hay pacientes registrados</td></tr>
+                <tr><td colspan="8">No hay pacientes registrados</td></tr>
                 {% endfor %}
             </tbody>
         </table>

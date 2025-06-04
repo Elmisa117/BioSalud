@@ -23,6 +23,7 @@
                     <th>C.I.</th>
                     <th>Rol</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,9 +33,18 @@
                     <td>{{ p.numerodocumento }}</td>
                     <td>{{ p.rol }}</td>
                     <td class="{{ p.estado|yesno:'activo,inactivo'|lower }}">{{ p.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        <a href="{% url 'editar_personal' p.personalid %}">Editar</a>
+                        {% if p.estado %}
+                        <a href="{% url 'inactivar_personal' p.personalid %}">Inactivar</a>
+                        {% else %}
+                        <a href="{% url 'reactivar_personal' p.personalid %}">Reactivar</a>
+                        {% endif %}
+                        <a href="{% url 'eliminar_personal' p.personalid %}" onclick="return confirm('¿Eliminar este registro?');">Eliminar</a>
+                    </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="4">No hay personal registrado</td></tr>
+                <tr><td colspan="5">No hay personal registrado</td></tr>
                 {% endfor %}
             </tbody>
         </table>

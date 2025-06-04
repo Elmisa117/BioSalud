@@ -1,0 +1,36 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Historial de {{ paciente.nombres }} - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Historial Clínico - {{ paciente.nombres }} {{ paciente.apellidos }}</h2>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Médico</th>
+                    <th>Motivo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in consultas %}
+                <tr>
+                    <td>{{ c.fechaconsulta }}</td>
+                    <td>{{ c.personalid.nombres }} {{ c.personalid.apellidos }}</td>
+                    <td>{{ c.motivocita }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3">Sin consultas registradas</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

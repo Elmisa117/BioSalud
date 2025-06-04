@@ -1,0 +1,57 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Consultas - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Consultas y Emergencias</h2>
+    <form method="get" class="form-grid" style="margin-bottom:20px;">
+        <div class="form-field"><input type="text" name="doctor" placeholder="Doctor" value="{{ doctor }}"></div>
+        <div class="form-field"><input type="date" name="inicio" value="{{ inicio }}"></div>
+        <div class="form-field"><input type="date" name="fin" value="{{ fin }}"></div>
+        <div class="form-field"><button type="submit" class="btn-guardar">Filtrar</button></div>
+    </form>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Médico</th>
+                    <th>Motivo</th>
+                    <th>Costo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in page_obj %}
+                <tr>
+                    <td>{{ c.fechaconsulta }}</td>
+                    <td>{{ c.pacienteid.nombres }} {{ c.pacienteid.apellidos }}</td>
+                    <td>{{ c.personalid.nombres }} {{ c.personalid.apellidos }}</td>
+                    <td>{{ c.motivocita }}</td>
+                    <td>{{ c.costo }}</td>
+                    <td><a href="{% url 'detalle_consulta' c.consultaid %}">Detalles</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">No hay consultas registradas</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="paginacion">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&doctor={{ doctor }}&inicio={{ inicio }}&fin={{ fin }}">Anterior</a>
+        {% endif %}
+        <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&doctor={{ doctor }}&inicio={{ inicio }}&fin={{ fin }}">Siguiente</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

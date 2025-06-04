@@ -1,0 +1,38 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Pagos - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Pagos Realizados</h2>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Factura</th>
+                    <th>Método</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pagos %}
+                <tr>
+                    <td>{{ p.facturaid.numerofactura }}</td>
+                    <td>{{ p.metodopagoid.nombre }}</td>
+                    <td>{{ p.monto }}</td>
+                    <td>{{ p.fechapago }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No hay pagos</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
