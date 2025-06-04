@@ -1,0 +1,43 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+{% block title %}Detalle de Consulta - BioSalud{% endblock %}
+{% block contenido %}
+<div class="listado-card">
+    <h2>Detalle de la Consulta</h2>
+    <p><strong>Fecha:</strong> {{ consulta.fechaconsulta }}</p>
+    <p><strong>Paciente:</strong> {{ consulta.pacienteid.nombres }} {{ consulta.pacienteid.apellidos }}</p>
+    <p><strong>Médico:</strong> {{ consulta.personalid.nombres }} {{ consulta.personalid.apellidos }}</p>
+    <p><strong>Motivo:</strong> {{ consulta.motivocita }}</p>
+    <p><strong>Diagnóstico:</strong> {{ consulta.diagnostico }}</p>
+    <h3>Servicios Aplicados</h3>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Cantidad</th>
+                    <th>Fecha</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in servicios %}
+                <tr>
+                    <td>{{ s.servicioid.nombre }}</td>
+                    <td>{{ s.cantidad }}</td>
+                    <td>{{ s.fechaservicio }}</td>
+                    <td>{{ s.observaciones }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">Sin servicios registrados</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{% url 'listar_consultas' %}" class="volver">← Volver al listado</a>
+</div>
+{% endblock %}
+{% block extra_js %}{% endblock %}

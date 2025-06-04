@@ -1,0 +1,67 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+{% block title %}Reportes - BioSalud{% endblock %}
+{% block contenido %}
+<div class="listado-card">
+    <h2>Reportes y Estadísticas</h2>
+    <h3>Consultas por Médico</h3>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr><th>Médico</th><th>Total de Consultas</th></tr>
+            </thead>
+            <tbody>
+            {% for r in consultas_medico %}
+                <tr><td>{{ r.personalid__nombres }} {{ r.personalid__apellidos }}</td><td>{{ r.total }}</td></tr>
+            {% empty %}
+                <tr><td colspan="2">Sin datos</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h3>Total Facturado</h3>
+    <p class="total">$ {{ total_facturado }}</p>
+
+    <h3>Pacientes Nuevos vs Recurrentes</h3>
+    <ul>
+        <li>Nuevos: {{ pacientes_nuevos }}</li>
+        <li>Recurrentes: {{ pacientes_recurrentes }}</li>
+    </ul>
+
+    <h3>Consultas por Día</h3>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr><th>Día</th><th>Total de Consultas</th></tr>
+            </thead>
+            <tbody>
+            {% for d in consultas_dia %}
+                <tr><td>{{ d.dia|date:'Y-m-d' }}</td><td>{{ d.total }}</td></tr>
+            {% empty %}
+                <tr><td colspan="2">Sin datos</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Facturación por Día</h3>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr><th>Día</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+            {% for f in facturacion_dia %}
+                <tr><td>{{ f.dia|date:'Y-m-d' }}</td><td>{{ f.total }}</td></tr>
+            {% empty %}
+                <tr><td colspan="2">Sin datos</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}{% endblock %}
