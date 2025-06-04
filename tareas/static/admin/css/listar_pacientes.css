@@ -34,6 +34,21 @@
     background-color: #0077b6;
 }
 
+.btn-buscar {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 25px;
+    font-size: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-buscar:hover {
+    background-color: #1e7e34;
+}
+
 .tabla-scroll {
     overflow-x: auto;
 }

@@ -14,25 +14,11 @@
         <a href="{% url 'registrar_paciente' %}" class="btn-nuevo">+ Registrar nuevo</a>
         <a href="{% url 'exportar_pacientes' %}" class="btn-nuevo">Exportar CSV</a>
     </div>
-    <form method="get" class="form-grid" style="margin-bottom:20px;">
-        <div class="form-field"><input type="text" name="q" placeholder="Buscar" value="{{ q }}"></div>
+    <form method="get" class="form-grid" id="form-buscar-pacientes" style="margin-bottom:20px;">
+        <div class="form-field"><input type="text" name="nombre" id="buscar-nombre" placeholder="Nombre" value="{{ nombre }}"></div>
+        <div class="form-field"><input type="text" name="ci" id="buscar-ci" placeholder="Cédula" value="{{ ci }}"></div>
         <div class="form-field">
-            <select name="sexo">
-                <option value="">Sexo...</option>
-                <option value="M" {% if sexo == 'M' %}selected{% endif %}>Masculino</option>
-                <option value="F" {% if sexo == 'F' %}selected{% endif %}>Femenino</option>
-            </select>
-        </div>
-        <div class="form-field"><input type="text" name="seguro" placeholder="Seguro" value="{{ seguro }}"></div>
-        <div class="form-field">
-            <select name="estado">
-                <option value="">Estado...</option>
-                <option value="activo" {% if estado=='activo' %}selected{% endif %}>Activo</option>
-                <option value="inactivo" {% if estado=='inactivo' %}selected{% endif %}>Inactivo</option>
-            </select>
-        </div>
-        <div class="form-field">
-            <button type="submit" class="btn-guardar">Filtrar</button>
+            <button type="submit" class="btn-buscar">Buscar</button>
         </div>
     </form>
     <div class="tabla-scroll">
@@ -49,30 +35,8 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for p in page_obj %}
-                <tr>
-                    <td>{{ p.nombres }} {{ p.apellidos }}</td>
-                    <td>{{ p.numerodocumento }}</td>
-                    <td>{{ p.edad }}</td>
-                    <td>{{ p.genero }}</td>
-                    <td>{{ p.seguro }}</td>
-                    <td>{{ p.gruposanguineo }}</td>
-                    <td class="{{ p.estado|yesno:'activo,inactivo'|lower }}">{{ p.estado|yesno:"Activo,Inactivo" }}</td>
-                    <td>
-                        <a href="{% url 'ver_paciente' p.pacienteid %}">Ver</a>
-                        <a href="{% url 'historial_paciente' p.pacienteid %}">Historial</a>
-                        <a href="{% url 'editar_paciente' p.pacienteid %}">Editar</a>
-                        {% if p.estado %}
-                        <a href="{% url 'inactivar_paciente' p.pacienteid %}">Inactivar</a>
-                        {% else %}
-                        <a href="{% url 'reactivar_paciente' p.pacienteid %}">Reactivar</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="8">No hay pacientes registrados</td></tr>
-                {% endfor %}
+            <tbody id="tabla-pacientes">
+                {% include 'admin/includes/pacientes_rows.html' %}
             </tbody>
         </table>
     </div>

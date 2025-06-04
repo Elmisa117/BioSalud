@@ -9,7 +9,7 @@ from .views_admin import (
     listar_servicios, registrar_servicio, editar_servicio,
     eliminar_servicio, historial_paciente, listar_facturas,
     listar_pagos, listar_consultas, detalle_consulta, reportes_estadisticas,
-    control_accesos, configuraciones_generales, descargar_backup
+    reportes_pdf, control_accesos, configuraciones_generales, descargar_backup
 )
 
 
@@ -42,6 +42,7 @@ urlpatterns = [
     path('consultas/', listar_consultas, name='listar_consultas'),
     path('consultas/<int:consulta_id>/', detalle_consulta, name='detalle_consulta'),
     path('reportes/', reportes_estadisticas, name='reportes_estadisticas'),
+    path('reportes/pdf/', reportes_pdf, name='reportes_pdf'),
     path('accesos/', control_accesos, name='control_accesos'),
     path('configuraciones/', configuraciones_generales, name='configuraciones_generales'),
     path('backup/', descargar_backup, name='descargar_backup'),

@@ -20,12 +20,30 @@ class PacienteForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         required_fields = [
-            'nombres', 'apellidos', 'numerodocumento',
-            'tipodocumento', 'fechanacimiento', 'genero', 'direccion',
-            'telefono', 'seguro', 'estado'
+            'nombres', 'apellidos', 'numerodocumento', 'tipodocumento',
+            'fechanacimiento', 'genero', 'direccion', 'telefono',
+            'seguro', 'estado'
         ]
         for field in required_fields:
             self.fields[field].required = True
+
+        # Selección de tipo de documento con opción para describir "Otro"
+        self.fields['tipodocumento'] = forms.ChoiceField(
+            choices=[
+                ('', 'Seleccione...'),
+                ('Cédula de identidad', 'Cédula de identidad'),
+                ('Pasaporte', 'Pasaporte'),
+                ('Otro', 'Otro')
+            ],
+            required=True,
+            label='Tipo de documento'
+        )
+        # Campo adicional para detallar el documento si se elige "Otro"
+        self.fields['otrodocumento'] = forms.CharField(
+            required=False,
+            label='Otro (especifique)'
+        )
+
         self.fields['genero'] = forms.ChoiceField(
             choices=[('', 'Seleccione...'), ('M', 'Masculino'), ('F', 'Femenino')],
             required=True
@@ -40,6 +58,11 @@ class PacienteForm(forms.ModelForm):
     def save(self, commit=True):
         """Calcula la edad y fecha de registro automáticamente."""
         paciente = super().save(commit=False)
+        # Si se seleccionó "Otro", guardar la descripción escrita
+        if self.cleaned_data.get('tipodocumento') == 'Otro':
+            paciente.tipodocumento = self.cleaned_data.get('otrodocumento', '')
+        else:
+            paciente.tipodocumento = self.cleaned_data.get('tipodocumento')
         if not paciente.fecharegistro:
             paciente.fecharegistro = timezone.now()
         if paciente.fechanacimiento and not self.cleaned_data.get('edad'):

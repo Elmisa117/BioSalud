@@ -14,11 +14,13 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.core.management import call_command
-from io import StringIO
+from io import StringIO, BytesIO
 from django.utils import timezone
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from django.db.models.functions import TruncDay
 from django.contrib.sessions.models import Session
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 import csv
 
 def dashboard_view(request):
@@ -152,21 +154,13 @@ def registrar_paciente(request):
 
 def listar_pacientes(request):
     pacientes = Pacientes.objects.all()
-    query = request.GET.get('q')
-    if query:
-        pacientes = pacientes.filter(nombres__icontains=query) | pacientes.filter(apellidos__icontains=query) | pacientes.filter(numerodocumento__icontains=query)
+    nombre = request.GET.get('nombre')
+    if nombre:
+        pacientes = pacientes.filter(Q(nombres__icontains=nombre) | Q(apellidos__icontains=nombre))
 
-    sexo = request.GET.get('sexo')
-    if sexo:
-        pacientes = pacientes.filter(genero=sexo)
-
-    seguro = request.GET.get('seguro')
-    if seguro:
-        pacientes = pacientes.filter(seguro__icontains=seguro)
-
-    estado = request.GET.get('estado')
-    if estado in ['activo', 'inactivo']:
-        pacientes = pacientes.filter(estado=(estado == 'activo'))
+    ci = request.GET.get('ci')
+    if ci:
+        pacientes = pacientes.filter(numerodocumento__icontains=ci)
 
     paginator = Paginator(pacientes, 10)
     page_number = request.GET.get('page')
@@ -175,11 +169,11 @@ def listar_pacientes(request):
         'page_obj': page_obj,
         'nombre': request.session.get('nombre'),
         'rol': request.session.get('rol'),
-        'q': query or '',
-        'sexo': sexo or '',
-        'seguro': seguro or '',
-        'estado': estado or '',
+        'nombre': nombre or '',
+        'ci': ci or '',
     }
+    if request.GET.get('ajax'):
+        return render(request, 'admin/includes/pacientes_rows.html', contexto)
     return render(request, 'admin/listar_pacientes.html', contexto)
 
 
@@ -463,6 +457,33 @@ def reportes_estadisticas(request):
         'nombre': request.session.get('nombre'),
         'rol': request.session.get('rol'),
     })
+
+
+def reportes_pdf(request):
+    """Genera un PDF sencillo con los datos de reportes."""
+    consultas_medico = Consultas.objects.values(
+        'personalid__nombres', 'personalid__apellidos'
+    ).annotate(total=Count('consultaid')).order_by('-total')[:10]
+    total_facturado = Facturas.objects.aggregate(total=Sum('total'))['total'] or 0
+
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=letter)
+    pdf.setTitle('Reportes BioSalud')
+
+    pdf.drawString(50, 770, 'Reporte de Estadísticas BioSalud')
+    pdf.drawString(50, 750, f'Total facturado: {total_facturado}')
+    y = 720
+    pdf.drawString(50, y, 'Consultas por Médico:')
+    y -= 20
+    for c in consultas_medico:
+        nombre = f"{c['personalid__nombres']} {c['personalid__apellidos']}"
+        pdf.drawString(60, y, f"{nombre}: {c['total']}")
+        y -= 15
+
+    pdf.showPage()
+    pdf.save()
+    buffer.seek(0)
+    return HttpResponse(buffer.read(), content_type='application/pdf', headers={'Content-Disposition': 'attachment; filename="reportes.pdf"'})
 
 
 # ----------------------------

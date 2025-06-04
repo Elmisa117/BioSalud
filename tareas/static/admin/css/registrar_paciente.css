@@ -85,3 +85,8 @@
     text-decoration: underline;
 }
 
+/* Campo adicional para tipo de documento */
+.form-field-otro {
+    display: none;
+}
+
