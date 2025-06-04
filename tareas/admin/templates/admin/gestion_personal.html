@@ -1,0 +1,26 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h2>Gestión de Personal</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Cédula</th>
+      <th>Rol</th>
+      <th>Activo</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in personal %}
+    <tr>
+      <td>{{ p.nombres }} {{ p.apellidos }}</td>
+      <td>{{ p.cedula_identidad }}</td>
+      <td>{{ p.rol }}</td>
+      <td>{{ p.activo|yesno:"Sí,No" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay registros.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
