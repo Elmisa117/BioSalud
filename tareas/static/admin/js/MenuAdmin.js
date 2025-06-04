@@ -38,6 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (opcion === "Gestión de Personal") {
                 // 🔁 Redireccionar a la vista de registrar personal
                 window.location.href = "/admin/registrar_personal/";
+            } else if (opcion === "Control de Pacientes") {
+                window.location.href = "/admin/listar_pacientes/";
             } else {
                 mainContent.innerHTML = `<h1>${opcion}</h1><p>Contenido en desarrollo...</p>`;
             }
