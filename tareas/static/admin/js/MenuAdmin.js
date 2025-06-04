@@ -36,10 +36,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 `;
             } else if (opcion === "Gestión de Personal") {
-                // 🔁 Redireccionar a la vista de registrar personal
-                window.location.href = "/admin/registrar_personal/";
+                window.location.href = "/admin/listar_personal/";
+            } else if (opcion === "Servicios Médicos") {
+                window.location.href = "/admin/servicios/";
             } else if (opcion === "Control de Pacientes") {
                 window.location.href = "/admin/listar_pacientes/";
+            } else if (opcion === "Consultas y Emergencias") {
+                window.location.href = "/admin/consultas/";
+            } else if (opcion === "Gestión Financiera") {
+                window.location.href = "/admin/facturas/";
+            } else if (opcion === "Reportes y Estadísticas") {
+                window.location.href = "/admin/reportes/";
+            } else if (opcion === "Control de Accesos") {
+                window.location.href = "/admin/accesos/";
+            } else if (opcion === "Configuraciones Generales") {
+                window.location.href = "/admin/configuraciones/";
             } else {
                 mainContent.innerHTML = `<h1>${opcion}</h1><p>Contenido en desarrollo...</p>`;
             }

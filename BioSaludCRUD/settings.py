@@ -66,6 +66,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'tareas.admin.context_processors.config_processor',
             ],
         },
     },
