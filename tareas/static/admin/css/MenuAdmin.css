@@ -1,0 +1,304 @@
+
+/* ------------------ AJUSTES GENERALES ------------------ */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #e3f2fd, #e1f5fe, #e0f7fa, #e8f5e9);
+    background-size: 400% 400%;
+    animation: animado 15s ease infinite;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+@keyframes animado {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+/* ------------------ SIDEBAR ------------------ */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: #003d73;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo i {
+    font-size: 1.4rem;
+    margin-right: 10px;
+    color: #0fd1c9;
+}
+
+.logo-text {
+    font-weight: bold;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.menu li i {
+    margin-right: 12px;
+    font-size: 1.1rem;
+    color: #0fd1c9;
+}
+
+.menu li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    background-color: #0fd1c9;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+    transform-origin: top;
+}
+
+.menu li:hover::before {
+    transform: scaleY(1);
+}
+
+.menu li:hover {
+    background-color: #004e87;
+    padding-left: 25px;
+}
+
+/* ------------------ CONTENIDO PRINCIPAL ------------------ */
+.main-content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    height: 100vh;
+    padding: 30px 40px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* ------------------ BIENVENIDA ------------------ */
+.welcome h1 {
+    font-size: 2.2rem;
+    color: #003d73;
+    margin-top: 20px;
+}
+
+.welcome p {
+    font-size: 1.05rem;
+    color: #333;
+    margin: 5px 0;
+}
+
+.welcome-img {
+    width: 200px;
+    margin-bottom: 20px;
+}
+
+/* ------------------ FORMULARIO REGISTRO ------------------ */
+.form-card {
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    max-width: 1200px;
+    width: 100%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+}
+
+.form-card h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #0077b6;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 30px;
+    padding-right: 10px;
+}
+
+.form-field label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-field input,
+.form-field select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    background-color: #f4f7f9;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+    border-color: #0096c7;
+    background-color: #ffffff;
+    outline: none;
+}
+
+.form-full {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.btn-guardar {
+    background-color: #0096c7;
+    color: white;
+    padding: 14px 45px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-guardar:hover {
+    background-color: #0077b6;
+}
+
+.volver {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 15px;
+    color: #0077b6;
+    text-decoration: none;
+}
+
+.volver:hover {
+    text-decoration: underline;
+}
+
+/* ---------- LISTADO DE PERSONAL MEJORADO ---------- */
+.listado-card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 1100px;
+    width: 100%;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.listado-card h2 {
+    text-align: center;
+    color: #0077b6;
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
+.top-actions {
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.btn-nuevo {
+    background-color: #0096c7;
+    color: white;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.btn-nuevo:hover {
+    background-color: #0077b6;
+}
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.tabla-personal {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.tabla-personal thead {
+    background-color: #0077b6;
+    color: white;
+}
+
+.tabla-personal th, .tabla-personal td {
+    padding: 12px;
+    border: 1px solid #d0d0d0;
+    text-align: center;
+}
+
+.tabla-personal tbody tr:hover {
+    background-color: #f0f9ff;
+}
+
+.activo {
+    color: green;
+    font-weight: bold;
+}
+
+.inactivo {
+    color: red;
+    font-weight: bold;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.alert.success {
+    background-color: #d1f7d1;
+    color: #087c0c;
+    border: 1px solid #7ed957;
+}
+
+.alert.error {
+    background-color: #ffe6e6;
+    color: #a30000;
+    border: 1px solid #ff4d4d;
+}

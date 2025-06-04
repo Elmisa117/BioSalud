@@ -1,0 +1,38 @@
+{% extends 'admin/MenuAdmin.html' %}
+
+{% block title %}Listado de Personal - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Listado de Personal</h2>
+
+    <div class="top-actions">
+        <a href="{% url 'registrar_personal' %}" class="btn-nuevo">+ Registrar nuevo</a>
+    </div>
+
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>C.I.</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in personal %}
+                <tr>
+                    <td>{{ p.nombres }} {{ p.apellidos }}</td>
+                    <td>{{ p.numerodocumento }}</td>
+                    <td>{{ p.rol }}</td>
+                    <td class="{{ p.estado|yesno:'activo,inactivo'|lower }}">{{ p.estado|yesno:"Activo,Inactivo" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No hay personal registrado</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

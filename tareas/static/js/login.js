@@ -2,12 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const toggle = document.getElementById("togglePassword");
   const passField = document.getElementById("passwordField");
 
-  // Mostrar / ocultar contraseña
   toggle.addEventListener("change", function () {
     passField.type = this.checked ? "text" : "password";
   });
 
-  // Enviar login por fetch
   document.querySelector('.login-form form').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -27,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
             case "Cajero": url = "/cajero/"; break;
             default: url = "/inicio/";
           }
-          window.location.href = url;  // 👈 Redirige en la misma pestaña
+          window.location.href = url;
         } else {
           alert(data.error || "Credenciales incorrectas");
         }

@@ -1,6 +1,9 @@
+
 from django.urls import path, include
 from django.shortcuts import redirect
 from tareas.views import login_view, cerrar_sesion
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', lambda request: redirect('login')),  # Redirige raíz al login
@@ -17,4 +20,6 @@ urlpatterns = [
     path('cajero/', include('tareas.cajero.urls_cajero')),
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 
