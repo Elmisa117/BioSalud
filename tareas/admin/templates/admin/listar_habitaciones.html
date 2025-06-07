@@ -1,0 +1,49 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Habitaciones - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Habitaciones</h2>
+    <div class="top-actions">
+        <a href="{% url 'registrar_habitacion' %}" class="btn-nuevo">+ Nueva habitación</a>
+        <a href="{% url 'listar_tipos_habitacion' %}" class="btn-nuevo">Tipos de habitación</a>
+    </div>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Tipo</th>
+                    <th>Capacidad</th>
+                    <th>Disponible</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in habitaciones %}
+                <tr>
+                    <td>{{ h.numero }}</td>
+                    <td>{{ h.tipohabitacionid.nombre }}</td>
+                    <td>{{ h.capacidad }}</td>
+                    <td>{{ h.disponible|yesno:"Sí,No" }}</td>
+                    <td class="{{ h.estado|yesno:'activo,inactivo'|lower }}">{{ h.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        <a href="{% url 'editar_habitacion' h.habitacionid %}">Editar</a>
+                        <a href="{% url 'eliminar_habitacion' h.habitacionid %}" onclick="return confirm('¿Eliminar esta habitación?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">No hay habitaciones registradas</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
