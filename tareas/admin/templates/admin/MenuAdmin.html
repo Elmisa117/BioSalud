@@ -20,16 +20,16 @@
         </div>
         <ul class="menu">
             <li id="inicio"><i class="bi bi-house-fill"></i> Inicio</li>
-            <li><i class="bi bi-people-fill"></i> Gestión de Personal</li>
-            <li><i class="bi bi-clipboard2-pulse-fill"></i> Servicios Médicos</li>
-            <li><i class="bi bi-door-closed-fill"></i> Gestión de Habitaciones</li>
-            <li><i class="bi bi-credit-card-2-back-fill"></i> Métodos de Pago</li>
-            <li><i class="bi bi-person-lines-fill"></i> Control de Pacientes</li>
-            <li><i class="bi bi-hospital"></i> Consultas y Emergencias</li>
-            <li><i class="bi bi-cash-coin"></i> Gestión Financiera</li>
-            <li><i class="bi bi-bar-chart-fill"></i> Reportes y Estadísticas</li>
-            <li><i class="bi bi-key-fill"></i> Control de Accesos</li>
-            <li><i class="bi bi-gear-fill"></i> Configuraciones Generales</li>
+            <li data-url="{% url 'listar_personal' %}"><i class="bi bi-people-fill"></i> Gestión de Personal</li>
+            <li data-url="{% url 'listar_servicios' %}"><i class="bi bi-clipboard2-pulse-fill"></i> Servicios Médicos</li>
+            <li data-url="{% url 'listar_habitaciones' %}"><i class="bi bi-door-closed-fill"></i> Gestión de Habitaciones</li>
+            <li data-url="{% url 'listar_metodos_pago' %}"><i class="bi bi-credit-card-2-back-fill"></i> Métodos de Pago</li>
+            <li data-url="{% url 'listar_pacientes' %}"><i class="bi bi-person-lines-fill"></i> Control de Pacientes</li>
+            <li data-url="{% url 'listar_consultas' %}"><i class="bi bi-hospital"></i> Consultas y Emergencias</li>
+            <li data-url="{% url 'listar_facturas' %}"><i class="bi bi-cash-coin"></i> Gestión Financiera</li>
+            <li data-url="{% url 'reportes_estadisticas' %}"><i class="bi bi-bar-chart-fill"></i> Reportes y Estadísticas</li>
+            <li data-url="{% url 'control_accesos' %}"><i class="bi bi-key-fill"></i> Control de Accesos</li>
+            <li data-url="{% url 'configuraciones_generales' %}"><i class="bi bi-gear-fill"></i> Configuraciones Generales</li>
             <li id="cerrar-sesion">
                 <i class="bi bi-box-arrow-right"></i> Cerrar sesión
             </li>
