@@ -1,0 +1,45 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Tipos de Habitación - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Tipos de Habitación</h2>
+    <div class="top-actions">
+        <a href="{% url 'registrar_tipohabitacion' %}" class="btn-nuevo">+ Nuevo tipo</a>
+        <a href="{% url 'listar_habitaciones' %}" class="btn-nuevo">Ver habitaciones</a>
+    </div>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Costo diario</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tipos %}
+                <tr>
+                    <td>{{ t.nombre }}</td>
+                    <td>{{ t.costodiario }}</td>
+                    <td class="{{ t.estado|yesno:'activo,inactivo'|lower }}">{{ t.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        <a href="{% url 'editar_tipohabitacion' t.tipohabitacionid %}">Editar</a>
+                        <a href="{% url 'eliminar_tipohabitacion' t.tipohabitacionid %}" onclick="return confirm('¿Eliminar este tipo?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No hay tipos registrados</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

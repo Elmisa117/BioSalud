@@ -3,11 +3,14 @@ from tareas.admin.Forms.form_personal import PersonalForm, PersonalEditForm
 from tareas.admin.Forms.form_paciente import PacienteForm, PacienteEditForm
 from tareas.admin.Forms.form_especialidad import EspecialidadForm
 from tareas.admin.Forms.form_servicio import ServicioForm
+from tareas.admin.Forms.form_habitacion import HabitacionForm, TipoHabitacionForm
+from tareas.admin.Forms.form_metodo_pago import MetodoPagoForm
 from tareas.admin.Forms.form_config import ConfiguracionForm
 from tareas.admin.config_utils import load_config, save_config
 from tareas.models import (
     Personal, Pacientes, PacienteAudit, Especialidades,
-    Servicios, Facturas, Pagos, Consultas, Consultaservicios
+    Servicios, Facturas, Pagos, Consultas, Consultaservicios,
+    Habitaciones, Tiposhabitacion, Metodospago
 )
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
@@ -359,6 +362,174 @@ def eliminar_servicio(request, servicio_id):
     servicio.delete()
     messages.success(request, 'Servicio eliminado.')
     return redirect('listar_servicios')
+
+
+# ----------------------------
+# GESTIÓN DE HABITACIONES
+# ----------------------------
+def listar_habitaciones(request):
+    habitaciones = Habitaciones.objects.all()
+    return render(request, 'admin/listar_habitaciones.html', {
+        'habitaciones': habitaciones,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def registrar_habitacion(request):
+    if request.method == 'POST':
+        form = HabitacionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Habitación guardada correctamente.')
+            return redirect('listar_habitaciones')
+        else:
+            messages.error(request, 'Revisa los campos del formulario.')
+    else:
+        form = HabitacionForm()
+    return render(request, 'admin/registrar_habitacion.html', {
+        'form': form,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def editar_habitacion(request, habitacion_id):
+    habitacion = Habitaciones.objects.get(pk=habitacion_id)
+    if request.method == 'POST':
+        form = HabitacionForm(request.POST, instance=habitacion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Habitación actualizada.')
+            return redirect('listar_habitaciones')
+        else:
+            messages.error(request, 'Revisa los campos del formulario.')
+    else:
+        form = HabitacionForm(instance=habitacion)
+    return render(request, 'admin/registrar_habitacion.html', {
+        'form': form,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def eliminar_habitacion(request, habitacion_id):
+    habitacion = Habitaciones.objects.get(pk=habitacion_id)
+    habitacion.delete()
+    messages.success(request, 'Habitación eliminada.')
+    return redirect('listar_habitaciones')
+
+
+# ----------------------------
+# GESTIÓN DE TIPOS DE HABITACIÓN
+# ----------------------------
+def listar_tipos_habitacion(request):
+    tipos = Tiposhabitacion.objects.all()
+    return render(request, 'admin/listar_tipos_habitacion.html', {
+        'tipos': tipos,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def registrar_tipohabitacion(request):
+    if request.method == 'POST':
+        form = TipoHabitacionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Tipo de habitación guardado.')
+            return redirect('listar_tipos_habitacion')
+        else:
+            messages.error(request, 'Revisa los campos del formulario.')
+    else:
+        form = TipoHabitacionForm()
+    return render(request, 'admin/registrar_tipohabitacion.html', {
+        'form': form,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def editar_tipohabitacion(request, tipo_id):
+    tipo = Tiposhabitacion.objects.get(pk=tipo_id)
+    if request.method == 'POST':
+        form = TipoHabitacionForm(request.POST, instance=tipo)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Tipo de habitación actualizado.')
+            return redirect('listar_tipos_habitacion')
+        else:
+            messages.error(request, 'Revisa los campos del formulario.')
+    else:
+        form = TipoHabitacionForm(instance=tipo)
+    return render(request, 'admin/registrar_tipohabitacion.html', {
+        'form': form,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def eliminar_tipohabitacion(request, tipo_id):
+    tipo = Tiposhabitacion.objects.get(pk=tipo_id)
+    tipo.delete()
+    messages.success(request, 'Tipo de habitación eliminado.')
+    return redirect('listar_tipos_habitacion')
+
+
+# ----------------------------
+# GESTIÓN DE MÉTODOS DE PAGO
+# ----------------------------
+def listar_metodos_pago(request):
+    metodos = Metodospago.objects.all()
+    return render(request, 'admin/listar_metodos_pago.html', {
+        'metodos': metodos,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def registrar_metodo_pago(request):
+    if request.method == 'POST':
+        form = MetodoPagoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Método de pago guardado.')
+            return redirect('listar_metodos_pago')
+        else:
+            messages.error(request, 'Revisa los campos del formulario.')
+    else:
+        form = MetodoPagoForm()
+    return render(request, 'admin/registrar_metodo_pago.html', {
+        'form': form,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def editar_metodo_pago(request, metodo_id):
+    metodo = Metodospago.objects.get(pk=metodo_id)
+    if request.method == 'POST':
+        form = MetodoPagoForm(request.POST, instance=metodo)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Método de pago actualizado.')
+            return redirect('listar_metodos_pago')
+        else:
+            messages.error(request, 'Revisa los campos del formulario.')
+    else:
+        form = MetodoPagoForm(instance=metodo)
+    return render(request, 'admin/registrar_metodo_pago.html', {
+        'form': form,
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+    })
+
+
+def eliminar_metodo_pago(request, metodo_id):
+    metodo = Metodospago.objects.get(pk=metodo_id)
+    metodo.delete()
+    messages.success(request, 'Método de pago eliminado.')
+    return redirect('listar_metodos_pago')
 
 
 # ----------------------------
