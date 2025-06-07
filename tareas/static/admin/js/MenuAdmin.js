@@ -39,6 +39,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = "/admin/listar_personal/";
             } else if (opcion === "Servicios Médicos") {
                 window.location.href = "/admin/servicios/";
+            } else if (item.id === "menu-habitaciones" || opcion === "Gestión de Habitaciones") {
+                window.location.href = "/admin/habitaciones/";
+            } else if (item.id === "menu-metodos-pago" || opcion === "Métodos de Pago") {
+                window.location.href = "/admin/metodos_pago/";
             } else if (opcion === "Control de Pacientes") {
                 window.location.href = "/admin/listar_pacientes/";
             } else if (opcion === "Consultas y Emergencias") {

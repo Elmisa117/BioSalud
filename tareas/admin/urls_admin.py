@@ -9,7 +9,10 @@ from .views_admin import (
     listar_servicios, registrar_servicio, editar_servicio,
     eliminar_servicio, historial_paciente, listar_facturas,
     listar_pagos, listar_consultas, detalle_consulta, reportes_estadisticas,
-    control_accesos, configuraciones_generales, descargar_backup
+    control_accesos, configuraciones_generales, descargar_backup,
+    listar_habitaciones, registrar_habitacion, editar_habitacion, eliminar_habitacion,
+    listar_tipos_habitacion, registrar_tipohabitacion, editar_tipohabitacion, eliminar_tipohabitacion,
+    listar_metodos_pago, registrar_metodo_pago, editar_metodo_pago, eliminar_metodo_pago
 )
 
 
@@ -39,6 +42,18 @@ urlpatterns = [
     path('paciente/<int:paciente_id>/historial/', historial_paciente, name='historial_paciente'),
     path('facturas/', listar_facturas, name='listar_facturas'),
     path('pagos/', listar_pagos, name='listar_pagos'),
+    path('habitaciones/', listar_habitaciones, name='listar_habitaciones'),
+    path('habitaciones/nueva/', registrar_habitacion, name='registrar_habitacion'),
+    path('habitaciones/<int:habitacion_id>/editar/', editar_habitacion, name='editar_habitacion'),
+    path('habitaciones/<int:habitacion_id>/eliminar/', eliminar_habitacion, name='eliminar_habitacion'),
+    path('tipos_habitacion/', listar_tipos_habitacion, name='listar_tipos_habitacion'),
+    path('tipos_habitacion/nueva/', registrar_tipohabitacion, name='registrar_tipohabitacion'),
+    path('tipos_habitacion/<int:tipo_id>/editar/', editar_tipohabitacion, name='editar_tipohabitacion'),
+    path('tipos_habitacion/<int:tipo_id>/eliminar/', eliminar_tipohabitacion, name='eliminar_tipohabitacion'),
+    path('metodos_pago/', listar_metodos_pago, name='listar_metodos_pago'),
+    path('metodos_pago/nuevo/', registrar_metodo_pago, name='registrar_metodo_pago'),
+    path('metodos_pago/<int:metodo_id>/editar/', editar_metodo_pago, name='editar_metodo_pago'),
+    path('metodos_pago/<int:metodo_id>/eliminar/', eliminar_metodo_pago, name='eliminar_metodo_pago'),
     path('consultas/', listar_consultas, name='listar_consultas'),
     path('consultas/<int:consulta_id>/', detalle_consulta, name='detalle_consulta'),
     path('reportes/', reportes_estadisticas, name='reportes_estadisticas'),
