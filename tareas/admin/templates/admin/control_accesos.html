@@ -1,6 +1,10 @@
 {% extends 'admin/MenuAdmin.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
 {% block title %}Control de Accesos - BioSalud{% endblock %}
 
 {% block contenido %}

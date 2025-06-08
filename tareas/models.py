@@ -209,7 +209,6 @@ class Pacientes(models.Model):
     direccion = models.CharField(max_length=200, blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(max_length=100, blank=True, null=True)
-    seguro = models.CharField(max_length=100, blank=True, null=True)
     gruposanguineo = models.CharField(max_length=5, blank=True, null=True)
     alergias = models.TextField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)

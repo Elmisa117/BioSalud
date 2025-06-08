@@ -163,9 +163,6 @@ def listar_pacientes(request):
     if sexo:
         pacientes = pacientes.filter(genero=sexo)
 
-    seguro = request.GET.get('seguro')
-    if seguro:
-        pacientes = pacientes.filter(seguro__icontains=seguro)
 
     estado = request.GET.get('estado')
     if estado in ['activo', 'inactivo']:
@@ -180,7 +177,6 @@ def listar_pacientes(request):
         'rol': request.session.get('rol'),
         'q': query or '',
         'sexo': sexo or '',
-        'seguro': seguro or '',
         'estado': estado or '',
     }
     return render(request, 'admin/listar_pacientes.html', contexto)
@@ -235,14 +231,13 @@ def exportar_pacientes(request):
     response = HttpResponse(content_type='text/csv; charset=utf-8')
     response['Content-Disposition'] = 'attachment; filename="pacientes.csv"'
     writer = csv.writer(response)
-    writer.writerow(['Nombre Completo', 'CI', 'Edad', 'Genero', 'Seguro', 'Grupo sanguineo', 'Alergias', 'Estado'])
+    writer.writerow(['Nombre Completo', 'CI', 'Edad', 'Genero', 'Grupo sanguineo', 'Alergias', 'Estado'])
     for p in pacientes:
         writer.writerow([
             f"{p.nombres} {p.apellidos}",
             p.numerodocumento,
             p.edad or '',
             p.genero or '',
-            p.seguro or '',
             p.gruposanguineo or '',
             p.alergias or '',
             'Activo' if p.estado else 'Inactivo'
