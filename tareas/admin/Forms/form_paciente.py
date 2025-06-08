@@ -8,7 +8,7 @@ class PacienteForm(forms.ModelForm):
         fields = [
             'nombres', 'apellidos', 'numerodocumento', 'tipodocumento',
             'fechanacimiento', 'edad', 'genero', 'direccion', 'telefono',
-            'email', 'seguro', 'gruposanguineo', 'alergias',
+            'email', 'gruposanguineo', 'alergias',
             'observaciones', 'estado', 'fecharegistro'
         ]
         widgets = {
@@ -22,7 +22,7 @@ class PacienteForm(forms.ModelForm):
         required_fields = [
             'nombres', 'apellidos', 'numerodocumento',
             'tipodocumento', 'fechanacimiento', 'genero', 'direccion',
-            'telefono', 'seguro', 'estado'
+            'telefono', 'estado'
         ]
         for field in required_fields:
             self.fields[field].required = True
