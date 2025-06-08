@@ -1,9 +1,17 @@
 
 /* ------------------ AJUSTES GENERALES ------------------ */
+:root {
+    --primary-color: #0d47a1;
+    --secondary-color: #1565c0;
+    --accent-color: #42a5f5;
+    --sidebar-bg: #0b3d91;
+    --gradient-bg: linear-gradient(-45deg, #e8f3ff, #e3f2fd, #e0f7fa, #f1f8ff);
+}
+
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(-45deg, #e3f2fd, #e1f5fe, #e0f7fa, #e8f5e9);
+    background: var(--gradient-bg);
     background-size: 400% 400%;
     animation: animado 15s ease infinite;
     display: flex;
@@ -21,7 +29,7 @@ body {
 .sidebar {
     width: 260px;
     height: 100vh;
-    background-color: #003d73;
+    background-color: var(--sidebar-bg);
     color: white;
     position: fixed;
     left: 0;
@@ -43,7 +51,7 @@ body {
 .logo i {
     font-size: 1.4rem;
     margin-right: 10px;
-    color: #0fd1c9;
+    color: var(--accent-color);
 }
 
 .logo-text {
@@ -70,7 +78,7 @@ body {
 .menu li i {
     margin-right: 12px;
     font-size: 1.1rem;
-    color: #0fd1c9;
+    color: var(--accent-color);
 }
 
 .menu li::before {
@@ -80,7 +88,7 @@ body {
     top: 0;
     height: 100%;
     width: 5px;
-    background-color: #0fd1c9;
+    background-color: var(--accent-color);
     transform: scaleY(0);
     transition: transform 0.3s ease;
     transform-origin: top;
@@ -91,7 +99,7 @@ body {
 }
 
 .menu li:hover {
-    background-color: #004e87;
+    background-color: var(--secondary-color);
     padding-left: 25px;
 }
 
@@ -110,7 +118,7 @@ body {
 /* ------------------ BIENVENIDA ------------------ */
 .welcome h1 {
     font-size: 2.2rem;
-    color: #003d73;
+    color: var(--sidebar-bg);
     margin-top: 20px;
 }
 
