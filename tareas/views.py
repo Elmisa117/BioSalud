@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db import connection
 from django.http import JsonResponse
+from tareas.models import Personal  # o el nombre correcto de tu modelo
 
 # ----------------------------
 # LOGIN CON REDIRECCIÓN POR ROL
@@ -34,6 +35,18 @@ def login_view(request):
 
     return render(request, 'login.html')
 
+def panel_cajero(request):
+    usuario = request.user.username  # o request.session['usuario'] si manejas login personalizado
+
+    try:
+        cajero = Personal.objects.get(usuario=usuario)
+        nombre_completo = f"{cajero.nombres} {cajero.apellidos}"
+    except Personal.DoesNotExist:
+        nombre_completo = "Usuario"
+
+    return render(request, 'cajero/panel_cajero.html', {
+        'nombre': nombre_completo
+    })
 
 # ----------------------------
 # CERRAR SESIÓN

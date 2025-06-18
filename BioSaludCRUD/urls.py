@@ -1,6 +1,9 @@
 from django.urls import path, include
 from django.shortcuts import redirect
 from tareas.views import login_view, cerrar_sesion
+from tareas.cajero import views_cajero as views
+
+
 
 urlpatterns = [
     path('', lambda request: redirect('login')),  # Redirige raíz al login
@@ -15,6 +18,10 @@ urlpatterns = [
     path('doctor/', include('tareas.doctor.urls_doctor')),
     path('enfermeria/', include('tareas.enfermeria.urls_enfermeria')),
     path('cajero/', include('tareas.cajero.urls_cajero')),
+    path('facturar/<int:paciente_id>/', views.generar_factura, name='generar_factura'),
+
+
+
 ]
 
 

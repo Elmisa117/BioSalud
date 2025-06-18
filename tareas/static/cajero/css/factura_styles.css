@@ -1,0 +1,446 @@
+/* ===============================================
+   ESTILOS PARA SISTEMA DE FACTURACIÓN
+   =============================================== */
+
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Container principal */
+.factura-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+/* Encabezado */
+.factura-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 2em;
+    font-weight: 600;
+}
+
+.subtitulo {
+    text-align: center;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+/* Formulario */
+#formFactura {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Datos de factura */
+.datos-factura {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    background-color: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    border-left: 4px solid #3498db;
+}
+
+/* Campos */
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.95em;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.campo input[readonly] {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Sección de servicios */
+.seccion-servicios {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.seccion-servicios h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.3em;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+/* Tabla de servicios */
+#tablaServicios {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#tablaServicios thead {
+    background-color: #34495e;
+    color: white;
+}
+
+#tablaServicios th,
+#tablaServicios td {
+    padding: 15px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+#tablaServicios th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.5px;
+}
+
+#tablaServicios tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+#tablaServicios tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Total a pagar */
+.total-pago {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+#totalPagar {
+    font-size: 1.4em;
+    margin-left: 15px;
+}
+
+/* Layout */
+.fila-doble {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.columna-izquierda,
+.columna-derecha {
+    flex: 1;
+}
+
+.columna-izquierda {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Verificación */
+.campo-verificacion {
+    background-color: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+    display: none;
+    animation: slideDown 0.3s ease-out;
+}
+
+.campo-verificacion.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.label-verificacion {
+    display: block;
+    margin-bottom: 10px;
+    color: #495057;
+    font-weight: bold;
+}
+
+.radio-container {
+    display: flex;
+    align-items: center;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal;
+    color: #495057;
+    cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+    margin: 0;
+}
+
+/* Estado de pago */
+.estado-pago {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.estado-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#estadoTexto {
+    font-weight: bold;
+    color: #856404;
+}
+
+#montoRestante {
+    color: #721c24;
+    font-weight: 600;
+}
+
+/* Plan de pago */
+.plan-pago-section {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.plan-header {
+    margin-bottom: 20px;
+}
+
+.plan-header h3 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.plan-header p {
+    color: #6c757d;
+    margin: 0;
+}
+
+.cronograma-pagos {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.cronograma-header h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+#listaCuotas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cuota-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #3498db;
+}
+
+/* Observaciones */
+#observaciones {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Botones */
+.botones-accion {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.botones-accion button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.cancelar {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancelar:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.preview {
+    background-color: #f39c12;
+    color: white;
+}
+
+.preview:hover {
+    background-color: #e67e22;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+}
+
+.guardar {
+    background-color: #27ae60;
+    color: white;
+}
+
+.guardar:hover {
+    background-color: #219a52;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.guardar:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fila-doble {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .botones-accion {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .botones-accion button {
+        width: 100%;
+    }
+
+    .estado-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cuota-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
+.input-error {
+    border: 2px solid #e74c3c !important;
+    background-color: #ffeaea;
+    box-shadow: 0 0 6px rgba(231, 76, 60, 0.3);
+}
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 9999;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.4s ease;
+}
+
+.toast.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel del Cajero - BioSalud</title>
+  <link rel="stylesheet" href="{% static 'cajero/css/panel_cajero.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- LATERAL IZQUIERDO -->
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fas fa-coins"></i>
+      <span>BioSalud - Caja</span>
+    </div>
+    <ul class="menu">
+      <li>
+        <a href="{% url 'buscar_paciente' %}">
+          <i class="fas fa-user"></i>
+          <span>Buscar Paciente</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'cerrar' %}">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="main-content">
+    <h1>Panel del Cajero</h1>
+    <p>Desde aquí puedes acceder a todas las funciones relacionadas con pagos, facturación y reportes.</p>
+
+    <h2 class="titulo-reportes">📊 Reportes</h2>
+
+    <div class="contenedor-reportes">
+      <!-- Columna izquierda -->
+      <div class="columna izquierda">
+        <a href="#"><button class="reporte-btn">🧾 Reporte Diario de Caja</button></a>
+        <a href="#"><button class="reporte-btn">📈 Reporte de Cuotas Pagadas</button></a>
+        <a href="#"><button class="reporte-btn">⏰ Reporte de Cuotas Pendientes o Vencidas</button></a>
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="columna derecha">
+        <a href="#"><button class="reporte-btn">📅 Reporte de Planes de Pago Generados</button></a>
+        <a href="#"><button class="reporte-btn">💳 Reporte por Métodos de Pago</button></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA SUPERIOR -->
+  <div class="top-bar">
+    Bienvenido, <strong>{{ nombre }}</strong>
+  </div>
+
+  <script src="{% static 'cajero/js/panel_cajero.js' %}"></script>
+</body>
+</html>
