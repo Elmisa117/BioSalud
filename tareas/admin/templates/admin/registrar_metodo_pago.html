@@ -1,0 +1,31 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/registrar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Registrar Método de Pago - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="form-card">
+    <h2>Registrar Método de Pago</h2>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        <div class="form-field">{{ form.nombre.label_tag }}{{ form.nombre }}</div>
+        <div class="form-field">{{ form.descripcion.label_tag }}{{ form.descripcion }}</div>
+        <div class="form-field">{{ form.requiereverificacion.label_tag }}{{ form.requiereverificacion }}</div>
+        <div class="form-field">{{ form.estado.label_tag }}{{ form.estado }}</div>
+        <div class="form-field"></div>
+        <div class="form-full">
+            <button type="submit" class="btn-guardar">Guardar</button>
+        </div>
+    </form>
+    <a href="{% url 'listar_metodos_pago' %}" class="volver">← Volver al listado</a>
+</div>
+{% endblock %}

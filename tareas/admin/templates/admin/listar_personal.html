@@ -1,0 +1,57 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Listado de Personal - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Listado de Personal</h2>
+
+    <div class="top-actions">
+        <a href="{% url 'registrar_personal' %}" class="btn-nuevo">+ Registrar nuevo</a>
+    </div>
+
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>C.I.</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in personal %}
+                <tr>
+                    <td>{{ p.nombres }} {{ p.apellidos }}</td>
+                    <td>{{ p.numerodocumento }}</td>
+                    <td>{{ p.rol }}</td>
+                    <td class="{{ p.estado|yesno:'activo,inactivo'|lower }}">{{ p.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        <a href="{% url 'editar_personal' p.personalid %}">Editar</a>
+                        {% if p.estado %}
+                        <a href="{% url 'inactivar_personal' p.personalid %}">Inactivar</a>
+                        {% else %}
+                        <a href="{% url 'reactivar_personal' p.personalid %}">Reactivar</a>
+                        {% endif %}
+                        <a href="{% url 'eliminar_personal' p.personalid %}" onclick="return confirm('¿Eliminar este registro?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No hay personal registrado</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'admin/js/listar_personal.js' %}"></script>
+{% endblock %}

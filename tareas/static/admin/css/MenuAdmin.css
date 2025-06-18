@@ -1,0 +1,135 @@
+
+/* ------------------ AJUSTES GENERALES ------------------ */
+:root {
+    --primary-color: #0d47a1;
+    --secondary-color: #1565c0;
+    --accent-color: #42a5f5;
+    --sidebar-bg: #0b3d91;
+    --gradient-bg: linear-gradient(-45deg, #e8f3ff, #e3f2fd, #e0f7fa, #f1f8ff);
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--gradient-bg);
+    background-size: 400% 400%;
+    animation: animado 15s ease infinite;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+@keyframes animado {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+/* ------------------ SIDEBAR ------------------ */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: var(--sidebar-bg);
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo i {
+    font-size: 1.4rem;
+    margin-right: 10px;
+    color: var(--accent-color);
+}
+
+.logo-text {
+    font-weight: bold;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.menu li i {
+    margin-right: 12px;
+    font-size: 1.1rem;
+    color: var(--accent-color);
+}
+
+.menu li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    background-color: var(--accent-color);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+    transform-origin: top;
+}
+
+.menu li:hover::before {
+    transform: scaleY(1);
+}
+
+.menu li:hover {
+    background-color: var(--secondary-color);
+    padding-left: 25px;
+}
+
+/* ------------------ CONTENIDO PRINCIPAL ------------------ */
+.main-content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    height: 100vh;
+    padding: 30px 40px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* ------------------ BIENVENIDA ------------------ */
+.welcome h1 {
+    font-size: 2.2rem;
+    color: var(--sidebar-bg);
+    margin-top: 20px;
+}
+
+.welcome p {
+    font-size: 1.05rem;
+    color: #333;
+    margin: 5px 0;
+}
+
+.welcome-img {
+    width: 200px;
+    margin-bottom: 20px;
+}
+

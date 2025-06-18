@@ -1,0 +1,91 @@
+/* ------------------ FORMULARIO REGISTRO ------------------ */
+:root {
+    --primary-color: #0d47a1;
+    --accent-color: #42a5f5;
+}
+.form-card {
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    max-width: 1200px;
+    width: 100%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+}
+
+.form-card h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 30px;
+    padding-right: 10px;
+}
+
+.form-field label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-field input,
+.form-field select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    background-color: #f4f7f9;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+    border-color: var(--accent-color);
+    background-color: #ffffff;
+    outline: none;
+}
+
+.form-full {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.btn-guardar {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 14px 45px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-guardar:hover {
+    background-color: var(--primary-color);
+}
+
+.volver {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 15px;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.volver:hover {
+    text-decoration: underline;
+}
+

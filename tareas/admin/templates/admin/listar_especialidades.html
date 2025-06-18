@@ -1,0 +1,44 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Especialidades - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Especialidades Médicas</h2>
+    <div class="top-actions">
+        <a href="{% url 'registrar_especialidad' %}" class="btn-nuevo">+ Nueva especialidad</a>
+    </div>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in especialidades %}
+                <tr>
+                    <td>{{ e.nombreespecialidad }}</td>
+                    <td>{{ e.descripcion }}</td>
+                    <td class="{{ e.estado|yesno:'activo,inactivo'|lower }}">{{ e.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        <a href="{% url 'editar_especialidad' e.especialidadid %}">Editar</a>
+                        <a href="{% url 'eliminar_especialidad' e.especialidadid %}" onclick="return confirm('¿Eliminar esta especialidad?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No hay especialidades registradas</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/registrar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Editar Paciente - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="form-card">
+    <h2>Editar Paciente</h2>
+    {% if messages %}
+  {% for message in messages %}
+    <div class="alert {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        <div class="form-field">{{ form.nombres.label_tag }}{{ form.nombres }}</div>
+        <div class="form-field">{{ form.apellidos.label_tag }}{{ form.apellidos }}</div>
+        <div class="form-field">{{ form.numerodocumento.label_tag }}{{ form.numerodocumento }}</div>
+        <div class="form-field">{{ form.tipodocumento.label_tag }}{{ form.tipodocumento }}</div>
+        <div class="form-field">{{ form.fechanacimiento.label_tag }}{{ form.fechanacimiento }}</div>
+        <div class="form-field">{{ form.edad.label_tag }}{{ form.edad }}</div>
+        <div class="form-field">{{ form.genero.label_tag }}{{ form.genero }}</div>
+        <div class="form-field">{{ form.telefono.label_tag }}{{ form.telefono }}</div>
+        <div class="form-field">{{ form.email.label_tag }}{{ form.email }}</div>
+        <div class="form-field">{{ form.direccion.label_tag }}{{ form.direccion }}</div>
+        <div class="form-field">{{ form.gruposanguineo.label_tag }}{{ form.gruposanguineo }}</div>
+        <div class="form-field">{{ form.alergias.label_tag }}{{ form.alergias }}</div>
+        <div class="form-field">{{ form.observaciones.label_tag }}{{ form.observaciones }}</div>
+        <div class="form-field">{{ form.estado.label_tag }}{{ form.estado }}</div>
+        <div class="form-field"></div>
+        <div class="form-full">
+            <button type="submit" class="btn-guardar">Guardar Cambios</button>
+        </div>
+    </form>
+    <a href="{% url 'listar_pacientes' %}" class="volver">← Volver al listado</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'admin/js/registrar_paciente.js' %}"></script>
+{% endblock %}

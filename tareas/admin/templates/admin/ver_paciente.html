@@ -1,0 +1,27 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/registrar_personal.css' %}">
+{% endblock %}
+{% block title %}Perfil del Paciente - BioSalud{% endblock %}
+{% block contenido %}
+<div class="form-card">
+    <h2>Perfil del Paciente</h2>
+    <table class="tabla-personal">
+        <tr><th>Nombres</th><td>{{ paciente.nombres }}</td></tr>
+        <tr><th>Apellidos</th><td>{{ paciente.apellidos }}</td></tr>
+        <tr><th>CI</th><td>{{ paciente.numerodocumento }}</td></tr>
+        <tr><th>Fecha de nacimiento</th><td>{{ paciente.fechanacimiento }}</td></tr>
+        <tr><th>Edad</th><td>{{ paciente.edad }}</td></tr>
+        <tr><th>Sexo</th><td>{{ paciente.genero }}</td></tr>
+        <tr><th>Dirección</th><td>{{ paciente.direccion }}</td></tr>
+        <tr><th>Teléfono</th><td>{{ paciente.telefono }}</td></tr>
+        <tr><th>Grupo sanguíneo</th><td>{{ paciente.gruposanguineo }}</td></tr>
+        <tr><th>Alergias</th><td>{{ paciente.alergias }}</td></tr>
+        <tr><th>Observaciones</th><td>{{ paciente.observaciones }}</td></tr>
+    </table>
+    <a href="{% url 'historial_paciente' paciente.pacienteid %}" class="volver">Historial</a>
+    <a href="{% url 'listar_pacientes' %}" class="volver">← Volver al listado</a>
+</div>
+{% endblock %}
+{% block extra_js %}{% endblock %}

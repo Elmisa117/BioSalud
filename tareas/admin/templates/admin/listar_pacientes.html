@@ -1,0 +1,91 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Listado de Pacientes - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Listado de Pacientes</h2>
+    <div class="top-actions">
+        <a href="{% url 'registrar_paciente' %}" class="btn-nuevo">+ Registrar nuevo</a>
+        <a href="{% url 'exportar_pacientes' %}" class="btn-nuevo">Exportar CSV</a>
+    </div>
+    <form method="get" class="form-grid" style="margin-bottom:20px;">
+        <div class="form-field"><input type="text" name="q" placeholder="Buscar" value="{{ q }}"></div>
+        <div class="form-field">
+            <select name="sexo">
+                <option value="">Sexo...</option>
+                <option value="M" {% if sexo == 'M' %}selected{% endif %}>Masculino</option>
+                <option value="F" {% if sexo == 'F' %}selected{% endif %}>Femenino</option>
+            </select>
+        </div>
+        <div class="form-field">
+            <select name="estado">
+                <option value="">Estado...</option>
+                <option value="activo" {% if estado == 'activo' %}selected{% endif %}>Activo</option>
+                <option value="inactivo" {% if estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+
+            </select>
+        </div>
+        <div class="form-field">
+            <button type="submit" class="btn-guardar">Filtrar</button>
+        </div>
+    </form>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>C.I.</th>
+                    <th>Edad</th>
+                    <th>Sexo</th>
+                    <th>Grupo Sanguíneo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in page_obj %}
+                <tr>
+                    <td>{{ p.nombres }} {{ p.apellidos }}</td>
+                    <td>{{ p.numerodocumento }}</td>
+                    <td>{{ p.edad }}</td>
+                    <td>{{ p.genero }}</td>
+                    <td>{{ p.gruposanguineo }}</td>
+                    <td class="{{ p.estado|yesno:'activo,inactivo'|lower }}">{{ p.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        <a href="{% url 'ver_paciente' p.pacienteid %}">Ver</a>
+                        <a href="{% url 'historial_paciente' p.pacienteid %}">Historial</a>
+                        <a href="{% url 'editar_paciente' p.pacienteid %}">Editar</a>
+                        {% if p.estado %}
+                        <a href="{% url 'inactivar_paciente' p.pacienteid %}">Inactivar</a>
+                        {% else %}
+                        <a href="{% url 'reactivar_paciente' p.pacienteid %}">Reactivar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7">No hay pacientes registrados</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="paginacion">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+        {% endif %}
+        <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'admin/js/listar_pacientes.js' %}"></script>
+{% endblock %}

@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sessions',  # 👈 Vuelve a activarlo
+    'django.contrib.messages',
     'django.contrib.messages', #esto agregue
     'tareas',
 ]
@@ -45,6 +46,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.common.CommonMiddleware',
+
 
 ]
 
@@ -65,6 +69,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'tareas.admin.context_processors.config_processor',
                 'django.contrib.messages.context_processors.messages', #esto agregue
             ],
         },

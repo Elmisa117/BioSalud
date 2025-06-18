@@ -1,0 +1,44 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Métodos de Pago - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Métodos de Pago</h2>
+    <div class="top-actions">
+        <a href="{% url 'registrar_metodo_pago' %}" class="btn-nuevo">+ Nuevo método</a>
+    </div>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Requiere verificación</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in metodos %}
+                <tr>
+                    <td>{{ m.nombre }}</td>
+                    <td>{{ m.requiereverificacion|yesno:"Sí,No" }}</td>
+                    <td class="{{ m.estado|yesno:'activo,inactivo'|lower }}">{{ m.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        <a href="{% url 'editar_metodo_pago' m.metodopagoid %}">Editar</a>
+                        <a href="{% url 'eliminar_metodo_pago' m.metodopagoid %}" onclick="return confirm('¿Eliminar este método?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No hay métodos registrados</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

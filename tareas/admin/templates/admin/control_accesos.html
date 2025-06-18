@@ -1,0 +1,38 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Control de Accesos - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Sesiones activas</h2>
+    <div class="tabla-scroll">
+        <table class="tabla-personal">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Expira</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sesiones %}
+                <tr>
+                    <td>{{ s.nombre }}</td>
+                    <td>{{ s.rol }}</td>
+                    <td>{{ s.ultimo_acceso }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3">No hay sesiones activas</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

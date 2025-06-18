@@ -1,0 +1,24 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/listar_personal.css' %}">
+{% endblock %}
+
+{% block title %}Configuraciones - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="listado-card">
+    <h2>Configuraciones Generales</h2>
+    <form method="post" class="form-grid" style="margin-bottom:20px;">
+        {% csrf_token %}
+        <div class="form-field">{{ form.nombre_clinica.label_tag }}{{ form.nombre_clinica }}</div>
+        <div class="form-field">{{ form.logo_url.label_tag }}{{ form.logo_url }}</div>
+        <div class="form-field"><button type="submit" class="btn-guardar">Guardar</button></div>
+    </form>
+    <p>Desde aquí puedes descargar un respaldo de la base de datos.</p>
+    <a href="{% url 'descargar_backup' %}" class="btn-nuevo">Descargar Backup</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}
