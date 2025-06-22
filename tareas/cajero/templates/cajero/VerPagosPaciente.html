@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan de Pago - {{ paciente.nombres }} {{ paciente.apellidos }}</title>
+  <link rel="stylesheet" href="{% static 'cajero/css/ver_pagos.css' %}">
+  <script src="{% static 'cajero/js/ver_pagos.js' %}" defer></script>
+  <style>
+    @media print {
+      table th:nth-child(2),
+      table td:nth-child(2) {
+        width: 90px;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contenedor-imprimible">
+    <div class="bloque-unico">
+      <h2 class="titulo-centrado">📋 Plan de Pago</h2>
+
+      {% if planes %}
+        {% with plan=planes.0 %}
+          <div class="grid-datos">
+            <div class="columna">
+              <p><strong>Factura:</strong> {{ plan.factura.numerofactura }}</p>
+              <p><strong>Nombre del Cliente:</strong> {{ paciente.nombres }} {{ paciente.apellidos }}</p>
+              <p><strong>Número de CI:</strong> {{ paciente.numerodocumento }}</p>
+              <p><strong>Tipo de Producto:</strong> {{ plan.resumen_producto }}</p>
+            </div>
+            <div class="columna">
+              <p><strong>Frecuencia:</strong> {{ plan.frecuencia|capfirst }}</p>
+              <p><strong>Fecha de apertura:</strong> {{ plan.fechainicio|date:"d/m/Y" }}</p>
+              <p><strong>Fecha de Vencimiento:</strong> {{ plan.fechafin|date:"d/m/Y" }}</p>
+              <p><strong>Monto Total:</strong> {{ plan.montototal }} Bs</p>
+            </div>
+          </div>
+        {% endwith %}
+
+        <h3 class="titulo-plan">Póliza</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Fecha Vencimiento</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th>Acción</th>
+              <th>Registrado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for plan in planes %}
+              {% with primera_pendiente_encontrada=False %}
+                {% for cuota in plan.cuotas_ordenadas %}
+                  <tr>
+                    <td>{{ cuota.numerocuota }}</td>
+                    <td>{{ cuota.fechavencimiento|date:"d/m/Y" }}</td>
+                    <td>{{ cuota.montocuota }} Bs</td>
+                    <td class="estado-{{ cuota.estado }}">{{ cuota.estado }}</td>
+                    <td>
+                      {% if cuota.estado == 'Pendiente' and not primera_pendiente_encontrada %}
+                        <button class="btn-pagar no-imprimir" data-cuota="{{ cuota.cuotaid }}" data-monto="{{ cuota.montocuota }}">
+                          💸 Pagar
+                        </button>
+                        {% with True as primera_pendiente_encontrada %}{% endwith %}
+                      {% elif cuota.estado == 'Pendiente' %}
+                        <button class="btn-pagar no-imprimir" disabled title="Debe pagar las cuotas anteriores">
+                          🔒 Pagar
+                        </button>
+                      {% else %}
+                        —
+                      {% endif %}
+                    </td>
+                    <td>{{ cuota.fecharegistro|date:"d/m/Y" }}</td>
+                  </tr>
+                {% endfor %}
+              {% endwith %}
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p><em>No hay planes de pago registrados para este paciente.</em></p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="no-imprimir acciones-inferiores">
+    <a href="{% url 'ver_paciente' paciente.pacienteid %}" class="btn-volver">⬅ Volver al Perfil</a>
+    <button id="btnImprimir" class="btn-volver">🖶️ Imprimir</button>
+  </div>
+
+  <!-- Modal de pago -->
+  <div id="modalPago" class="modal no-imprimir">
+    <div class="modal-contenido">
+      <h3 class="modal-titulo">💳 Registrar Pago</h3>
+      <input type="hidden" id="cuotaIdSeleccionada">
+      <div class="modal-campo">
+        <label for="metodoPagoModal"><strong>Método de Pago:</strong></label>
+        <select id="metodoPagoModal">
+          {% for metodo in metodos_pago %}
+            <option value="{{ metodo.metodopagoid }}">{{ metodo.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="modal-campo" id="confirmacionPagoContainer" style="display: none;">
+        <p><strong>¿Confirmaste que el monto fue recibido?</strong></p>
+        <label>
+          <input type="radio" name="confirmacionPagoRadio" value="si"> Sí
+        </label>
+      </div>
+      <div class="modal-campo">
+        <label for="montoPagoModal"><strong>Monto:</strong></label>
+        <input type="text" id="montoPagoModal" readonly>
+      </div>
+      <div class="modal-acciones">
+        <button id="btnConfirmarPago" class="btn-confirmar">✅ Confirmar</button>
+        <button type="button" id="btnCancelarPago">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de notificaciones -->
+  <div id="toast" class="toast oculto no-imprimir">
+    <span id="toast-icon">⚠️</span>
+    <span id="toast-mensaje"></span>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('btnImprimir').addEventListener('click', function() {
+        window.print();
+      });
+
+      const modalPago = document.getElementById('modalPago');
+      const btnCancelarPago = document.getElementById('btnCancelarPago');
+      btnCancelarPago.addEventListener('click', function() {
+        modalPago.style.display = 'none';
+      });
+
+      window.matchMedia('print').addEventListener('change', function(e) {
+        if (!e.matches) {
+          modalPago.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

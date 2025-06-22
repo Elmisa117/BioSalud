@@ -1,0 +1,64 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f5f6;
+  display: flex;
+}
+
+/* 🟩 Panel izquierdo */
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  padding: 30px 20px;
+  background-color: #111827; /* Fondo oscuro */
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
+  color: white;
+}
+
+/* 🔮 Botones estilo neón */
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  margin: 20px 0;
+}
+
+.menu a {
+  display: block;
+  padding: 12px 20px;
+  font-size: 16px;
+  text-align: center;
+  color: #fff;
+  border-radius: 30px;
+  text-decoration: none;
+  background-color: #1f2937;
+  box-shadow: 0 0 10px #c084fc, 0 0 20px #c084fc, 0 0 30px #c084fc;
+  border: 2px solid #c084fc;
+  transition: 0.4s ease;
+}
+
+.menu a:hover {
+  background-color: #c084fc;
+  color: #000;
+  box-shadow: 0 0 20px #d8b4fe, 0 0 40px #d8b4fe, 0 0 60px #d8b4fe;
+}
+
+/* 📄 Contenido derecho */
+.main-content {
+  padding: 60px;
+  flex-grow: 1;
+}

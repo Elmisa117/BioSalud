@@ -1,0 +1,112 @@
+/* Fondo general claro y padding */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9fafb;
+}
+
+/* Contenedor principal */
+.contenido-container {
+  max-width: 95%;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.contenido-container h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #111827;
+}
+
+/* Estilo del formulario de búsqueda */
+.buscar-box {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.buscar-box input[type="text"] {
+  padding: 10px 16px;
+  width: 300px;
+  border: 2px solid #10b981; /* Verde moderno */
+  border-radius: 30px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.buscar-box input[type="text"]:focus {
+  border-color: #059669;
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+}
+
+.buscar-box button {
+  background-color: #10b981;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: white;
+  font-size: 18px;
+}
+
+.buscar-box button:hover {
+  background-color: #059669;
+}
+
+/* Tabla */
+.tabla-pacientes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.tabla-pacientes thead {
+  background-color: #10b981;
+  color: white;
+}
+
+.tabla-pacientes th, .tabla-pacientes td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tabla-pacientes tbody tr:hover {
+  background-color: #f0fdf4;
+}
+
+/* Botón "Ver" */
+.btn-ver {
+  text-decoration: none;
+  color: #6b21a8;
+  font-weight: bold;
+}
+
+.btn-ver:hover {
+  text-decoration: underline;
+  color: #4c1d95;
+}
+.btn-regresar {
+  display: inline-block;
+  background-color: #10b981;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-regresar:hover {
+  background-color: #059669;
+  box-shadow: 0 0 10px #34d399, 0 0 20px #34d399;
+}

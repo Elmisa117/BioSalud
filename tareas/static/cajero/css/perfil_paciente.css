@@ -1,0 +1,108 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f5f6;
+  margin: 0;
+  padding: 40px;
+}
+
+.contenedor-perfil {
+  max-width: 600px;
+  margin: auto;
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.titulo-perfil {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #14b87c;
+  padding-bottom: 10px;
+}
+
+.item-perfil {
+  margin-bottom: 15px;
+  font-size: 17px;
+  color: #111827;
+}
+
+.item-perfil strong {
+  font-weight: 600;
+  color: #0e8a5f;
+}
+
+.btn-volver {
+  display: inline-block;
+  margin-top: 30px;
+  background-color: #14b87c;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(20, 184, 124, 0.4);
+}
+
+.btn-volver:hover {
+  background-color: #0e8a5f;
+  box-shadow: 0 6px 12px rgba(14, 138, 95, 0.5);
+}
+
+.btn-factura {
+  text-decoration: none;
+  background-color: #1abc9c;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-factura:hover {
+  background-color: #17a589;
+}
+
+
+
+
+.formulario-factura {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  margin-top: 15px;
+  width: 100%;
+}
+
+.formulario-factura input,
+.formulario-factura select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btn-guardar {
+  background-color: #6a0dad;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-guardar:hover {
+  background-color: #5a0ca3;
+}
+

@@ -45,11 +45,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',  # ✅ Asegúrate de que esto esté
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.common.CommonMiddleware',
+
 
 ]
 
@@ -71,6 +73,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.request',
                 'tareas.admin.context_processors.config_processor',
+                'django.contrib.messages.context_processors.messages', #esto agregue
             ],
         },
     },

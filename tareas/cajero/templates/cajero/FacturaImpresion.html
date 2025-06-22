@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura generada</title>
+    <link rel="stylesheet" href="{% static 'cajero/css/factura.css' %}">
+    <script>
+        window.onload = function () {
+            window.print();  // Abre el diálogo de impresión automáticamente
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>🧾 Factura del Paciente</h1>
+        <p><strong>Nombre:</strong> {{ paciente.nombres }} {{ paciente.apellidos }}</p>
+        <p><strong>Fecha:</strong> {{ factura.fecha }}</p>
+        <p><strong>Total:</strong> Bs. {{ factura.total }}</p>
+        <p><strong>Pagado:</strong> Bs. {{ pago.monto_pagado }}</p>
+        <p><strong>Método de Pago:</strong> {{ pago.metodo_pago }}</p>
+        <p><strong>Deuda:</strong> Bs. {{ factura.deuda }}</p>
+
+        <hr>
+
+        <h2>📋 Detalle de Servicios</h2>
+        <ul>
+            {% for s in servicios %}
+                <li>{{ s.servicio.nombre }} x{{ s.cantidad }} = Bs. {{ s.servicio.costo|floatformat:2 }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>🏥 Hospitalizaciones</h2>
+        <ul>
+            {% for h in hospitalizaciones %}
+                <li>Habitación {{ h.habitacion }} ({{ h.tipo }}) - {{ h.dias }} días → Bs. {{ h.total }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

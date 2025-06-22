@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil del Paciente</title>
+  <link rel="stylesheet" href="{% static 'cajero/css/perfil_paciente.css' %}">
+  <script src="{% static 'cajero/js/factura_script.js' %}" defer></script>
+</head>
+<body>
+
+  <div class="contenedor-perfil">
+    <h2 class="titulo-perfil">Perfil del Paciente</h2>
+
+    <!-- ✅ MENSAJE DE ALERTA DJANGO -->
+    {% if messages %}
+      <div class="alertas">
+        {% for message in messages %}
+          <div class="alerta">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="item-perfil"><strong>ID:</strong> {{ paciente.pacienteid }}</div>
+    <div class="item-perfil"><strong>Nombre:</strong> {{ paciente.nombres }}</div>
+    <div class="item-perfil"><strong>Apellido:</strong> {{ paciente.apellidos }}</div>
+    <div class="item-perfil"><strong>CI:</strong> {{ paciente.numerodocumento }}</div>
+    <div class="item-perfil"><strong>Fecha de Nacimiento:</strong> {{ paciente.fechanacimiento }}</div>
+    <div class="item-perfil"><strong>Teléfono:</strong> {{ paciente.telefono }}</div>
+    <div class="item-perfil"><strong>Dirección:</strong> {{ paciente.direccion }}</div>
+    <div class="item-perfil"><strong>Email:</strong> {{ paciente.email }}</div>
+
+    <a href="{% url 'buscar_paciente' %}" class="btn-volver">⟵ Volver al Listado</a>
+
+    <!-- ✅ BOTÓN PARA GENERAR FACTURA -->
+    <button class="btn-factura" data-id="{{ paciente.pacienteid }}"
+            onclick="verificarYGenerarFactura(this.dataset.id)">
+      📄 Generar Factura
+    </button>
+
+    <!-- ✅ BOTÓN PARA VER PLAN DE PAGOS DEL PACIENTE -->
+    <a href="{% url 'ver_pagos_paciente' paciente.pacienteid %}" class="btn-factura">
+      💳 Ver Plan de Pagos
+    </a>
+  </div>
+
+  <!-- ✅ MENSAJE DE ALERTA EMERGENTE (opcional por JS) -->
+  <div id="mensajeError" style="display: none;"></div>
+
+  <!-- ✅ ESTILOS OPCIONALES PARA ALERTAS -->
+  <style>
+    .alertas {
+      margin-bottom: 15px;
+    }
+    .alerta {
+      background-color: #ffc107;
+      color: #000;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+
+</body>
+</html>
+
+
+
+
+
+
