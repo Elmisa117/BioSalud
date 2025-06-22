@@ -31,9 +31,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.staticfiles',
-    'django.contrib.sessions',  # 👈 Vuelve a activarlo
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django_extensions',
+    'django.contrib.auth',  # recomendado para que no fallen otras dependencias
+    'rest_framework',       # necesario para tu API
     'tareas',
 ]
 
