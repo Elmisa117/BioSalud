@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
-from .models import Personal
-from tareas.models import Personal  # o el nombre correcto de tu modelo
+from tareas.models import Personal
 
 # ----------------------------
 # LOGIN CON REDIRECCIÓN POR ROL
@@ -18,22 +17,35 @@ def login_view(request):
 
         try:
             personal = Personal.objects.get(usuario=usuario)
+
             if check_password(contrasena, personal.contrasena):
-                # Guardamos datos en sesión
+                # Guardar datos en sesión
                 request.session['usuario_id'] = personal.personalid
                 request.session['rol'] = personal.rol
-                request.session['nombre'] = personal.nombres + " " + personal.apellidos
-                # Retornamos JSON para que el JS haga la redirección
-                return JsonResponse({'rol': personal.rol}, status=200)
+                request.session['nombre'] = f"{personal.nombres} {personal.apellidos}"
+
+                # Normalizar rol: Enfermera o Enfermería → Enfermería
+                rol = personal.rol.strip().lower()
+                if rol in ['enfermera', 'enfermería']:
+                    rol_normalizado = 'Enfermería'
+                else:
+                    rol_normalizado = personal.rol
+
+                return JsonResponse({'rol': rol_normalizado}, status=200)
             else:
                 return JsonResponse({'error': 'Usuario o contraseña incorrectos'}, status=401)
+
         except Personal.DoesNotExist:
             return JsonResponse({'error': 'Usuario o contraseña incorrectos'}, status=401)
 
     return render(request, 'login.html')
 
+
+# ----------------------------
+# PANEL CAJERO (Ejemplo)
+# ----------------------------
 def panel_cajero(request):
-    usuario = request.user.username  # o request.session['usuario'] si manejas login personalizado
+    usuario = request.session.get('usuario')
 
     try:
         cajero = Personal.objects.get(usuario=usuario)
@@ -44,6 +56,7 @@ def panel_cajero(request):
     return render(request, 'cajero/panel_cajero.html', {
         'nombre': nombre_completo
     })
+
 
 # ----------------------------
 # CERRAR SESIÓN

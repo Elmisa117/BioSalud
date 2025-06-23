@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Camas Ocupadas</title>
+    <link rel="stylesheet" href="{% static 'enfermeria/css/Hospitalizacion.css' %}">
+</head>
+<body>
+    <h1>🛏 Camas Ocupadas</h1>
+
+    <div class="contenedor-camas">
+        {% for cama in privadas %}
+            {% if cama.ocupada %}
+            <div class="cama">
+                <img src="{% static 'enfermeria/iconoEnfermeria/cama.png' %}" alt="Cama" width="80">
+                <p><strong>{{ cama.nombre }}</strong></p>
+                <p>Habitación: {{ cama.habitacion }}</p>
+                <p>Tipo: <span class="tipo">Privada</span></p>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% for cama in suites %}
+            {% if cama.ocupada %}
+            <div class="cama">
+                <img src="{% static 'enfermeria/iconoEnfermeria/cama.png' %}" alt="Cama" width="80">
+                <p><strong>{{ cama.nombre }}</strong></p>
+                <p>Habitación: {{ cama.habitacion }}</p>
+                <p>Tipo: <span class="tipo">Suite</span></p>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% for cama in salas %}
+            {% if cama.ocupada %}
+            <div class="cama">
+                <img src="{% static 'enfermeria/iconoEnfermeria/cama.png' %}" alt="Cama" width="80">
+                <p><strong>{{ cama.nombre }}</strong></p>
+                <p>Habitación: {{ cama.habitacion }}</p>
+                <p>Tipo: <span class="tipo">Sala</span></p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>

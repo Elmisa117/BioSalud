@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Paciente</title>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="{% static 'enfermeria/css/RegistrarPaciente.css' %}">
+</head>
+<body>
+    <div class="registro-container">
+        <h1>📝 Registro de Paciente</h1>
+
+        <!-- ✅ Formulario con método POST -->
+        <form method="post" action="">
+            {% csrf_token %}
+
+            <!-- Campo oculto para identificar si es edición -->
+            <input type="hidden" name="paciente_id" value="{{ paciente.id|default:'' }}">
+
+            <label for="nombres">Nombres:</label>
+            <input type="text" id="nombres" name="nombres" value="{{ paciente.nombres|default:'' }}" required>
+
+            <label for="apellidos">Apellidos:</label>
+            <input type="text" id="apellidos" name="apellidos" value="{{ paciente.apellidos|default:'' }}" required>
+
+            <label for="tipodocumento">Tipo de Documento:</label>
+            <select id="tipodocumento" name="tipodocumento" required>
+                <option value="CI" {% if paciente.tipodocumento == "CI" %}selected{% endif %}>CI</option>
+                <option value="PAS" {% if paciente.tipodocumento == "PAS" %}selected{% endif %}>Pasaporte</option>
+                <option value="OTRO" {% if paciente.tipodocumento == "OTRO" %}selected{% endif %}>Otro</option>
+            </select>
+
+            <label for="numerodocumento">Número de Documento:</label>
+            <input type="text" id="numerodocumento" name="numerodocumento" value="{{ paciente.numerodocumento|default:'' }}" required>
+
+            <label for="fechanacimiento">Fecha de Nacimiento:</label>
+            <input type="date" id="fechanacimiento" name="fechanacimiento" value="{{ paciente.fechanacimiento|default:'' }}">
+
+            <label for="edad">Edad:</label>
+            <input type="number" id="edad" name="edad" min="0" value="{{ paciente.edad|default:'' }}">
+
+            <label for="genero">Género:</label>
+            <select id="genero" name="genero" required>
+                <option value="M" {% if paciente.genero == "M" %}selected{% endif %}>Masculino</option>
+                <option value="F" {% if paciente.genero == "F" %}selected{% endif %}>Femenino</option>
+            </select>
+
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" value="{{ paciente.direccion|default:'' }}">
+
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" value="{{ paciente.telefono|default:'' }}">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ paciente.email|default:'' }}">
+
+            <label for="gruposanguineo">Grupo Sanguíneo:</label>
+            <input type="text" id="gruposanguineo" name="gruposanguineo" placeholder="Ej: O+, A-" value="{{ paciente.gruposanguineo|default:'' }}">
+
+            <label for="alergias">Alergias:</label>
+            <textarea id="alergias" name="alergias" rows="2">{{ paciente.alergias|default:'' }}</textarea>
+
+            <label for="observaciones">Observaciones:</label>
+            <textarea id="observaciones" name="observaciones" rows="3">{{ paciente.observaciones|default:'' }}</textarea>
+
+            <!-- Botón para enviar el formulario -->
+            <div class="botones-acciones">
+                <button type="submit" name="accion" value="guardar">
+                    <img src="{% static 'enfermeria/iconoEnfermeria/Guardar.png' %}" alt="Guardar" width="20">
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
