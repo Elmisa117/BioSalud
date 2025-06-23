@@ -9,8 +9,16 @@ from datetime import date
 from django.contrib import messages  # Asegúrate de tener esto arriba
 
 from tareas.models import (
-    Paciente, Consulta, ConsultaServicios, Hospitalizacion,
-    MetodoPago, Factura, Pago, PlanPago, CuotaPlanPago
+    Pacientes as Paciente,
+    Consultas as Consulta,
+    Consultaservicios as ConsultaServicios,
+    Hospitalizaciones as Hospitalizacion,
+    Hospitalizacionservicios as HospitalizacionServicios,
+    Metodospago as MetodoPago,
+    Facturas as Factura,
+    Pagos as Pago,
+    Planespago as PlanPago,
+    Cuotasplanpago as CuotaPlanPago
 )
 
 # 📜 PANEL DEL CAJERO

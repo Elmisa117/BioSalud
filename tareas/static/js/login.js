@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
             case "Administrador": url = "/admin/"; break;
             case "Doctor": url = "/doctor/"; break;
             case "Enfermería": url = "/enfermeria/"; break;
-            case "Cajero": url = "/cajero/"; break;
+            case "Caja": url = "/cajero/"; break;
             default: url = "/inicio/";
           }
           window.location.href = url;
