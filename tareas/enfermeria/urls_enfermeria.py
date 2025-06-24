@@ -11,10 +11,13 @@ urlpatterns = [
     # Registro y edición de pacientes
     path('pacientes/registro/', views_enfermeria.registrar_paciente_enfermeria, name='registrar_paciente_enfermeria'),
 
+    # Vista del perfil individual del paciente
+    path('pacientes/perfil/<int:paciente_id>/', views_enfermeria.perfil_paciente_enfermeria, name='perfil_paciente_enfermeria'),
+
     # Registro de ficha clínica
     path('ficha_clinico/<int:id>/', views_enfermeria.ficha_clinico_enfermeria, name='ficha_clinico_enfermeria'),
 
-    # Historial del paciente
+    # Historial clínico del paciente
     path('historial/<int:id>/', views_enfermeria.historial_enfermeria, name='historial_enfermeria'),
 
     # Ver detalle de ficha clínica
@@ -23,6 +26,6 @@ urlpatterns = [
     # Vista gráfica de hospitalización (mapa de camas)
     path('mapa-habitaciones/', views_enfermeria.vista_hospitalizacion_enfermeria, name='mapa_habitaciones_enfermeria'),
 
-    # Vista del perfil del personal logueado
+    # Perfil del personal logueado
     path('perfil/', views_enfermeria.perfil_personal_enfermeria, name='perfil_personal_enfermeria'),
 ]

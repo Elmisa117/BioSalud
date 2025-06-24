@@ -1,12 +1,13 @@
 let pacientes = [];
 const jsonScript = document.getElementById("datos-pacientes");
 
+// Cargar datos desde el script JSON embebido
 if (jsonScript) {
     try {
         pacientes = JSON.parse(jsonScript.textContent);
-        console.log(" Pacientes cargados:", pacientes);
+        console.log("✅ Pacientes cargados:", pacientes);
     } catch (error) {
-        console.error(" Error al parsear los datos de pacientes:", error);
+        console.error("❌ Error al parsear los datos de pacientes:", error);
     }
 }
 
@@ -16,6 +17,7 @@ const tablaPacientes = document.getElementById("tabla-pacientes");
 
 criterio.addEventListener("input", filtrarPacientes);
 
+// Función para filtrar pacientes según el criterio
 function filtrarPacientes() {
     const tipoFiltro = filtro.value;
     const texto = criterio.value.toLowerCase();
@@ -31,6 +33,7 @@ function filtrarPacientes() {
     mostrarPacientes(resultados);
 }
 
+// Función para mostrar la lista de pacientes
 function mostrarPacientes(lista) {
     tablaPacientes.innerHTML = "";
 
@@ -42,7 +45,7 @@ function mostrarPacientes(lista) {
     lista.forEach(p => {
         const fila = document.createElement("tr");
 
-        // Columna Nombre
+        // Columna Nombre Completo
         const tdNombre = document.createElement("td");
         tdNombre.textContent = `${p.nombres || ''} ${p.apellidos || ''}`;
 
@@ -53,32 +56,16 @@ function mostrarPacientes(lista) {
         // Columna Acciones
         const tdAcciones = document.createElement("td");
 
-        // Botón Actualizar
-        const btnActualizar = document.createElement("button");
-        btnActualizar.textContent = "Actualizar";
-        btnActualizar.className = "btn-accion";
-        btnActualizar.onclick = () => editarPaciente(p.id);
-
-        // Botón Ficha Clínico
-        const btnFicha = document.createElement("button");
-        btnFicha.textContent = "Ficha Clínico";
-        btnFicha.className = "btn-accion amarillo";
-        btnFicha.onclick = () => {
-        window.location.href = `/enfermeria/ficha_clinico/${p.id}/`;
-
+        // Botón Perfil
+        const btnPerfil = document.createElement("button");
+        btnPerfil.textContent = "Perfil";
+        btnPerfil.className = "btn-accion";
+        btnPerfil.onclick = () => {
+            // Corregir la URL para el botón de perfil
+            window.location.href = `/enfermeria/pacientes/perfil/${p.id}/`;
         };
 
-        // Botón Historial
-        const btnHistorial = document.createElement("button");
-        btnHistorial.textContent = "Historial";
-        btnHistorial.className = "btn-accion morado";
-        btnHistorial.onclick = () => {
-            window.location.href = `/enfermeria/historial/${p.id}/`;
-        };
-
-        tdAcciones.appendChild(btnActualizar);
-        tdAcciones.appendChild(btnFicha);
-        tdAcciones.appendChild(btnHistorial);
+        tdAcciones.appendChild(btnPerfil);
 
         fila.appendChild(tdNombre);
         fila.appendChild(tdCedula);
@@ -88,14 +75,12 @@ function mostrarPacientes(lista) {
     });
 }
 
+// Mostrar pacientes al cargar si hay datos
 if (pacientes.length > 0) {
     mostrarPacientes(pacientes);
 }
 
+// Botón registrar paciente
 function registrarPaciente() {
     window.location.href = '/enfermeria/pacientes/registro/';
-}
-
-function editarPaciente(id) {
-    window.location.href = `/enfermeria/pacientes/registro/?id=${id}`;
 }

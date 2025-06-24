@@ -128,6 +128,7 @@ class Fichaclinico(models.Model):
     tratamientosugerido = models.TextField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
     estado = models.CharField(max_length=20, blank=True, null=True)
+    tipoatencion = models.CharField(max_length=50)
 
     class Meta:
         managed = False
@@ -199,6 +200,8 @@ class Metodospago(models.Model):
 
 class Pacientes(models.Model):
     pacienteid = models.AutoField(primary_key=True)
+    
+    # Datos personales
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
     numerodocumento = models.CharField(max_length=20)
@@ -206,21 +209,27 @@ class Pacientes(models.Model):
     fechanacimiento = models.DateField(blank=True, null=True)
     edad = models.IntegerField(blank=True, null=True)
     genero = models.CharField(max_length=1, blank=True, null=True)
+
+    # Contacto
     direccion = models.CharField(max_length=200, blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
-    email = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(max_length=100, blank=True, null=True)
+
+    # Salud
     gruposanguineo = models.CharField(max_length=5, blank=True, null=True)
     alergias = models.TextField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
+
+    # Registro
     fecharegistro = models.DateTimeField(blank=True, null=True)
-    estado = models.BooleanField(blank=True, null=True)
+    estado = models.BooleanField(default=True)
 
     class Meta:
-        managed = False
+        managed = False  # Si usas una tabla existente
         db_table = 'pacientes'
         unique_together = (('numerodocumento', 'tipodocumento'),)
 
-
+        
 class PacienteAudit(models.Model):
     paciente = models.ForeignKey(Pacientes, on_delete=models.CASCADE)
     usuario = models.CharField(max_length=100)

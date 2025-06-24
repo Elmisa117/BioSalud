@@ -6,10 +6,24 @@
     <title>Historial de Fichas Clínicas</title>
     <link rel="stylesheet" href="{% static 'enfermeria/css/Historial.css' %}">
     <script src="{% static 'enfermeria/js/Historial.js' %}" defer></script>
+    <style>
+        body {
+            background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
     <div class="historial-container">
-        <h1>📋 Historial Clínico</h1>
+        <!-- Botón Regresar alineado con el título -->
+        <div class="header-container">
+            <div class="boton-volver">
+                <a href="{% url 'perfil_paciente_enfermeria' paciente.pacienteid %}" class="btn-volver">
+                    <img src="{% static 'img/regresar.png' %}" alt="Regresar"> Regresar
+                </a>
+            </div>
+            <h1>📋 Historial Clínico</h1>
+        </div>
 
         <!-- Datos del paciente -->
         <div class="datos-paciente">
@@ -41,9 +55,9 @@
                 {% for ficha in fichas %}
                 <tr>
                     <td>{{ ficha.fechaapertura|date:"d/m/Y H:i" }}</td>
-                    <td>{{ ficha.motivo_consulta }}</td>
-                    <td>{{ ficha.tipo_atencion }}</td>
-                    <td><a href="{% url 'ver_historial' ficha.fichaid %}" class="btn-ver">Ver</a></td>
+                    <td>{{ ficha.motivoconsulta }}</td>
+                    <td>{{ ficha.tipoatencion }}</td>
+                    <td><a href="{% url 'ver_historial_enfermeria' ficha.fichaid %}" class="btn-ver">Ver</a></td>
                 </tr>
                 {% empty %}
                 <tr>

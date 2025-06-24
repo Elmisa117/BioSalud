@@ -4,18 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Panel de Enfermería</title>
+
+    <!-- CSS principal -->
     <link rel="stylesheet" href="{% static 'enfermeria/css/MenuEnfermera.css' %}">
+
+    <!-- Fondo con imagen -->
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
     <div class="panel">
+        <!-- Encabezado con animación -->
         <h1>Bienvenido/a Lic.</h1>
         <p class="nombre-usuario">{{ nombre }}</p>
 
+        <!-- Botones -->
         <div class="btn-group">
-            <button class="btn" onclick="location.href='/enfermeria/pacientes/'">👤 Pacientes</button>
-            <button class="btn" onclick="location.href='/enfermeria/mapa-habitaciones/'">🏥 Hospitalizaciones</button>
-            <button class="btn" onclick="location.href='/enfermeria/perfil/'">📋 Perfil</button>
-            <button class="btn" onclick="location.href='/cerrar/'">🔒 Cerrar Sesión</button>
+
+            <button class="btn" onclick="location.href='/enfermeria/pacientes/'">
+                <img src="{% static 'img/paciente.png' %}" alt="Pacientes">
+                Pacientes
+            </button>
+
+            <button class="btn" onclick="location.href='/enfermeria/mapa-habitaciones/'">
+                <img src="{% static 'img/Hospitalizacion.png' %}" alt="Hospitalizaciones">
+                Hospitalizaciones
+            </button>
+
+            <button class="btn" onclick="location.href='/enfermeria/perfil/'">
+                <img src="{% static 'img/perfil.gif' %}" alt="Perfil">
+                Perfil
+            </button>
+
+            <button class="btn" onclick="location.href='/cerrar/'">
+                <img src="{% static 'img/CerrarSesion.png' %}" alt="Cerrar Sesión">
+                Cerrar Sesión
+            </button>
         </div>
     </div>
 </body>

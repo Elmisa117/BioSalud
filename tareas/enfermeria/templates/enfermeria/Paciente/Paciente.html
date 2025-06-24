@@ -6,9 +6,25 @@
     <title>Gestión de Pacientes</title>
     <link rel="stylesheet" href="{% static 'enfermeria/css/Paciente.css' %}">
     <script src="{% static 'enfermeria/js/Paciente.js' %}" defer></script>
+
+    <style>
+        body {
+            background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
     <div class="paciente-container">
+        <!-- Botón de regresar -->
+        <div class="boton-volver">
+            <a href="{% url 'menu_enfermeria' %}">
+                <img src="{% static 'img/regresar.png' %}" alt="Regresar">
+                Regresar
+            </a>
+        </div>
+
+        <!-- Título -->
         <h1>👩‍⚕️ Control de Pacientes</h1>
 
         <!-- Buscador -->
@@ -20,13 +36,14 @@
             </select>
 
             <input type="text" id="criterio" placeholder="Escribe aquí para buscar...">
-            <img src="{% static 'enfermeria/iconoEnfermeria/BuscarPaciente.png' %}" alt="Buscar" class="icono-buscar">
+            <img src="{% static 'img/BuscarPaciente.png' %}" alt="Buscar" class="icono-buscar">
         </div>
 
         <!-- Botón de registro -->
         <div class="boton-registro">
             <button onclick="registrarPaciente()">
-                <img src="{% static 'enfermeria/iconoEnfermeria/registro.gif' %}" alt="Registrar"> REGISTRAR PACIENTE
+                <img src="{% static 'img/registro.gif' %}" alt="Registrar"> 
+                REGISTRAR PACIENTE
             </button>
         </div>
 
@@ -47,7 +64,7 @@
         </div>
     </div>
 
-    <!-- ✅ Inyección del JSON desde Django -->
+    <!-- Datos desde Django -->
     <script id="datos-pacientes" type="application/json">
         {{ pacientes_json|safe }}
     </script>

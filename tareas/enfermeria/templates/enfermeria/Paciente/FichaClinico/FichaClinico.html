@@ -8,6 +8,13 @@
 </head>
 <body>
     <div class="ficha-container">
+        <!-- Botón Regresar -->
+        <div class="boton-volver">
+            <a href="{% url 'perfil_paciente_enfermeria' paciente.pacienteid %}" class="btn-volver">
+                <img src="{% static 'img/regresar.png' %}" alt="Regresar"> Regresar
+            </a>
+        </div>
+
         <h1>📋 Registro de Ficha Clínica</h1>
 
         <form method="post">
@@ -23,8 +30,8 @@
 
             <!-- Paciente (solo lectura) -->
             <label for="paciente">Paciente:</label>
-            <input type="text" id="paciente" name="paciente" value="{{ paciente.nombres }} {{ paciente.apellidos }}" readonly>
             <input type="hidden" name="pacienteid" value="{{ paciente.pacienteid }}">
+            <input type="text" id="paciente" value="{{ paciente.nombres }} {{ paciente.apellidos }}" readonly>
 
             <!-- Doctor asignado -->
             <label for="personal_id">Asignar Doctor:</label>
@@ -53,35 +60,28 @@
             <!-- Signos Vitales -->
             <fieldset>
                 <legend>Signos Vitales</legend>
-
                 <div class="signos-container">
                     <div class="campo">
                         <label for="ta">TA</label>
-                        <input type="text" id="ta" placeholder="120/80">
+                        <input type="text" id="ta" name="ta" placeholder="120/80" required>
                     </div>
-
                     <div class="campo">
                         <label for="fc">FC</label>
-                        <input type="number" id="fc" placeholder="72">
+                        <input type="number" id="fc" name="fc" placeholder="72" min="40" max="180" required>
                     </div>
-
                     <div class="campo">
                         <label for="fr">FR</label>
-                        <input type="number" id="fr" placeholder="18">
+                        <input type="number" id="fr" name="fr" placeholder="18" min="8" max="40" required>
                     </div>
-
                     <div class="campo">
                         <label for="temp">Temp (°C)</label>
-                        <input type="number" id="temp" step="0.1" placeholder="36.5">
+                        <input type="number" id="temp" name="temp" step="0.1" placeholder="36.5" min="34.0" max="42.0" required>
                     </div>
-
                     <div class="campo">
                         <label for="spo2">SpO₂ (%)</label>
-                        <input type="number" id="spo2" placeholder="98">
+                        <input type="number" id="spo2" name="spo2" placeholder="98" min="70" max="100" required>
                     </div>
                 </div>
-
-                <input type="hidden" name="signos_vitales" id="signos_vitales">
             </fieldset>
 
             <label for="tratamiento">Tratamiento Sugerido:</label>
