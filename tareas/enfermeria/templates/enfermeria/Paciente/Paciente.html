@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Pacientes</title>
+    <link rel="stylesheet" href="{% static 'enfermeria/css/Paciente.css' %}">
+    <script src="{% static 'enfermeria/js/Paciente.js' %}" defer></script>
+</head>
+<body>
+    <div class="paciente-container">
+        <h1>👩‍⚕️ Control de Pacientes</h1>
+
+        <!-- Buscador -->
+        <div class="buscador">
+            <label for="filtro">Buscar por:</label>
+            <select id="filtro">
+                <option value="nombre">Apellido</option>
+                <option value="ci">CI</option>
+            </select>
+
+            <input type="text" id="criterio" placeholder="Escribe aquí para buscar...">
+            <img src="{% static 'enfermeria/iconoEnfermeria/BuscarPaciente.png' %}" alt="Buscar" class="icono-buscar">
+        </div>
+
+        <!-- Botón de registro -->
+        <div class="boton-registro">
+            <button onclick="registrarPaciente()">
+                <img src="{% static 'enfermeria/iconoEnfermeria/registro.gif' %}" alt="Registrar"> REGISTRAR PACIENTE
+            </button>
+        </div>
+
+        <!-- Lista de pacientes -->
+        <div class="lista-pacientes">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Cédula ID</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-pacientes">
+                    <!-- JavaScript llenará los datos aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ✅ Inyección del JSON desde Django -->
+    <script id="datos-pacientes" type="application/json">
+        {{ pacientes_json|safe }}
+    </script>
+</body>
+</html>

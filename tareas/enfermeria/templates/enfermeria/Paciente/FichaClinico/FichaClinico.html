@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Ficha Clínica</title>
+    <link rel="stylesheet" href="{% static 'enfermeria/css/FichaClinico.css' %}">
+</head>
+<body>
+    <div class="ficha-container">
+        <h1>📋 Registro de Ficha Clínica</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Tipo de Atención -->
+            <label for="tipoatencion">Tipo de Atención:</label>
+            <select name="tipoatencion" id="tipoatencion" required>
+                <option value="">-- Selecciona --</option>
+                <option value="Consulta Externa">Consulta Externa</option>
+                <option value="Emergencia">Emergencia</option>
+            </select>
+
+            <!-- Paciente (solo lectura) -->
+            <label for="paciente">Paciente:</label>
+            <input type="text" id="paciente" name="paciente" value="{{ paciente.nombres }} {{ paciente.apellidos }}" readonly>
+            <input type="hidden" name="pacienteid" value="{{ paciente.pacienteid }}">
+
+            <!-- Doctor asignado -->
+            <label for="personal_id">Asignar Doctor:</label>
+            <select name="personal_id" id="personal_id" required>
+                <option value="">-- Selecciona un doctor --</option>
+                {% for doctor in doctores %}
+                    <option value="{{ doctor.personalid }}">
+                        {{ doctor.nombres }} {{ doctor.apellidos }} - {{ doctor.especialidad.nombreespecialidad }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <!-- Campos clínicos -->
+            <label for="motivo">Motivo de Consulta:</label>
+            <textarea name="motivo" id="motivo" required></textarea>
+
+            <label for="diagnostico">Diagnóstico Inicial:</label>
+            <textarea name="diagnostico" id="diagnostico"></textarea>
+
+            <label for="antecedentes_personales">Antecedentes Personales:</label>
+            <textarea name="antecedentes_personales" id="antecedentes_personales"></textarea>
+
+            <label for="antecedentes_familiares">Antecedentes Familiares:</label>
+            <textarea name="antecedentes_familiares" id="antecedentes_familiares"></textarea>
+
+            <!-- Signos Vitales -->
+            <fieldset>
+                <legend>Signos Vitales</legend>
+
+                <div class="signos-container">
+                    <div class="campo">
+                        <label for="ta">TA</label>
+                        <input type="text" id="ta" placeholder="120/80">
+                    </div>
+
+                    <div class="campo">
+                        <label for="fc">FC</label>
+                        <input type="number" id="fc" placeholder="72">
+                    </div>
+
+                    <div class="campo">
+                        <label for="fr">FR</label>
+                        <input type="number" id="fr" placeholder="18">
+                    </div>
+
+                    <div class="campo">
+                        <label for="temp">Temp (°C)</label>
+                        <input type="number" id="temp" step="0.1" placeholder="36.5">
+                    </div>
+
+                    <div class="campo">
+                        <label for="spo2">SpO₂ (%)</label>
+                        <input type="number" id="spo2" placeholder="98">
+                    </div>
+                </div>
+
+                <input type="hidden" name="signos_vitales" id="signos_vitales">
+            </fieldset>
+
+            <label for="tratamiento">Tratamiento Sugerido:</label>
+            <textarea name="tratamiento" id="tratamiento"></textarea>
+
+            <label for="observaciones">Observaciones:</label>
+            <textarea name="observaciones" id="observaciones"></textarea>
+
+            <button type="submit">💾 Guardar Ficha</button>
+        </form>
+    </div>
+
+    <script src="{% static 'enfermeria/js/FichaClinico.js' %}"></script>
+</body>
+</html>

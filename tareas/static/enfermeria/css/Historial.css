@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f9ff;
+    margin: 0;
+    padding: 0;
+}
+
+.historial-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 25px;
+}
+
+/* Datos del paciente */
+.datos-paciente {
+    margin-bottom: 20px;
+    background-color: #eaf4ff;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #cce4ff;
+}
+
+.datos-paciente p {
+    margin: 5px 0;
+    color: #333;
+}
+
+/* Filtro */
+.filtro-fechas {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filtro-fechas label {
+    font-weight: bold;
+    color: #333;
+}
+
+.filtro-fechas input[type="date"],
+.filtro-fechas button {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.filtro-fechas button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.filtro-fechas button:hover {
+    background-color: #0056b3;
+}
+
+/* Tabla */
+.tabla-fichas {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-fichas th, .tabla-fichas td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.tabla-fichas th {
+    background-color: #007bff;
+    color: white;
+}
+
+.tabla-fichas tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.btn-ver {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 12px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-ver:hover {
+    background-color: #218838;
+}
