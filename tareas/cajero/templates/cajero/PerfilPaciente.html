@@ -12,7 +12,6 @@
   <div class="contenedor-perfil">
     <h2 class="titulo-perfil">Perfil del Paciente</h2>
 
-    <!-- ✅ MENSAJE DE ALERTA DJANGO -->
     {% if messages %}
       <div class="alertas">
         {% for message in messages %}
@@ -30,24 +29,25 @@
     <div class="item-perfil"><strong>Dirección:</strong> {{ paciente.direccion }}</div>
     <div class="item-perfil"><strong>Email:</strong> {{ paciente.email }}</div>
 
-    <a href="{% url 'buscar_paciente' %}" class="btn-volver">⟵ Volver al Listado</a>
+    <div class="botones-acciones">
+      <a href="{% url 'buscar_paciente' %}" class="btn-volver">⟵ Volver al Listado</a>
 
-    <!-- ✅ BOTÓN PARA GENERAR FACTURA -->
-    <button class="btn-factura" data-id="{{ paciente.pacienteid }}"
-            onclick="verificarYGenerarFactura(this.dataset.id)">
-      📄 Generar Factura
-    </button>
+      <button class="btn-factura" onclick="verificarYGenerarFactura('{{ paciente.pacienteid }}')">
+        📄 Generar Factura
+      </button>
 
-    <!-- ✅ BOTÓN PARA VER PLAN DE PAGOS DEL PACIENTE -->
-    <a href="{% url 'ver_pagos_paciente' paciente.pacienteid %}" class="btn-factura">
-      💳 Ver Plan de Pagos
-    </a>
+      <a href="{% url 'ver_pagos_paciente' paciente.pacienteid %}" class="btn-factura">
+        🧾 Ver Plan de Pagos
+      </a>
+
+      <a href="{% url 'ver_facturas_pagadas' paciente.pacienteid %}" class="btn-factura">
+        📋 Ver Facturas Pagadas
+      </a>
+    </div>
   </div>
 
-  <!-- ✅ MENSAJE DE ALERTA EMERGENTE (opcional por JS) -->
   <div id="mensajeError" style="display: none;"></div>
 
-  <!-- ✅ ESTILOS OPCIONALES PARA ALERTAS -->
   <style>
     .alertas {
       margin-bottom: 15px;
@@ -60,13 +60,73 @@
       font-weight: bold;
       margin-bottom: 10px;
     }
+
+    .botones-acciones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .botones-acciones a,
+    .botones-acciones button {
+      background-color: #14b87c;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
+    }
+
+    .botones-acciones a:hover,
+    .botones-acciones button:hover {
+      background-color: #0e8a5f;
+    }
+
+    .btn-volver {
+      background-color: #14b87c;
+    }
   </style>
+
+  <script>
+    function verificarYGenerarFactura(pacienteId) {
+      fetch(`/cajero/verificar_servicios/${pacienteId}/`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            window.location.href = `/cajero/generar_factura/${pacienteId}/`;
+          } else {
+            mostrarMensaje(data.mensaje || "⚠️ No hay servicios pendientes para facturar.");
+          }
+        })
+        .catch(err => {
+          console.error("Error al verificar servicios:", err);
+          mostrarMensaje("❌ Error al verificar los servicios.");
+        });
+    }
+
+    function mostrarMensaje(texto, exito = false) {
+      let toast = document.getElementById("toast");
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        document.body.appendChild(toast);
+      }
+
+      toast.textContent = texto;
+      toast.className = "toast show";
+      toast.style.backgroundColor = exito ? "#28a745" : "#ffc107";
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+  </script>
 
 </body>
 </html>
-
-
-
-
-
-

@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Facturas Pagadas</title>
+  <link rel="stylesheet" href="{% static 'cajero/css/ver_facturas_pagadas.css' %}">
+</head>
+<body>
+
+  <div class="contenedor-facturas">
+    <div class="encabezado-botones">
+      <a href="{% url 'ver_paciente' paciente.pacienteid %}" class="btn-volver">⟵ Volver al Perfil</a>
+      <!-- Puedes agregar un botón extra aquí si lo deseas -->
+    </div>
+
+    <h2 class="titulo">Facturas Pagadas de {{ paciente.nombres }} {{ paciente.apellidos }}</h2>
+
+    {% if facturas %}
+      <table class="tabla-facturas">
+        <thead>
+          <tr>
+            <th>N° Factura</th>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <!-- <th>Acciones</th>  ← Activar si usas el botón de anular -->
+          </tr>
+        </thead>
+        <tbody>
+          {% for factura in facturas %}
+            <tr>
+              <td>{{ factura.numerofactura }}</td>
+              <td>{{ factura.fechaemision|date:"d/m/Y H:i" }}</td>
+              <td>S/. {{ factura.total }}</td>
+              <td>{{ factura.estado }}</td>
+              <td>{{ factura.observaciones|default:"-" }}</td>
+              {# 
+              <td>
+                <a href="{% url 'anular_factura' factura.facturaid %}" class="btn-anular" onclick="return confirm('¿Seguro que deseas anular esta factura?')">❌</a>
+              </td>
+              #}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="sin-facturas">El paciente no tiene facturas pagadas.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

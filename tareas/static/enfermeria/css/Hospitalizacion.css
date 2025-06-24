@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f8fc;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #2b5d9f;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #1f3c63;
+    border-left: 5px solid #2b5d9f;
+    padding-left: 10px;
+    margin-top: 40px;
+}
+
+.bloque-tipo {
+    margin-bottom: 40px;
+}
+
+.contenedor-camas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.cama {
+    width: 150px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.cama:hover {
+    transform: scale(1.03);
+}
+
+.cama img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 8px;
+}
+
+/* 🟡 Estilo para camas vacías */
+.cama.vacia {
+    background-color: #f0f0f0;
+    border: 1px dashed #bbb;
+    opacity: 0.7;
+}
+
+.cama.vacia img {
+    filter: grayscale(100%);
+}
+
+.cama.vacia p {
+    color: #888;
+    font-style: italic;
+}

@@ -1,0 +1,93 @@
+/* Fondo con gradiente atractivo */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Panel centrado y desplazado a la izquierda */
+.panel {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 50px 40px;
+    border-radius: 25px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    transform: translateX(-500px);
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Título grande y centrado */
+.panel h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.4);
+}
+
+/* Subtítulo claro y espaciado */
+.panel p {
+    font-size: 20px;
+    margin-bottom: 40px;
+    color: #fef2f2;
+}
+
+/* Estilo para el nombre del personal logueado */
+.nombre-usuario {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffe4e6;
+    margin-bottom: 30px;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Contenedor vertical de botones alineado a la izquierda */
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Botones uniformes, animados y alineados */
+.btn {
+    background-color: #fff;
+    color: #db2777;
+    border: none;
+    padding: 18px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 300px;
+    text-align: left; /* Alinea texto e íconos hacia la izquierda */
+}
+
+/* Efecto hover moderno */
+.btn:hover {
+    background-color: #fce7f3;
+    color: #9d174d;
+    transform: scale(1.07);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Animación suave de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

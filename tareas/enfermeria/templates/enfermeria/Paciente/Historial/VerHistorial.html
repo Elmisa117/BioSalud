@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial del Paciente</title>
+    <link rel="stylesheet" href="{% static 'enfermeria/css/VerHistorial.css' %}">
+    <script src="{% static 'enfermeria/js/Historial.js' %}" defer></script>
+</head>
+<body>
+    <div class="contenedor-historial">
+
+        <!-- 🔙 Botón Regresar al inicio -->
+        <div class="boton-regresar">
+            <a href="{% url 'historial_pacientes' ficha.paciente.pacienteid %}">⬅ Regresar</a>
+        </div>
+        <!-- 📌 Cabecera del paciente -->
+        <div class="cabecera-paciente">
+            <h2>👤 Datos del Paciente</h2>
+            <p><strong>Nombre Completo:</strong> {{ ficha.paciente.nombres }} {{ ficha.paciente.apellidos }}</p>
+            <p><strong>Número de Documento:</strong> {{ ficha.paciente.tipodocumento }} {{ ficha.paciente.numerodocumento }}</p>
+            <p><strong>Fecha de Nacimiento:</strong> {{ ficha.paciente.fechanacimiento|date:"d/m/Y" }}</p>
+            <p><strong>Edad:</strong> {{ ficha.paciente.edad }} años</p>
+            <p><strong>Género:</strong> {{ ficha.paciente.genero }}</p>
+            <p><strong>Teléfono:</strong> {{ ficha.paciente.telefono }}</p>
+            <p><strong>Dirección:</strong> {{ ficha.paciente.direccion }}</p>
+            <p><strong>Grupo Sanguíneo:</strong> {{ ficha.paciente.gruposanguineo }}</p>
+            <p><strong>Alergias:</strong> {{ ficha.paciente.alergias }}</p>
+            <p><strong>Fecha de Registro:</strong> {{ ficha.paciente.fecharegistro|date:"d/m/Y H:i" }}</p>
+        </div>
+        <!-- 🧑‍⚕️ Personal responsable -->
+        <div class="personal-responsable">
+            {% if doctor_responsable %}
+                <p><strong>Doctor Responsable:</strong> {{ doctor_responsable.nombres }} {{ doctor_responsable.apellidos }}</p>
+            {% endif %}
+            {% if enfermera_responsable %}
+                <p><strong>Enfermera Responsable:</strong> {{ enfermera_responsable.nombres }} {{ enfermera_responsable.apellidos }}</p>
+            {% endif %}
+        </div>
+
+        <!-- 📄 Ficha Clínica -->
+        <div class="ficha-clinica">
+            <h2>📄 Ficha Clínica</h2>
+            <p><strong>Tipo de Atención:</strong> {{ ficha.tipo_atencion }}</p>
+            <p><strong>Fecha de Apertura:</strong> {{ ficha.fechaapertura|date:"d/m/Y H:i" }}</p>
+            <p><strong>Motivo de Consulta:</strong> {{ ficha.motivo_consulta }}</p>
+            <p><strong>Diagnóstico Inicial:</strong> {{ ficha.diagnostico_inicial }}</p>
+            <p><strong>Antecedentes Personales:</strong> {{ ficha.antecedentes_personales }}</p>
+            <p><strong>Antecedentes Familiares:</strong> {{ ficha.antecedentes_familiares }}</p>
+
+            {% if ficha.signos_vitales %}
+                <p><strong>TA (Presión):</strong> {{ ficha.signos_vitales.TA }}</p>
+                <p><strong>FC (Frecuencia Cardíaca):</strong> {{ ficha.signos_vitales.FC }}</p>
+                <p><strong>FR (Frecuencia Respiratoria):</strong> {{ ficha.signos_vitales.FR }}</p>
+                <p><strong>Temp (Temperatura):</strong> {{ ficha.signos_vitales.Temp }} °C</p>
+                <p><strong>SpO₂:</strong> {{ ficha.signos_vitales.SpO2 }} %</p>
+            {% else %}
+                <p><strong>Signos Vitales:</strong> No registrados</p>
+            {% endif %}
+
+            <p><strong>Tratamiento Sugerido:</strong> {{ ficha.tratamiento_sugerido }}</p>
+            <p><strong>Observaciones:</strong> {{ ficha.observaciones }}</p>
+        </div>
+
+        <!-- 📜 Historial Detallado -->
+        <div class="historial-atenciones">
+            <h2>📚 Historial de Atenciones</h2>
+
+            <!-- Consultas -->
+            {% if consultas %}
+                <h3>🩺 Consultas Médicas</h3>
+                {% for consulta in consultas %}
+                    <div class="consulta-item">
+                        <p><strong>Fecha:</strong> {{ consulta.fechaconsulta|date:"d/m/Y H:i" }}</p>
+                        <p><strong>Motivo:</strong> {{ consulta.motivocita }}</p>
+                        <p><strong>Diagnóstico:</strong> {{ consulta.diagnostico }}</p>
+                        <p><strong>Tratamiento:</strong> {{ consulta.tratamiento }}</p>
+                        <p><strong>{{ consulta.personal.rol|title }} Responsable:</strong> {{ consulta.personal.nombres }} {{ consulta.personal.apellidos }}</p>
+                        <p><strong>Servicios Realizados:</strong></p>
+                        <ul>
+                            {% for serv in consulta.servicios %}
+                                <li>{{ serv.servicio.nombre }} - {{ serv.cantidad }} vez/veces</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Hospitalizaciones -->
+            {% if hospitalizaciones %}
+                <h3>🏥 Hospitalizaciones</h3>
+                {% for hosp in hospitalizaciones %}
+                    <div class="hospitalizacion-item">
+                        <p><strong>Fecha de Ingreso:</strong> {{ hosp.fechaingreso|date:"d/m/Y H:i" }}</p>
+                        <p><strong>Fecha de Alta:</strong> {{ hosp.fechaalta|date:"d/m/Y H:i" }}</p>
+                        <p><strong>Habitación:</strong> {{ hosp.habitacion.numero }}</p>
+                        <p><strong>Tipo de Habitación:</strong> {{ hosp.habitacion.tipo.nombre }}</p>
+                        <p><strong>Diagnóstico:</strong> {{ hosp.diagnostico }}</p>
+                        <p><strong>Tratamiento Aplicado:</strong> {{ hosp.tratamientoaplicado }}</p>
+                        <p><strong>Motivo Hospitalización:</strong> {{ hosp.motivohospitalizacion }}</p>
+                        <p><strong>Tipo de Alta:</strong> {{ hosp.tipoalta.nombre }}</p>
+                        <p><strong>{{ hosp.personal.rol|title }} Responsable:</strong> {{ hosp.personal.nombres }} {{ hosp.personal.apellidos }}</p>
+                        <p><strong>Servicios Realizados:</strong></p>
+                        <ul>
+                            {% for serv in hosp.servicios %}
+                                <li>{{ serv.servicio.nombre }} - {{ serv.cantidad }} vez/veces</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

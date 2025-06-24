@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #eef6fb;
+    margin: 0;
+    padding: 0;
+}
+
+.perfil-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #0077b6;
+    margin-bottom: 30px;
+}
+
+.datos-personal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.datos-personal p {
+    background-color: #f0faff;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #d0e8f2;
+    font-size: 15px;
+}
+
+.datos-personal p strong {
+    color: #005b8f;
+}
+
+.boton-volver {
+    text-align: center;
+}
+
+.boton-volver a {
+    background-color: #0077b6;
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.boton-volver a:hover {
+    background-color: #005b8f;
+}

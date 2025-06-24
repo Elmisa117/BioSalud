@@ -7,15 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnConfirmar = document.getElementById("btnConfirmarPago");
   const radioConfirmacion = document.getElementById("confirmacionPagoRadio");
 
-  // Aplicar formato solo-fecha a la columna 'Registrado' si es necesario
-  document.querySelectorAll("td[data-fecha-completa]").forEach(td => {
-    const fechaCompleta = td.dataset.fechaCompleta;
-    td.textContent = formatearFechaSoloFecha(fechaCompleta);
-  });
-
-  // Mostrar modal al hacer clic en botón pagar
+  // Mostrar modal o mensaje elegante según estado de la cuota
   document.querySelectorAll(".btn-pagar").forEach(btn => {
     btn.addEventListener("click", () => {
+      if (btn.classList.contains("cuota-bloqueada")) {
+        mostrarToast("⚠️ Para abonar esta cuota primero debe pagar las anteriores.", "info");
+        return;
+      }
+
       const cuotaId = btn.dataset.cuota;
       const monto = parseFloat(btn.dataset.monto).toFixed(2);
 
@@ -72,25 +71,19 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
       if (data.status === "ok") {
-        mostrarToast("Pago registrado correctamente", "exito");
+        mostrarToast("✅ Pago registrado correctamente", "exito");
         setTimeout(() => location.reload(), 2000);
       } else {
-        mostrarToast("Error al registrar el pago: " + data.mensaje, "error");
+        mostrarToast("❌ Error al registrar el pago: " + data.mensaje, "error");
       }
     })
-    .catch(() => mostrarToast("Error de red al intentar registrar el pago.", "error"));
+    .catch(() => mostrarToast("❌ Error de red al intentar registrar el pago.", "error"));
   });
 });
 
-// Función para extraer solo la parte de la fecha
+// Extraer solo la fecha de una fecha-hora
 function formatearFechaSoloFecha(fechaHora) {
-  // Espera formato tipo "2025-06-15 04:55"
   return fechaHora.split(" ")[0];
-}
-
-// Cerrar modal
-function cerrarModal() {
-  document.getElementById("modalPago").style.display = "none";
 }
 
 // CSRF token helper
@@ -107,29 +100,33 @@ function getCookie(name) {
   return cookieValue;
 }
 
-// Mostrar notificación toast
+// Mostrar notificación tipo toast con animación slide-in/slide-out
 function mostrarToast(mensaje, tipo = "error") {
   const toast = document.getElementById("toast");
   const texto = document.getElementById("toast-mensaje");
   const icono = document.getElementById("toast-icon");
 
-  toast.className = "toast visible";
+  // Reset clases
+  toast.className = "toast";
 
+  // Estilo por tipo
   if (tipo === "exito") {
     toast.classList.add("exito");
     icono.textContent = "✅";
   } else if (tipo === "info") {
-    toast.classList.add("informativo");
+    toast.classList.add("info");
     icono.textContent = "ℹ️";
   } else {
-    toast.classList.remove("exito", "informativo");
     icono.textContent = "❌";
   }
 
   texto.textContent = mensaje;
 
+  // Mostrar
+  toast.classList.add("visible");
+
+  // Ocultar después de 4 segundos
   setTimeout(() => {
-    toast.classList.remove("visible", "exito", "informativo");
+    toast.classList.remove("visible");
   }, 4000);
 }
-

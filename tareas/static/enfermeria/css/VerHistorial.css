@@ -1,0 +1,104 @@
+/* Contenedor principal */
+.contenedor-historial {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* 🔙 Botón regresar arriba */
+.boton-regresar {
+    text-align: left;
+}
+
+.boton-regresar a {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    transition: background-color 0.3s ease;
+}
+
+.boton-regresar a:hover {
+    background-color: #0056b3;
+}
+
+/* Secciones principales */
+.cabecera-paciente,
+.personal-responsable,
+.ficha-clinica,
+.historial-atenciones {
+    background-color: #f8f9fc;
+    border: 1px solid #ccd1d9;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+/* Títulos de sección */
+.cabecera-paciente h2,
+.personal-responsable h2,
+.ficha-clinica h2,
+.historial-atenciones h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 6px;
+}
+
+/* Párrafos de datos */
+p {
+    margin: 6px 0;
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+/* Subsecciones de historial */
+.consulta-item,
+.hospitalizacion-item {
+    background-color: #ffffff;
+    padding: 18px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Títulos internos de subsecciones */
+.historial-atenciones h3 {
+    color: #0069d9;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+/* Lista de servicios */
+ul {
+    padding-left: 25px;
+    margin-top: 8px;
+}
+
+ul li {
+    list-style-type: disc;
+    margin-bottom: 5px;
+}
+
+/* Mejorar responsividad */
+@media screen and (max-width: 768px) {
+    .contenedor-historial {
+        padding: 15px;
+    }
+
+    .boton-regresar a {
+        width: 100%;
+        text-align: center;
+    }
+}
