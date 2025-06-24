@@ -1,3 +1,5 @@
+// 👉 Versión actualizada de factura_script.js
+
 document.addEventListener("DOMContentLoaded", function () {
     const metodoPago = document.getElementById("metodoPago");
     const montoPagado = document.getElementById("montoPagado");
@@ -11,63 +13,107 @@ document.addEventListener("DOMContentLoaded", function () {
     const cronogramaPagos = document.getElementById("cronogramaPagos");
     const listaCuotas = document.getElementById("listaCuotas");
     const totalHidden = document.getElementById("totalInputHidden");
-
-    let total = 0;
     const pacienteId = document.getElementById("paciente_id")?.value;
 
-    if (pacienteId) {
-        fetch(`/cajero/api/factura/${pacienteId}/`)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("nombrePaciente").value = data.paciente.nombre;
-                document.getElementById("telefonoPaciente").value = data.paciente.telefono;
-                document.getElementById("direccionPaciente").value = data.paciente.direccion;
-                document.getElementById("fechaEmision").valueAsDate = new Date();
-                document.getElementById("numeroFactura").value = "FACT-" + Math.floor(100000 + Math.random() * 900000);
+    let total = 0;
 
+    if (pacienteId) {
+        fetch(`/cajero/api/factura2/${pacienteId}/`)
+            .then(res => res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`))
+            .then(data => {
                 const tbody = document.querySelector("#tablaServicios tbody");
                 tbody.innerHTML = "";
                 total = 0;
+                const servicios = [];
 
-                data.servicios.forEach(s => {
+                data.consultas.forEach(item => {
+                    const precio = parseFloat(item.precio) || 0;
+                    servicios.push({
+                        descripcion: `Consulta (Consulta Externa) - Motivo: ${item.motivo}`,
+                        cantidad: 1,
+                        precio: precio,
+                        subtotal: precio
+                    });
+                });
+
+                data.consultaservicios.forEach(item => {
+                    const precio = parseFloat(item.servicio__costo) || 0;
+                    const nombre = item.servicio__nombre || "Servicio indefinido";
+                    servicios.push({
+                        descripcion: `Servicio Médico: ${nombre}`,
+                        cantidad: 1,
+                        precio: precio,
+                        subtotal: precio
+                    });
+                });
+
+                data.hospitalizaciones.forEach(item => {
+                    const dias = parseInt(item.dias) || 1;
+                    const totalHosp = parseFloat(item.total) || 0;
+                    servicios.push({
+                        descripcion: `Hospitalización Privada (${dias} día${dias > 1 ? 's' : ''}) - Motivo: ${item.motivo}`,
+                        cantidad: dias,
+                        precio: (totalHosp / dias).toFixed(2),
+                        subtotal: totalHosp.toFixed(2)
+                    });
+                });
+
+                data.hospitalizacionservicios.forEach(item => {
+                    const precio = parseFloat(item.servicio__costo) || 0;
+                    const nombre = item.servicio__nombre || "Servicio indefinido";
+                    servicios.push({
+                        descripcion: `Servicio Médico: ${nombre} (Hospitalización)`,
+                        cantidad: 1,
+                        precio: precio,
+                        subtotal: precio
+                    });
+                });
+
+                if (servicios.length === 0) {
+                    mostrarMensaje("⚠️ No hay servicios pendientes para facturar.");
+                    return;
+                }
+
+                servicios.forEach(s => {
                     total += parseFloat(s.subtotal);
-                    tbody.insertAdjacentHTML("beforeend", 
-                        `<tr>
+                    tbody.insertAdjacentHTML("beforeend", `
+                        <tr>
                             <td>${s.descripcion}</td>
                             <td>${s.cantidad}</td>
                             <td>${parseFloat(s.precio).toFixed(2)} Bs</td>
                             <td>${parseFloat(s.subtotal).toFixed(2)} Bs</td>
-                        </tr>`
-                    );
+                        </tr>`);
                 });
 
                 document.getElementById("totalPagar").textContent = `${total.toFixed(2)} Bs`;
                 totalHidden.value = total.toFixed(2);
+                document.getElementById("numeroFactura").value = "FACT-" + Math.floor(100000 + Math.random() * 900000);
+            })
+            .catch(err => {
+                console.error("Error al cargar servicios:", err);
+                mostrarMensaje("⚠️ Error al verificar los servicios del paciente.");
             });
     }
 
-    metodoPago.addEventListener("change", toggleVerificacionManual);
-    montoPagado.addEventListener("input", handlePagoParcial);
-    numeroCuotas.addEventListener("change", generarCuotas);
-    frecuenciaCuota.addEventListener("change", () => {
+    metodoPago?.addEventListener("change", toggleVerificacionManual);
+    montoPagado?.addEventListener("input", handlePagoParcial);
+    numeroCuotas?.addEventListener("change", generarCuotas);
+    frecuenciaCuota?.addEventListener("change", () => {
         actualizarComboCuotas();
         generarCuotas();
     });
-    fechaPrimeraCuota.addEventListener("change", generarCuotas);
+    fechaPrimeraCuota?.addEventListener("change", generarCuotas);
 
     function toggleVerificacionManual() {
-        const selectedOption = metodoPago.options[metodoPago.selectedIndex];
-        const requiere = selectedOption?.dataset.requiereVerificacion === 'true' ||
-                         selectedOption?.textContent.toLowerCase().includes("qr") ||
-                         selectedOption?.textContent.toLowerCase().includes("transferencia");
+        const selected = metodoPago.options[metodoPago.selectedIndex];
+        const requiere = selected?.dataset.requiereVerificacion === 'true';
+        const verificacion = document.getElementById("verificacionManual");
+        const radio = document.querySelector('input[name="confirmacionPago"]');
 
-        const verificacionManual = document.getElementById("verificacionManual");
-        const radioConfirmacion = document.querySelector('input[name="confirmacionPago"]');
-
-        verificacionManual.style.display = requiere ? "block" : "none";
-        if (radioConfirmacion) {
-            radioConfirmacion.required = requiere;
-            radioConfirmacion.checked = false;
+        verificacion.style.display = requiere ? "block" : "none";
+        if (radio) {
+            radio.required = requiere;
+            radio.checked = false;
         }
     }
 
@@ -100,13 +146,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function actualizarComboCuotas() {
         const frecuencia = frecuenciaCuota.value;
-        let maxCuotas = 2;
-
-        if (frecuencia === "quincenal") maxCuotas = 4;
-        else if (frecuencia === "semanal") maxCuotas = 8;
+        let max = 2;
+        if (frecuencia === "quincenal") max = 4;
+        else if (frecuencia === "semanal") max = 8;
 
         numeroCuotas.innerHTML = '<option value="">-- Selecciona --</option>';
-        for (let i = 1; i <= maxCuotas; i++) {
+        for (let i = 1; i <= max; i++) {
             const opt = document.createElement("option");
             opt.value = i;
             opt.textContent = `${i} ${i === 1 ? "cuota" : "cuotas"}`;
@@ -126,41 +171,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const hoy = new Date();
-        let fechaInicio = new Date(hoy);
+        let inicio = new Date(hoy);
+        if (frecuencia === "mensual") inicio.setDate(hoy.getDate() + 30);
+        if (frecuencia === "quincenal") inicio.setDate(hoy.getDate() + 15);
+        if (frecuencia === "semanal") inicio.setDate(hoy.getDate() + 7);
 
-        if (frecuencia === "mensual") fechaInicio.setDate(hoy.getDate() + 30);
-        else if (frecuencia === "quincenal") fechaInicio.setDate(hoy.getDate() + 15);
-        else if (frecuencia === "semanal") fechaInicio.setDate(hoy.getDate() + 7);
-
-        fechaPrimeraCuota.value = fechaInicio.toISOString().split('T')[0];
+        fechaPrimeraCuota.value = inicio.toISOString().split('T')[0];
 
         listaCuotas.innerHTML = "";
-        const encabezado = document.createElement("div");
-        encabezado.className = "cuota-item";
-        encabezado.innerHTML = `
-            <strong>Cuota</strong>
-            <strong>Fecha</strong>
-            <strong>Monto</strong>
-            <strong>Estado</strong>`;
-        listaCuotas.appendChild(encabezado);
-
-        const cuotaBaseEntera = Math.floor(saldo / cuotas);
-        const ultimaCuota = (saldo - cuotaBaseEntera * (cuotas - 1)).toFixed(2);
-        const planCuotas = [];
+        const cuotaFija = Math.floor(saldo / cuotas);
+        const ultima = (saldo - cuotaFija * (cuotas - 1)).toFixed(2);
+        const plan = [];
 
         for (let i = 0; i < cuotas; i++) {
-            let fecha = new Date(fechaInicio);
-            if (frecuencia === "mensual") fecha.setMonth(fecha.getMonth() + i);
-            if (frecuencia === "quincenal") fecha.setDate(fecha.getDate() + i * 15);
-            if (frecuencia === "semanal") fecha.setDate(fecha.getDate() + i * 7);
+            const fecha = new Date(inicio);
+            if (frecuencia === "mensual") fecha.setMonth(inicio.getMonth() + i);
+            if (frecuencia === "quincenal") fecha.setDate(inicio.getDate() + i * 15);
+            if (frecuencia === "semanal") fecha.setDate(inicio.getDate() + i * 7);
 
-            const monto = (i === cuotas - 1) ? ultimaCuota : cuotaBaseEntera.toFixed(2);
-
-            planCuotas.push({
-                numero: i + 1,
-                fecha: fecha.toISOString().split('T')[0],
-                monto: parseFloat(monto)
-            });
+            const monto = (i === cuotas - 1) ? ultima : cuotaFija.toFixed(2);
+            plan.push({ numero: i + 1, fecha: fecha.toISOString().split('T')[0], monto: parseFloat(monto) });
 
             listaCuotas.innerHTML += `
                 <div class="cuota-item">
@@ -173,83 +203,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cronogramaPagos.style.display = "block";
         document.getElementById("planNumeroCuotas").value = cuotas;
-        document.getElementById("planFechaInicio").value = planCuotas[0].fecha;
-        document.getElementById("planFechaFin").value = planCuotas[planCuotas.length - 1].fecha;
-        document.getElementById("fechaUltimaCuota").value = planCuotas[planCuotas.length - 1].fecha.split('-').reverse().join('/');
+        document.getElementById("planFechaInicio").value = plan[0].fecha;
+        document.getElementById("planFechaFin").value = plan[plan.length - 1].fecha;
+        document.getElementById("fechaUltimaCuota").value = plan[plan.length - 1].fecha.split('-').reverse().join('/');
         document.getElementById("planMontoTotal").value = saldo.toFixed(2);
-        document.getElementById("planCuotasJSON").value = JSON.stringify(planCuotas);
+        document.getElementById("planCuotasJSON").value = JSON.stringify(plan);
         document.getElementById("frecuenciaHidden").value = frecuencia;
     }
 
-    document.getElementById("formFactura").addEventListener("submit", function (e) {
+    document.getElementById("formFactura")?.addEventListener("submit", function (e) {
         e.preventDefault();
-        const totalFactura = parseFloat(totalHidden.value);
         const pagado = parseFloat(montoPagado.value) || 0;
-
-        if (pagado > totalFactura) {
-            mostrarMensaje("❌ El monto pagado no puede ser mayor al total de la factura.");
+        if (pagado > total) {
+            mostrarMensaje("❌ El monto pagado no puede superar el total.");
             montoPagado.classList.add("input-error");
-            montoPagado.focus();
             return;
         }
 
-        const selectedOption = metodoPago.options[metodoPago.selectedIndex];
-        if (selectedOption?.dataset.requiereVerificacion === 'true') {
-            const confirmacion = document.querySelector('input[name="confirmacionPago"]:checked');
-            if (!confirmacion) {
-                alert("Por favor, confirma que el monto fue recibido.");
-                return;
-            }
+        const requiere = metodoPago.options[metodoPago.selectedIndex]?.dataset.requiereVerificacion === 'true';
+        if (requiere && !document.querySelector('input[name="confirmacionPago"]:checked')) {
+            alert("Debes confirmar que el monto fue recibido.");
+            return;
         }
 
         const formData = new FormData(this);
         fetch(this.action, { method: "POST", body: formData })
-            .then(res => res.ok ? res.json() : Promise.reject("Error en el servidor"))
-            .then(response => {
+            .then(res => res.json())
+            .then(data => {
                 mostrarMensaje("✅ ¡Factura guardada exitosamente!", true);
-                if (response.redirect_url) {
-                    setTimeout(() => {
-                        window.location.href = response.redirect_url;
-                    }, 2000);
-                } else {
-                    setTimeout(() => location.reload(), 2500);
-                }
+                setTimeout(() => window.location.href = data.redirect_url || "/cajero/", 2000);
             })
             .catch(err => {
-                console.error("Error al guardar la factura:", err);
-                mostrarMensaje("❌ Ocurrió un error al guardar la factura.");
+                console.error("Error al guardar factura:", err);
+                mostrarMensaje("❌ Error al guardar la factura.");
             });
     });
 
     toggleVerificacionManual();
 });
-
-function mostrarMensaje(texto, exito = false) {
-    let toast = document.getElementById("toastMensaje");
-    if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "toastMensaje";
-        document.body.appendChild(toast);
-    }
-
-    toast.textContent = texto;
-    toast.style.position = "fixed";
-    toast.style.bottom = "20px";
-    toast.style.right = "20px";
-    toast.style.padding = "12px 20px";
-    toast.style.borderRadius = "8px";
-    toast.style.backgroundColor = exito ? "#28a745" : "#ffc107";
-    toast.style.color = "white";
-    toast.style.fontWeight = "bold";
-    toast.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
-    toast.style.zIndex = 9999;
-    toast.style.opacity = 1;
-    toast.style.transition = "opacity 0.5s ease";
-
-    setTimeout(() => {
-        toast.style.opacity = 0;
-    }, 3000);
-}
 
 function verificarYGenerarFactura(pacienteId) {
     fetch(`/cajero/verificar_servicios/${pacienteId}/`)
@@ -258,13 +249,31 @@ function verificarYGenerarFactura(pacienteId) {
             if (data.status === 'ok') {
                 window.location.href = `/cajero/generar_factura/${pacienteId}/`;
             } else {
-                mostrarMensaje(data.mensaje || "El Paciente no se hizo ningún Servicio");
+                mostrarMensaje(data.mensaje || "El paciente no tiene servicios pendientes para facturar.");
             }
         })
         .catch(err => {
             console.error("Error al verificar servicios:", err);
             mostrarMensaje("⚠️ Ocurrió un error al verificar los servicios del paciente.");
         });
+}
+
+function mostrarMensaje(texto, exito = false) {
+    let toast = document.getElementById("toast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        toast.className = "toast";
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = texto;
+    toast.className = "toast show";
+    toast.style.backgroundColor = exito ? "#28a745" : "#ffc107";
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
 }
 
 function cancelarFactura() {

@@ -22,10 +22,13 @@ document.addEventListener("DOMContentLoaded", function () {
             case "Administrador": url = "/admin/"; break;
             case "Doctor": url = "/doctor/"; break;
             case "Enfermería": url = "/enfermeria/"; break;
-            case "Cajero": url = "/cajero/"; break;
-            default: url = "/inicio/";
+            case "Caja": url = "/cajero/"; break;  // Si cambiaste el rol de Cajero a Caja
+            default:
+              alert("⚠️ Rol no reconocido. Contacte al administrador.");
+              return;
           }
           window.location.href = url;
+
         } else {
           alert(data.error || "Credenciales incorrectas");
         }

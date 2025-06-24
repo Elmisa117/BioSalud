@@ -15,6 +15,24 @@
         white-space: nowrap;
       }
     }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #e74c3c;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      transition: opacity 0.3s ease;
+    }
+    .toast.oculto {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -27,7 +45,7 @@
         {% with plan=planes.0 %}
           <div class="grid-datos">
             <div class="columna">
-              <p><strong>Factura:</strong> {{ plan.factura.numerofactura }}</p>
+              <p><strong>Factura:</strong> {{ plan.facturaid.numerofactura }}</p>
               <p><strong>Nombre del Cliente:</strong> {{ paciente.nombres }} {{ paciente.apellidos }}</p>
               <p><strong>Número de CI:</strong> {{ paciente.numerodocumento }}</p>
               <p><strong>Tipo de Producto:</strong> {{ plan.resumen_producto }}</p>
@@ -69,7 +87,7 @@
                         </button>
                         {% with True as primera_pendiente_encontrada %}{% endwith %}
                       {% elif cuota.estado == 'Pendiente' %}
-                        <button class="btn-pagar no-imprimir" disabled title="Debe pagar las cuotas anteriores">
+                        <button class="btn-pagar no-imprimir cuota-bloqueada" data-mensaje="Debe pagar las cuotas anteriores">
                           🔒 Pagar
                         </button>
                       {% else %}
@@ -131,22 +149,47 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('btnImprimir').addEventListener('click', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('btnImprimir').addEventListener('click', function () {
         window.print();
       });
 
       const modalPago = document.getElementById('modalPago');
       const btnCancelarPago = document.getElementById('btnCancelarPago');
-      btnCancelarPago.addEventListener('click', function() {
+      btnCancelarPago.addEventListener('click', function () {
         modalPago.style.display = 'none';
       });
 
-      window.matchMedia('print').addEventListener('change', function(e) {
+      window.matchMedia('print').addEventListener('change', function (e) {
         if (!e.matches) {
           modalPago.style.display = 'none';
         }
       });
+
+      // Manejo visual para cuotas bloqueadas
+      const botonesBloqueados = document.querySelectorAll('.cuota-bloqueada');
+      botonesBloqueados.forEach(boton => {
+        boton.addEventListener('click', function () {
+          const mensaje = boton.getAttribute('data-mensaje') || 'Esta cuota está bloqueada.';
+          mostrarToast('🔒', mensaje, true);
+        });
+      });
+
+      function mostrarToast(icono, mensaje, esError = false) {
+        const toast = document.getElementById('toast');
+        const iconoEl = document.getElementById('toast-icon');
+        const mensajeEl = document.getElementById('toast-mensaje');
+
+        iconoEl.textContent = icono;
+        mensajeEl.textContent = mensaje;
+
+        toast.classList.remove('oculto');
+        toast.style.backgroundColor = esError ? '#e74c3c' : '#27ae60';
+
+        setTimeout(() => {
+          toast.classList.add('oculto');
+        }, 3500);
+      }
     });
   </script>
 </body>

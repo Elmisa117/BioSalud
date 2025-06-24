@@ -6,32 +6,6 @@
   <title>Generar Factura</title>
   <link rel="stylesheet" href="{% static 'cajero/css/factura_styles.css' %}">
   <script src="{% static 'cajero/js/factura_script.js' %}" defer></script>
-  <style>
-    .toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: #28a745;
-      color: white;
-      padding: 14px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      font-weight: bold;
-      z-index: 9999;
-      opacity: 0;
-      transform: translateY(-20px);
-      transition: all 0.4s ease;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .toast.error {
-      background-color: #dc3545;
-    }
-  </style>
 </head>
 <body>
 <div class="factura-container">
@@ -43,11 +17,26 @@
 
     <!-- Datos del paciente -->
     <div class="datos-factura">
-      <div class="campo"><label for="fechaEmision">📅 Fecha de Emisión:</label><input type="date" id="fechaEmision" name="fechaEmision" readonly></div>
-      <div class="campo"><label for="numeroFactura">🔢 Número de Factura:</label><input type="text" id="numeroFactura" name="numeroFactura" readonly></div>
-      <div class="campo"><label for="nombrePaciente">👤 Paciente:</label><input type="text" id="nombrePaciente" name="nombrePaciente" readonly></div>
-      <div class="campo"><label for="telefonoPaciente">📞 Teléfono:</label><input type="text" id="telefonoPaciente" name="telefonoPaciente" readonly></div>
-      <div class="campo"><label for="direccionPaciente">📍 Dirección:</label><input type="text" id="direccionPaciente" name="direccionPaciente" readonly></div>
+      <div class="campo">
+        <label>📅 Fecha de Emisión:</label>
+        <input type="text" value="{{ fecha_emision|date:'d/m/Y' }}" readonly>
+      </div>
+      <div class="campo">
+        <label>🔢 Número de Factura:</label>
+        <input type="text" id="numeroFactura" name="numeroFactura" readonly>
+      </div>
+      <div class="campo">
+        <label>👤 Paciente:</label>
+        <input type="text" value="{{ paciente.nombres }} {{ paciente.apellidos }}" readonly>
+      </div>
+      <div class="campo">
+        <label>📞 Teléfono:</label>
+        <input type="text" value="{{ paciente.telefono }}" readonly>
+      </div>
+      <div class="campo">
+        <label>📍 Dirección:</label>
+        <input type="text" value="{{ paciente.direccion }}" readonly>
+      </div>
     </div>
 
     <!-- Servicios -->
@@ -55,9 +44,11 @@
       <h3>🛠️ Servicios Prestados</h3>
       <table id="tablaServicios">
         <thead>
-          <tr><th>Descripción</th><th>Cantidad</th><th>Precio Unit.</th><th>Subtotal</th></tr>
+          <tr><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>PRECIO UNIT.</th><th>SUBTOTAL</th></tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <!-- 🔄 Estos datos se cargarán dinámicamente vía JS -->
+        </tbody>
       </table>
     </div>
 
@@ -68,7 +59,7 @@
     <div class="fila-doble">
       <div class="columna-izquierda">
         <div class="campo">
-          <label for="metodoPago">💳 Método de Pago:</label>
+          <label>💳 Método de Pago:</label>
           <select id="metodoPago" name="metodoPago" required>
             <option value="">-- Selecciona esta opción --</option>
             {% for metodo in metodos_pago %}
@@ -78,38 +69,34 @@
             {% endfor %}
           </select>
         </div>
-        <div id="verificacionManual" class="campo-verificacion" style="display: none;">
-          <label class="label-verificacion"><strong>¿Confirmaste que el monto fue recibido?</strong></label>
+        <div id="verificacionManual" class="campo-verificacion" style="display:none;">
+          <label><strong>¿Confirmaste que el monto fue recibido?</strong></label>
           <div class="radio-container">
-            <label class="radio-label"><input type="radio" name="confirmacionPago" value="SI" required> SÍ</label>
+            <label><input type="radio" name="confirmacionPago" value="SI" required> SÍ</label>
           </div>
         </div>
       </div>
+
       <div class="columna-derecha">
         <div class="campo">
-          <label for="montoPagado">🔥 Monto Pagado:</label>
+          <label>🔥 Monto Pagado:</label>
           <input type="number" id="montoPagado" name="montoPagado" min="0" step="0.01" required>
         </div>
       </div>
     </div>
 
-    <!-- Pago parcial -->
+    <!-- Estado de pago -->
     <div id="estadoPago" class="estado-pago" style="display: none;">
-      <div class="estado-info">
-        <span id="estadoTexto">⚠️ Pago Parcial</span>
-        <span id="montoRestante">Saldo pendiente: 0.00 Bs</span>
-      </div>
+      <span id="estadoTexto">⚠️ Pago Parcial</span>
+      <span id="montoRestante">Saldo pendiente: 0.00 Bs</span>
     </div>
 
-    <!-- Plan de pago -->
-    <div id="planPagoSection" class="plan-pago-section" style="display: none;">
-      <div class="plan-header">
-        <h3>📅 Plan de Pago</h3>
-        <p>Configure las cuotas para el saldo pendiente</p>
-      </div>
+    <!-- Plan de Pago -->
+    <div id="planPagoSection" style="display:none;">
+      <h3>📅 Plan de Pago</h3>
       <div class="fila-doble">
         <div class="campo">
-          <label for="frecuenciaCuota">📌 Frecuencia:</label>
+          <label>📌 Frecuencia:</label>
           <select id="frecuenciaCuota" name="frecuencia">
             <option value="mensual">Mensual</option>
             <option value="quincenal">Quincenal</option>
@@ -117,52 +104,48 @@
           </select>
         </div>
         <div class="campo">
-          <label for="numeroCuotas">📘 Número de Cuotas:</label>
-          <select id="numeroCuotas" name="numeroCuotas">
-            <option value="">-- Selecciona --</option>
-          </select>
+          <label>📘 Número de Cuotas:</label>
+          <select id="numeroCuotas" name="numeroCuotas"></select>
         </div>
         <div class="campo">
-          <label for="fechaPrimeraCuota">📆 Fecha Primera Cuota:</label>
+          <label>📆 Fecha Primera Cuota:</label>
           <input type="date" id="fechaPrimeraCuota" name="fechaPrimeraCuota">
         </div>
         <div class="campo">
-          <label for="fechaUltimaCuota">📆 Fecha Última Cuota:</label>
+          <label>📆 Fecha Última Cuota:</label>
           <input type="text" id="fechaUltimaCuota" readonly>
         </div>
       </div>
-      <div id="cronogramaPagos" class="cronograma-pagos" style="display: none;">
-        <div class="cronograma-header"><h4>📋 Cronograma de Pagos</h4></div>
+      <div id="cronogramaPagos" style="display:none;">
+        <h4>📋 Cronograma de Pagos</h4>
         <div id="listaCuotas"></div>
       </div>
     </div>
 
     <!-- Observaciones -->
-    <label for="observaciones">📝 Observaciones:</label>
-    <textarea id="observaciones" name="observaciones" rows="3" placeholder="Notas adicionales o comentarios..."></textarea>
+    <label>📝 Observaciones:</label>
+    <textarea name="observaciones" rows="3" placeholder="Notas adicionales o comentarios..."></textarea>
 
     <!-- Ocultos -->
-    <input type="hidden" name="planPagoActivado" id="planPagoActivado" value="false">
-    <input type="hidden" name="planMontoTotal" id="planMontoTotal">
-    <input type="hidden" name="planNumeroCuotas" id="planNumeroCuotas">
-    <input type="hidden" name="planFechaInicio" id="planFechaInicio">
-    <input type="hidden" name="planFechaFin" id="planFechaFin">
-    <input type="hidden" name="planCuotasJSON" id="planCuotasJSON">
-    <input type="hidden" name="frecuencia" id="frecuenciaHidden">
-    <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente.pacienteid }}">
-    <input type="hidden" name="total" id="totalInputHidden" value="0.00">
+    <input type="hidden" id="paciente_id" name="paciente_id" value="{{ paciente.pacienteid }}">
+    <input type="hidden" id="planPagoActivado" name="planPagoActivado" value="false">
+    <input type="hidden" id="planNumeroCuotas" name="planNumeroCuotas">
+    <input type="hidden" id="planFechaInicio" name="planFechaInicio">
+    <input type="hidden" id="planFechaFin" name="planFechaFin">
+    <input type="hidden" id="planMontoTotal" name="planMontoTotal">
+    <input type="hidden" id="planCuotasJSON" name="planCuotasJSON">
+    <input type="hidden" id="frecuenciaHidden" name="frecuencia">
+    <input type="hidden" id="totalInputHidden" name="total" value="0.00">
 
     <!-- Botones -->
     <div class="botones-accion">
-      <button type="button" class="cancelar" onclick="cancelarFactura()">❌ Cancelar</button>
-      <button type="button" class="preview">👁️ Previsualizar</button>
-      <button type="submit" class="guardar">💾 Guardar Factura</button>
+      <button type="button" onclick="cancelarFactura()">❌ Cancelar</button>
+      <button type="submit">💾 Guardar Factura</button>
     </div>
   </form>
 </div>
 
-<!-- 🔔 TOAST DE NOTIFICACIÓN -->
+<!-- 🔔 TOAST -->
 <div id="toast" class="toast"></div>
-
 </body>
 </html>
