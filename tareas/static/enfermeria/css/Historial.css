@@ -5,6 +5,7 @@ body {
     padding: 0;
 }
 
+/* Contenedor principal con tamaño fijo y scroll habilitado */
 .historial-container {
     max-width: 900px;
     margin: 40px auto;
@@ -12,12 +13,53 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+    max-height: 600px; /* Altura máxima para el contenedor */
+    overflow-y: auto; /* Habilitar scroll vertical si el contenido excede el tamaño */
 }
 
-h1 {
-    text-align: center;
-    color: #007bff;
+/* Contenedor para alinear el botón y el título en la misma fila */
+.header-container {
+    display: flex;
+    justify-content: center; /* Centra solo el título en la fila */
+    align-items: center;
     margin-bottom: 25px;
+    position: relative;
+    gap: 50px; /* Ajuste el espacio entre el botón y el título */
+}
+
+/* Título "Historial Clínico" alineado hacia el centro */
+.header-container h1 {
+    color: #007bff;
+    font-size: 24px;
+    margin: 0;
+    text-align: center; /* Centra el título */
+    width: 100%;
+}
+
+/* Botón Regresar */
+.boton-volver {
+    position: absolute;
+    top: 0;
+    left: 20px; /* Se mantiene el botón en su lugar */
+    display: flex;
+    align-items: center;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.boton-volver img {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+.boton-volver:hover {
+    background-color: #0056b3;
 }
 
 /* Datos del paciente */
@@ -34,7 +76,7 @@ h1 {
     color: #333;
 }
 
-/* Filtro */
+/* Filtro por fechas */
 .filtro-fechas {
     display: flex;
     gap: 15px;
@@ -67,7 +109,7 @@ h1 {
     background-color: #0056b3;
 }
 
-/* Tabla */
+/* Tabla de fichas */
 .tabla-fichas {
     width: 100%;
     border-collapse: collapse;
@@ -88,6 +130,7 @@ h1 {
     background-color: #f9f9f9;
 }
 
+/* Botón Ver */
 .btn-ver {
     background-color: #28a745;
     color: white;

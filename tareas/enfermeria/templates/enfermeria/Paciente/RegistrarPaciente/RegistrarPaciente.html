@@ -7,23 +7,50 @@
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="{% static 'enfermeria/css/RegistrarPaciente.css' %}">
+
+    <!-- Fondo de imagen -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
 </head>
 <body>
     <div class="registro-container">
+
+        <!-- Botón Regresar -->
+        <div class="boton-regresar">
+            <a href="{% url 'vista_pacientes_enfermeria' %}">
+                <img src="{% static 'img/regresar.png' %}" alt="Regresar">
+                Regresar
+            </a>
+        </div>
+
         <h1>📝 Registro de Paciente</h1>
 
-        <!-- ✅ Formulario con método POST -->
+        <!-- Mensajes Django -->
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Formulario -->
         <form method="post" action="">
             {% csrf_token %}
-
-            <!-- Campo oculto para identificar si es edición -->
             <input type="hidden" name="paciente_id" value="{{ paciente.id|default:'' }}">
 
             <label for="nombres">Nombres:</label>
-            <input type="text" id="nombres" name="nombres" value="{{ paciente.nombres|default:'' }}" required>
+            <input type="text" id="nombres" name="nombres" value="{{ paciente.nombres|default:'' }}" required pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+" title="Solo letras y espacios">
 
             <label for="apellidos">Apellidos:</label>
-            <input type="text" id="apellidos" name="apellidos" value="{{ paciente.apellidos|default:'' }}" required>
+            <input type="text" id="apellidos" name="apellidos" value="{{ paciente.apellidos|default:'' }}" required pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+" title="Solo letras y espacios">
 
             <label for="tipodocumento">Tipo de Documento:</label>
             <select id="tipodocumento" name="tipodocumento" required>
@@ -33,13 +60,13 @@
             </select>
 
             <label for="numerodocumento">Número de Documento:</label>
-            <input type="text" id="numerodocumento" name="numerodocumento" value="{{ paciente.numerodocumento|default:'' }}" required>
+            <input type="text" id="numerodocumento" name="numerodocumento" value="{{ paciente.numerodocumento|default:'' }}" required pattern="^\d{6,15}$" title="Debe contener solo números (mínimo 6 dígitos)">
 
             <label for="fechanacimiento">Fecha de Nacimiento:</label>
             <input type="date" id="fechanacimiento" name="fechanacimiento" value="{{ paciente.fechanacimiento|default:'' }}">
 
             <label for="edad">Edad:</label>
-            <input type="number" id="edad" name="edad" min="0" value="{{ paciente.edad|default:'' }}">
+            <input type="number" id="edad" name="edad" min="0" max="120" value="{{ paciente.edad|default:'' }}">
 
             <label for="genero">Género:</label>
             <select id="genero" name="genero" required>
@@ -51,13 +78,13 @@
             <input type="text" id="direccion" name="direccion" value="{{ paciente.direccion|default:'' }}">
 
             <label for="telefono">Teléfono:</label>
-            <input type="text" id="telefono" name="telefono" value="{{ paciente.telefono|default:'' }}">
+            <input type="text" id="telefono" name="telefono" value="{{ paciente.telefono|default:'' }}" pattern="^\d{7,15}$" title="Solo números (mínimo 7 dígitos)">
 
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="{{ paciente.email|default:'' }}">
 
             <label for="gruposanguineo">Grupo Sanguíneo:</label>
-            <input type="text" id="gruposanguineo" name="gruposanguineo" placeholder="Ej: O+, A-" value="{{ paciente.gruposanguineo|default:'' }}">
+            <input type="text" id="gruposanguineo" name="gruposanguineo" placeholder="Ej: O+, A-" value="{{ paciente.gruposanguineo|default:'' }}" pattern="^(A|B|AB|O)[+-]$" title="Ej: O+, A-, AB+">
 
             <label for="alergias">Alergias:</label>
             <textarea id="alergias" name="alergias" rows="2">{{ paciente.alergias|default:'' }}</textarea>
@@ -65,10 +92,9 @@
             <label for="observaciones">Observaciones:</label>
             <textarea id="observaciones" name="observaciones" rows="3">{{ paciente.observaciones|default:'' }}</textarea>
 
-            <!-- Botón para enviar el formulario -->
             <div class="botones-acciones">
                 <button type="submit" name="accion" value="guardar">
-                    <img src="{% static 'enfermeria/iconoEnfermeria/Guardar.png' %}" alt="Guardar" width="20">
+                    <img src="{% static 'img/Guardar.png' %}" alt="Guardar" width="20">
                     Guardar
                 </button>
             </div>

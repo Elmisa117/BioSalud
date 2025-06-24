@@ -5,10 +5,19 @@
     <meta charset="UTF-8">
     <title>Perfil del Personal</title>
     <link rel="stylesheet" href="{% static 'enfermeria/css/Perfil.css' %}">
+    <style>
+        body {
+            background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
     <div class="perfil-container">
-        <h1>👤 Perfil del Personal</h1>
+        <div class="titulo-perfil">
+            <img src="{% static 'img/Personal.gif' %}" alt="Ícono Personal">
+            <h1>Perfil del Personal</h1>
+        </div>
 
         {% if personal %}
         <div class="datos-personal">

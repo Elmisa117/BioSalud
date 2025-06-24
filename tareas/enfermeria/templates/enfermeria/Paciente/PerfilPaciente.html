@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil del Paciente</title>
+    <link rel="stylesheet" href="{% static 'enfermeria/css/PerfilPaciente.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="perfil-container">
+        <!-- Botón Regresar -->
+        <div class="boton-volver">
+            <a href="{% url 'vista_pacientes_enfermeria' %}" class="btn-volver">
+                <img src="{% static 'img/regresar.png' %}" alt="Regresar">
+                Regresar
+            </a>
+        </div>
+
+        <!-- Encabezado -->
+        <div class="perfil-header">
+            <h1>👤 Perfil del Paciente</h1>
+            <div class="botones-superiores">
+                <!-- Botones de navegación -->
+                <a href="{% url 'registrar_paciente_enfermeria' %}?id={{ paciente.id }}" class="btn">Actualizar</a>
+                <a href="{% url 'ficha_clinico_enfermeria' paciente.id %}" class="btn">Ficha Clínico</a>
+                <a href="{% url 'historial_enfermeria' paciente.id %}" class="btn">Historial</a>
+            </div>
+        </div>
+
+        <!-- Información del paciente -->
+        <div class="info-paciente">
+            <div><strong>ID del Paciente:</strong> {{ paciente.id }}</div>
+            <div><strong>Nombre Completo:</strong> {{ paciente.nombres }} {{ paciente.apellidos }}</div>
+            <div><strong>Documento:</strong> {{ paciente.tipodocumento }} - {{ paciente.numerodocumento }}</div>
+            <div><strong>Fecha de Nacimiento:</strong> {{ paciente.fechanacimiento }}</div>
+            <div><strong>Edad:</strong> {{ paciente.edad }} años</div>
+            <div><strong>Género:</strong>
+                {% if paciente.genero == 'M' %}Masculino
+                {% elif paciente.genero == 'F' %}Femenino
+                {% else %}No especificado
+                {% endif %}
+            </div>
+            <div><strong>Dirección:</strong> {{ paciente.direccion }}</div>
+            <div><strong>Teléfono:</strong> {{ paciente.telefono }}</div>
+            <div><strong>Email:</strong> {{ paciente.email }}</div>
+            <div><strong>Grupo Sanguíneo:</strong> {{ paciente.gruposanguineo }}</div>
+            <div><strong>Alergias:</strong> {{ paciente.alergias }}</div>
+            <div><strong>Observaciones:</strong> {{ paciente.observaciones }}</div>
+        </div>
+    </div>
+</body>
+</html>
