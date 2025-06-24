@@ -6,132 +6,30 @@
   <title>Buscar Paciente</title>
   <link rel="stylesheet" href="{% static 'cajero/css/buscar_paciente.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f5f6;
-      margin: 0;
-      padding: 40px;
-    }
-
-    .contenido-container {
-      max-width: 1000px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .barra-superior {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
-    }
-
-    .barra-superior h2 {
-      margin: 0;
-    }
-
-    .search-form {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .search-form input[type="text"] {
-      padding: 10px 15px;
-      border: 2px solid #14b87c;
-      border-radius: 25px;
-      font-size: 15px;
-      width: 250px;
-      outline: none;
-      transition: border-color 0.3s ease;
-    }
-
-    .search-form input[type="text"]:focus {
-      border-color: #0e8a5f;
-      box-shadow: 0 0 8px rgba(20, 184, 124, 0.4);
-    }
-
-    .search-form button {
-      background-color: #14b87c;
-      border: none;
-      border-radius: 50%;
-      padding: 10px 12px;
-      cursor: pointer;
-      color: white;
-      font-size: 16px;
-      box-shadow: 0 0 8px rgba(20, 184, 124, 0.5);
-      transition: background-color 0.3s ease;
-    }
-
-    .search-form button:hover {
-      background-color: #0e8a5f;
-    }
-
-    .tabla-pacientes {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .tabla-pacientes th,
-    .tabla-pacientes td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
-    }
-
-    .tabla-pacientes th {
-      background-color: #14b87c;
-      color: white;
-    }
-
-    .btn-ver {
-      color: #6a0dad;
-      font-weight: bold;
-      text-decoration: underline;
-      transition: color 0.3s;
-    }
-
-    .btn-ver:hover {
-      color: #9f40ff;
-    }
-
-    .btn-regresar {
-      background-color: #14b87c;
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: background-color 0.3s;
-    }
-
-    .btn-regresar:hover {
-      background-color: #0e8a5f;
-    }
-  </style>
 </head>
 <body>
 
   <div class="contenido-container">
     <a href="{% url 'panel_cajero' %}" class="btn-regresar">⟵ Regresar</a>
+
     <div class="barra-superior">
       <h2>Listado de Pacientes</h2>
-      <form method="GET" class="search-form">
-        <input type="text" name="q" placeholder="Buscar paciente..." value="{{ query|default:'' }}">
-        <button type="submit"><i class="fas fa-search"></i></button>
+      <form method="GET" class="search-form" onsubmit="return false;">
+        <input type="text" name="q" id="campo-busqueda" placeholder="Buscar paciente...">
+        <button id="btnBuscar" type="submit"><i class="fas fa-search"></i></button>
       </form>
+    </div>
+
+    <!-- Historial reciente (se oculta automáticamente cuando no hay búsquedas) -->
+    <div id="historial-busquedas" class="historial-container" style="display: none;">
+      <p class="titulo-historial">Búsquedas recientes:</p>
+      <ul id="lista-historial"></ul>
     </div>
 
     <table class="tabla-pacientes">
       <thead>
         <tr>
-          <th>ID</th>
+          <!-- <th>ID</th> Eliminado -->
           <th>Nombre</th>
           <th>Apellido</th>
           <th>CI</th>
@@ -140,42 +38,15 @@
           <th>Acciones</th>
         </tr>
       </thead>
-      <tbody>
-        {% if pacientes %}
-          {% for paciente in pacientes %}
-            <tr>
-              <td>{{ paciente.pacienteid }}</td>
-              <td>{{ paciente.nombres }}</td>
-              <td>{{ paciente.apellidos }}</td>
-              <td>{{ paciente.numerodocumento }}</td>
-              <td>{{ paciente.fechanacimiento }}</td>
-              <td>{{ paciente.telefono }}</td>
-              <td>
-                <a href="{% url 'ver_paciente' paciente.pacienteid %}" class="btn-ver">Ver</a>
-              </td>
-            </tr>
-          {% endfor %}
-        {% else %}
-          <tr>
-            <td colspan="7" style="text-align: center;">No se encontraron resultados.</td>
-          </tr>
-        {% endif %}
+      <tbody id="resultado-pacientes">
+        <tr>
+          <td colspan="6" style="text-align: center;">Escribe para buscar pacientes...</td>
+        </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Script para enviar el formulario cuando se borra el input -->
-  <script>
-    const campo = document.querySelector('input[name="q"]');
-    campo.addEventListener('input', function () {
-      if (this.value.trim() === '') {
-        this.form.submit();
-      }
-    });
-  </script>
+  <script src="{% static 'cajero/js/buscar_paciente.js' %}"></script>
 
 </body>
 </html>
-
-
-

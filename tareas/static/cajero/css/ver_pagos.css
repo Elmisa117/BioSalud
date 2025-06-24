@@ -96,6 +96,7 @@ table th, table td {
   text-decoration: none;
   display: inline-block;
   margin-top: 10px;
+  transition: background-color 0.3s ease;
 }
 
 .btn-volver:hover,
@@ -104,27 +105,53 @@ table th, table td {
   cursor: pointer;
 }
 
+/* Botones de cuota bloqueada */
+.cuota-bloqueada {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.cuota-bloqueada:hover {
+  background-color: #bbb;
+}
+
+/* ========== TOAST SLIDE-IN ========== */
 .toast {
   position: fixed;
   top: 20px;
-  right: 20px;
-  background-color: #f44336;
-  color: white;
+  right: -350px;
   padding: 12px 20px;
   border-radius: 8px;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 9999;
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 15px;
+  background-color: #e74c3c;
+  color: #fff;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transform: translateX(0);
+  transition: right 0.5s ease, opacity 0.4s ease;
 }
 
-.toast.visible { opacity: 1; }
-.toast.exito { background-color: #4caf50; }
-.toast.informativo { background-color: #2196f3; }
+.toast.visible {
+  right: 20px;
+  opacity: 1;
+}
+
+.toast.exito {
+  background-color: #27ae60;
+}
+
+.toast.info {
+  background-color: #3498db;
+}
+
+.toast .toast-icon {
+  font-size: 18px;
+}
 
 /* ========== MODAL DE PAGO CENTRADO Y ESTILIZADO ========== */
 .modal {
@@ -296,4 +323,34 @@ table th, table td {
     page-break-inside: avoid;
     margin-bottom: 10px;
   }
+}
+/* ========== ANIMACIONES SLIDE DEL TOAST ========== */
+@keyframes slideInRight {
+  0% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.toast.visible {
+  animation: slideInRight 0.5s ease forwards;
+}
+
+.toast.saliendo {
+  animation: slideOutRight 0.5s ease forwards;
 }

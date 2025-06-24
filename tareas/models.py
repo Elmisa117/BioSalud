@@ -20,6 +20,7 @@ class Consultas(models.Model):
     costo = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     estado = models.BooleanField(blank=True, null=True)
+    facturado = models.BooleanField(blank=True, null=True)  # ✅ Campo necesario para facturación
 
     class Meta:
         managed = False
@@ -35,10 +36,12 @@ class Consultaservicios(models.Model):
     observaciones = models.CharField(max_length=255, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     estado = models.BooleanField(blank=True, null=True)
+    facturado = models.BooleanField(blank=True, null=True)  # ✅ NUEVO CAMPO
 
     class Meta:
         managed = False
         db_table = 'consultaservicios'
+
 
 
 class Cuotasplanpago(models.Model):
@@ -163,26 +166,54 @@ class Hospitalizaciones(models.Model):
     observaciones = models.TextField(blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     estado = models.BooleanField(blank=True, null=True)
+    facturado = models.BooleanField(blank=True, null=True)  # ✅ NUEVO CAMPO
 
     class Meta:
         managed = False
         db_table = 'hospitalizaciones'
 
 
+
 class Hospitalizacionservicios(models.Model):
     hospitalizacionservicioid = models.AutoField(primary_key=True)
-    hospitalizacionid = models.ForeignKey(Hospitalizaciones, models.DO_NOTHING, db_column='hospitalizacionid')
-    servicioid = models.ForeignKey('Servicios', models.DO_NOTHING, db_column='servicioid')
+
+    # ✅ Relación con hospitalización
+    hospitalizacionid = models.ForeignKey(
+        'Hospitalizaciones',  # Modelo relacionado
+        models.DO_NOTHING,
+        db_column='hospitalizacionid',
+        related_name='servicios_hospitalizacion'  # Opcional, útil para consultas inversas
+    )
+
+    # ✅ Relación con servicio
+    servicioid = models.ForeignKey(
+        'Servicios',
+        models.DO_NOTHING,
+        db_column='servicioid'
+    )
+
     cantidad = models.IntegerField()
     fechaservicio = models.DateTimeField()
     observaciones = models.CharField(max_length=255, blank=True, null=True)
-    personalsolicitanteid = models.ForeignKey('Personal', models.DO_NOTHING, db_column='personalsolicitanteid', blank=True, null=True)
+
+    # ✅ Personal que solicitó el servicio
+    personalsolicitanteid = models.ForeignKey(
+        'Personal',
+        models.DO_NOTHING,
+        db_column='personalsolicitanteid',
+        blank=True,
+        null=True
+    )
+
     fecharegistro = models.DateTimeField(blank=True, null=True)
     estado = models.BooleanField(blank=True, null=True)
+    facturado = models.BooleanField(blank=True, null=True)  # ✅ ya incluido
 
     class Meta:
         managed = False
         db_table = 'hospitalizacionservicios'
+
+
 
 
 class Metodospago(models.Model):
@@ -229,7 +260,21 @@ class Pacientes(models.Model):
         db_table = 'pacientes'
         unique_together = (('numerodocumento', 'tipodocumento'),)
 
-        
+
+class HuellaDactilar(models.Model):
+    huellaid = models.AutoField(primary_key=True)
+    pacienteid = models.IntegerField()
+    mano = models.CharField(max_length=10)
+    dedo = models.CharField(max_length=20)
+    template = models.BinaryField()
+    fecharegistro = models.DateTimeField()
+
+    class Meta:
+        managed = False  # Impide que Django la modifique
+        db_table = 'huellasdactilares'  # 👈 Exactamente como está en la BD
+
+
+
 class PacienteAudit(models.Model):
     paciente = models.ForeignKey(Pacientes, on_delete=models.CASCADE)
     usuario = models.CharField(max_length=100)
@@ -288,10 +333,10 @@ class Planespago(models.Model):
     fechafin = models.DateField()
     numerocuotas = models.IntegerField()
     montototal = models.DecimalField(max_digits=10, decimal_places=2)
-    interes = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     observaciones = models.CharField(max_length=255, blank=True, null=True)
     fecharegistro = models.DateTimeField(blank=True, null=True)
     estado = models.CharField(max_length=20, blank=True, null=True)
+    frecuencia = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
         managed = False
