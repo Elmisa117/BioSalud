@@ -1,4 +1,5 @@
 from django.urls import path
+from . import views_admin
 from .views_admin import (
     dashboard_view, registrar_personal, listar_personal, editar_personal,
     inactivar_personal, reactivar_personal, eliminar_personal,
@@ -60,4 +61,6 @@ urlpatterns = [
     path('accesos/', control_accesos, name='control_accesos'),
     path('configuraciones/', configuraciones_generales, name='configuraciones_generales'),
     path('backup/', descargar_backup, name='descargar_backup'),
+    path('api/registrar-huella/', views_admin.registrar_huella, name='registrar_huella_api'),   
+    path('api/biometrico/resultado/', views_admin.resultado_biometrico, name='resultado_biometrico'),
 ]

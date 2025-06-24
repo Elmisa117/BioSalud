@@ -221,6 +221,20 @@ class Pacientes(models.Model):
         unique_together = (('numerodocumento', 'tipodocumento'),)
 
 
+class HuellaDactilar(models.Model):
+    huellaid = models.AutoField(primary_key=True)
+    pacienteid = models.IntegerField()
+    mano = models.CharField(max_length=10)
+    dedo = models.CharField(max_length=20)
+    template = models.BinaryField()
+    fecharegistro = models.DateTimeField()
+
+    class Meta:
+        managed = False  # Impide que Django la modifique
+        db_table = 'huellasdactilares'  # 👈 Exactamente como está en la BD
+
+
+
 class PacienteAudit(models.Model):
     paciente = models.ForeignKey(Pacientes, on_delete=models.CASCADE)
     usuario = models.CharField(max_length=100)

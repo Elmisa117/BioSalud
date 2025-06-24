@@ -36,6 +36,26 @@
         <div class="form-field"></div>
         <div class="form-full">
             <button type="submit" class="btn-guardar">Guardar</button>
+            
+{% if pacienteid %}
+<div class="form-full" style="margin-top: 15px;">
+  <p style="color: green; font-weight: bold;">
+    ✅ Paciente registrado con ID: {{ pacienteid }}
+  </p>
+
+  <!-- Botón para intentar abrir la app C# -->
+  <a href="file:///C:/HuellaApp/HuellaHID.exe {{ pacienteid }}"
+   target="_blank"
+   style="padding:10px; background-color:blue; color:white; border-radius:5px; text-decoration:none;">
+   Abrir Capturador de Huella
+</a>
+
+
+  <p style="font-size: small; color: gray; margin-top: 5px;">
+    Si el botón no funciona, abre la aplicación manualmente e ingresa el ID: <strong>{{ pacienteid }}</strong>
+  </p>
+</div>
+{% endif %}
         </div>
     </form>
     <a href="{% url 'listar_pacientes' %}" class="volver">← Volver al listado</a>
