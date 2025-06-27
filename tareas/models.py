@@ -7,6 +7,45 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+from django.db import models
+import secrets
+
+class DispositivoToken(models.Model):
+    token = models.CharField(
+        max_length=40,
+        unique=True,
+        editable=False
+    )
+    rol_autorizado = models.CharField(
+        max_length=50,
+        choices=[
+            ('Administrador', 'Administrador'),
+            ('Doctor', 'Doctor'),
+            ('Enfermeria', 'Enfermeria'),
+            ('Caja', 'Caja')
+        ]
+    )
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    activo = models.BooleanField(default=True)
+    creado = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'dispositivo_token'
+        verbose_name = 'Dispositivo Token'
+        verbose_name_plural = 'Dispositivos Tokens'
+
+    def __str__(self):
+        return f"{self.descripcion or 'Dispositivo'} - {self.rol_autorizado}"
+
+    def save(self, *args, **kwargs):
+        if not self.token:
+            while True:
+                token = secrets.token_hex(20)
+                if not DispositivoToken.objects.filter(token=token).exists():
+                    self.token = token
+                    break
+        super().save(*args, **kwargs)
+
 
 class Consultas(models.Model):
     consultaid = models.AutoField(primary_key=True)

@@ -14,16 +14,16 @@ from django.contrib import messages  # Asegúrate de tener esto arriba
 from django.db.models import Q
 
 from tareas.models import (
-    Pacientes as Paciente,
-    Consultas as Consulta,
-    Consultaservicios as ConsultaServicios,
-    Hospitalizaciones as Hospitalizacion,
-    Hospitalizacionservicios as HospitalizacionServicios,
-    Metodospago as MetodoPago,
-    Facturas as Factura,
-    Pagos as Pago,
-    Planespago as PlanPago,
-    Cuotasplanpago as CuotaPlanPago
+    Pacientes,
+    Consultas,
+    Consultaservicios,
+    Hospitalizaciones,
+    Hospitalizacionservicios,
+    Metodospago,
+    Facturas,
+    Pagos,
+    Planespago,
+    Cuotasplanpago
 )
 
 

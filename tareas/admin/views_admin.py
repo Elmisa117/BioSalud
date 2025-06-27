@@ -23,73 +23,14 @@ from django.db.models import Count, Sum
 from django.db.models.functions import TruncDay
 from django.contrib.sessions.models import Session
 import csv
-#-----------------------------------------------------
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from tareas.models import Pacientes  # Ajusta si tu modelo se llama diferente
-import json
-#------------------------------------------------------------
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from tareas.models import Pacientes, HuellaDactilar
-import base64
 
-@api_view(['POST'])
-def registrar_huella(request):
-    try:
-        print("💻 LLEGÓ EL POST:", request.data)
-        data = request.data
-        pacienteid = data['pacienteid']
-        mano = data['mano']
-        dedo = data['dedo']
-        template = base64.b64decode(data['template'])
-
-        # Verificar que exista el paciente
-        if not Pacientes.objects.filter(pacienteid=pacienteid).exists():
-            return Response({'success': False, 'mensaje': 'Paciente no encontrado'}, status=404)
-
-        # Verificar si ya existe la huella para ese dedo
-        if HuellaDactilar.objects.filter(pacienteid=pacienteid, mano=mano, dedo=dedo).exists():
-            return Response({'success': False, 'mensaje': 'Huella ya registrada para ese dedo.'}, status=400)
-
-        # Crear la huella
-        HuellaDactilar.objects.create(
-            pacienteid=pacienteid,
-            mano=mano,
-            dedo=dedo,
-            template=template,
-            fecharegistro=timezone.now()
-        )
-
-        return Response({'success': True, 'mensaje': 'Huella registrada correctamente.'}, status=201)
-
-    except Exception as e:
-        return Response({'success': False, 'error': str(e)}, status=500)
-
-@csrf_exempt
-def resultado_biometrico(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            paciente_id = data.get("paciente_id")
-            if not paciente_id:
-                return JsonResponse({'status': 'error', 'message': 'paciente_id no enviado'})
-
-            paciente = get_object_or_404(Pacientes, pacienteid=paciente_id)
-
-            url = f"/admin/paciente/{paciente_id}/"  # Ahora apunta al perfil
-            return JsonResponse({
-                'status': 'success',
-                'redirect_url': url
-            })
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
-    return JsonResponse({'status': 'error', 'message': 'Método no permitido'})
-
-#------------------------------------------------------------
+# ---------------------------
+# DASHBOARD
+# ---------------------------
 def dashboard_view(request):
+    """
+    Muestra el menú principal del administrador si el usuario ha iniciado sesión.
+    """
     if 'usuario_id' not in request.session:
         return redirect('login')
 
@@ -99,55 +40,51 @@ def dashboard_view(request):
     }
     return render(request, 'admin/MenuAdmin.html', contexto)
 
-
+# ---------------------------
+# CRUD: PERSONAL
+# ---------------------------
 def registrar_personal(request):
+    """
+    Registra un nuevo miembro del personal.
+    """
     if request.method == 'POST':
         form = PersonalForm(request.POST)
         if form.is_valid():
-            try:
-                # Validar número de documento único
-                if Personal.objects.filter(numerodocumento=form.cleaned_data['numerodocumento']).exists():
-                    messages.error(request, "⚠️ El número de documento ya está registrado.")
-                elif Personal.objects.filter(usuario=form.cleaned_data['usuario']).exists():
-                    messages.error(request, "⚠️ El nombre de usuario ya está en uso.")
-                else:
-                    personal = form.save(commit=False)
-                    personal.contrasena = make_password(personal.contrasena)
-                    personal.save()
-                    messages.success(request, "✅ Personal registrado exitosamente.")
-                    return redirect('registrar_personal')
-            except Exception as e:
-                messages.error(request, f"❌ Error al guardar: {str(e)}")
+            # Validar duplicados
+            if Personal.objects.filter(numerodocumento=form.cleaned_data['numerodocumento']).exists():
+                messages.error(request, "⚠️ El número de documento ya está registrado.")
+            elif Personal.objects.filter(usuario=form.cleaned_data['usuario']).exists():
+                messages.error(request, "⚠️ El nombre de usuario ya está en uso.")
+            else:
+                personal = form.save(commit=False)
+                personal.contrasena = make_password(personal.contrasena)
+                personal.save()
+                messages.success(request, "✅ Personal registrado exitosamente.")
+                return redirect('registrar_personal')
         else:
             messages.error(request, "❌ Revisa los campos del formulario.")
     else:
         form = PersonalForm()
-
-    contexto = {
-        'form': form,
-        'nombre': request.session.get('nombre'),
-        'rol': request.session.get('rol'),
-    }
-    return render(request, 'admin/registrar_personal.html', contexto)
-
+    return render(request, 'admin/registrar_personal.html', {'form': form, 'nombre': request.session.get('nombre'), 'rol': request.session.get('rol')})
 
 def listar_personal(request):
+    """
+    Lista todo el personal.
+    """
     personal = Personal.objects.all()
     return render(request, 'admin/listar_personal.html', {'personal': personal})
 
-
 def editar_personal(request, personal_id):
+    """
+    Edita datos de un miembro del personal.
+    """
     personal = Personal.objects.get(pk=personal_id)
     if request.method == 'POST':
         form = PersonalEditForm(request.POST, instance=personal)
         if form.is_valid():
-            if Personal.objects.exclude(pk=personal_id).filter(
-                numerodocumento=form.cleaned_data['numerodocumento']
-            ).exists():
+            if Personal.objects.exclude(pk=personal_id).filter(numerodocumento=form.cleaned_data['numerodocumento']).exists():
                 messages.error(request, "⚠️ El número de documento ya está registrado.")
-            elif Personal.objects.exclude(pk=personal_id).filter(
-                usuario=form.cleaned_data['usuario']
-            ).exists():
+            elif Personal.objects.exclude(pk=personal_id).filter(usuario=form.cleaned_data['usuario']).exists():
                 messages.error(request, "⚠️ El nombre de usuario ya está en uso.")
             else:
                 obj = form.save(commit=False)
@@ -160,84 +97,66 @@ def editar_personal(request, personal_id):
             messages.error(request, "❌ Revisa los campos del formulario.")
     else:
         form = PersonalEditForm(instance=personal)
-    contexto = {
-        'form': form,
-        'nombre': request.session.get('nombre'),
-        'rol': request.session.get('rol'),
-    }
-    return render(request, 'admin/editar_personal.html', contexto)
-
+    return render(request, 'admin/editar_personal.html', {'form': form, 'nombre': request.session.get('nombre'), 'rol': request.session.get('rol')})
 
 def inactivar_personal(request, personal_id):
-    """Marcar un miembro del personal como inactivo."""
+    """
+    Inactiva un miembro del personal.
+    """
     personal = Personal.objects.get(pk=personal_id)
     personal.estado = False
     personal.save()
     messages.success(request, 'Personal inactivado.')
     return redirect('listar_personal')
 
-
 def reactivar_personal(request, personal_id):
-    """Reactivar un miembro del personal."""
+    """
+    Reactiva un miembro del personal.
+    """
     personal = Personal.objects.get(pk=personal_id)
     personal.estado = True
     personal.save()
     messages.success(request, 'Personal reactivado.')
     return redirect('listar_personal')
 
-
 def eliminar_personal(request, personal_id):
-    """Eliminar definitivamente un registro de personal."""
+    """
+    Elimina un miembro del personal.
+    """
     personal = Personal.objects.get(pk=personal_id)
     personal.delete()
     messages.success(request, 'Personal eliminado.')
     return redirect('listar_personal')
 
-
+# ---------------------------
+# CRUD: PACIENTES
+# ---------------------------
 def registrar_paciente(request):
+    """
+    Registra un nuevo paciente.
+    """
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
             if Pacientes.objects.filter(numerodocumento=form.cleaned_data['numerodocumento']).exists():
                 messages.error(request, "⚠️ El número de documento ya está registrado.")
-                contexto = {
-                    'form': form,
-                    'nombre': request.session.get('nombre'),
-                    'rol': request.session.get('rol')
-                }
-                return render(request, 'admin/registrar_paciente.html', contexto)
             else:
                 paciente = form.save()
-                messages.success(request, "✅ Paciente registrado exitosamente. ID: {}".format(paciente.pacienteid))
-                contexto = {
-                    'form': PacienteForm(),  # Formulario vacío para un nuevo registro
-                    'nombre': request.session.get('nombre'),
-                    'rol': request.session.get('rol'),
-                    'pacienteid': paciente.pacienteid
-                }
-                return render(request, 'admin/registrar_paciente.html', contexto)
+                messages.success(request, f"✅ Paciente registrado exitosamente. ID: {paciente.pacienteid}")
+                form = PacienteForm()  # Reiniciar el formulario
         else:
             messages.error(request, "❌ Revisa los campos del formulario.")
-            contexto = {
-                'form': form,
-                'nombre': request.session.get('nombre'),
-                'rol': request.session.get('rol')
-            }
-            return render(request, 'admin/registrar_paciente.html', contexto)
     else:
         form = PacienteForm()
-        contexto = {
-            'form': form,
-            'nombre': request.session.get('nombre'),
-            'rol': request.session.get('rol')
-        }
-        return render(request, 'admin/registrar_paciente.html', contexto)
-
-
-
+    return render(request, 'admin/registrar_paciente.html', {'form': form, 'nombre': request.session.get('nombre'), 'rol': request.session.get('rol')})
 
 def listar_pacientes(request):
+    """
+    Lista los pacientes con opciones de búsqueda y filtro.
+    """
     pacientes = Pacientes.objects.all()
+
+    # Filtros por búsqueda, sexo y estado
     query = request.GET.get('q')
     if query:
         pacientes = pacientes.filter(nombres__icontains=query) | pacientes.filter(apellidos__icontains=query) | pacientes.filter(numerodocumento__icontains=query)
@@ -246,33 +165,28 @@ def listar_pacientes(request):
     if sexo:
         pacientes = pacientes.filter(genero=sexo)
 
-
     estado = request.GET.get('estado')
     if estado in ['activo', 'inactivo']:
         pacientes = pacientes.filter(estado=(estado == 'activo'))
 
-    paginator = Paginator(pacientes, 10)
+    paginator = Paginator(pacientes, 10)  # 10 por página
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    contexto = {
-        'page_obj': page_obj,
-        'nombre': request.session.get('nombre'),
-        'rol': request.session.get('rol'),
-        'q': query or '',
-        'sexo': sexo or '',
-        'estado': estado or '',
-    }
-    return render(request, 'admin/listar_pacientes.html', contexto)
 
+    return render(request, 'admin/listar_pacientes.html', {'page_obj': page_obj, 'nombre': request.session.get('nombre'), 'rol': request.session.get('rol'), 'q': query or '', 'sexo': sexo or '', 'estado': estado or ''})
 
 def ver_paciente(request, paciente_id):
+    """
+    Muestra los detalles de un paciente.
+    """
     paciente = Pacientes.objects.get(pk=paciente_id)
-    contexto = {'paciente': paciente, 'nombre': request.session.get('nombre'), 'rol': request.session.get('rol')}
-    return render(request, 'admin/ver_paciente.html', contexto)
+    return render(request, 'admin/ver_paciente.html', {'paciente': paciente, 'nombre': request.session.get('nombre'), 'rol': request.session.get('rol')})
 
 def editar_paciente(request, paciente_id):
+    """
+    Edita datos de un paciente.
+    """
     paciente = Pacientes.objects.get(pk=paciente_id)
-    
     if request.method == 'POST':
         form = PacienteEditForm(request.POST, instance=paciente)
         if form.is_valid():
@@ -281,26 +195,11 @@ def editar_paciente(request, paciente_id):
             else:
                 form.save()
                 messages.success(request, "✅ Datos actualizados correctamente.")
-                contexto = {
-                    'form': form,
-                    'nombre': request.session.get('nombre'),
-                    'rol': request.session.get('rol'),
-                    'pacienteid': paciente.pacienteid
-                }
-                return render(request, 'admin/editar_paciente.html', contexto)
         else:
             messages.error(request, "❌ Revisa los campos del formulario.")
     else:
         form = PacienteEditForm(instance=paciente)
-    
-    contexto = {
-        'form': form,
-        'nombre': request.session.get('nombre'),
-        'rol': request.session.get('rol'),
-        'pacienteid': paciente.pacienteid
-    }
-    return render(request, 'admin/editar_paciente.html', contexto)
-
+    return render(request, 'admin/editar_paciente.html', {'form': form, 'nombre': request.session.get('nombre'), 'rol': request.session.get('rol'), 'pacienteid': paciente.pacienteid})
 
 
 def inactivar_paciente(request, paciente_id):
