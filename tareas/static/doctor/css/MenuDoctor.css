@@ -1,0 +1,144 @@
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    display: flex;
+    background-color: #000;
+}
+
+.sidebar {
+    width: 300px;
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 40px 20px;
+    color: white;
+    height: 80vh;
+    margin: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.sidebar .nombre {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.botones-contenedor {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.menu-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.boton, .btn {
+    display: block;
+    padding: 12px;
+    background-color: #0ea5e9;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.boton:hover,
+.btn:hover {
+    background-color: #0369a1;
+}
+
+.cerrar-sesion {
+    background-color: #ef4444;
+}
+
+.cerrar-sesion:hover {
+    background-color: #b91c1c;
+}
+
+.main-panel {
+    flex: 1;
+    padding: 40px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.fichas-contenedor {
+    background: rgba(0, 0, 0, 0.65);
+    width: 100%;
+    height: 80vh;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+}
+
+.fichas-contenedor h1 {
+    font-size: 32px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.tabla-fichas {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+    font-size: 15px;
+}
+
+.tabla-fichas thead {
+    background-color: #0284c7;
+}
+
+.tabla-fichas th,
+.tabla-fichas td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tabla-fichas tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.ficha-emergencia {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.ficha-acciones a {
+    margin-right: 8px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.ficha-acciones .consulta {
+    background-color: #facc15;
+    color: black;
+}
+
+.ficha-acciones .historial {
+    background-color: #8b5cf6;
+    color: white;
+}
