@@ -3,7 +3,6 @@ from . import views_admin
 from .views_admin import (
     dashboard_view, registrar_personal, listar_personal, editar_personal,
     inactivar_personal, reactivar_personal,
-    inactivar_personal, reactivar_personal, eliminar_personal,
     listar_pacientes, ver_paciente,
     editar_paciente, inactivar_paciente, reactivar_paciente,
     exportar_pacientes, listar_especialidades, registrar_especialidad,
@@ -25,7 +24,6 @@ urlpatterns = [
     path('personal/<int:personal_id>/editar/', editar_personal, name='editar_personal'),
     path('personal/<int:personal_id>/inactivar/', inactivar_personal, name='inactivar_personal'),
     path('personal/<int:personal_id>/reactivar/', reactivar_personal, name='reactivar_personal'),
-    path('personal/<int:personal_id>/eliminar/', eliminar_personal, name='eliminar_personal'),
     path('listar_pacientes/', listar_pacientes, name='listar_pacientes'),
     path('paciente/<int:paciente_id>/', ver_paciente, name='ver_paciente'),
     path('paciente/<int:paciente_id>/editar/', editar_paciente, name='editar_paciente'),
