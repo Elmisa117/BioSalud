@@ -97,3 +97,22 @@
     color: #a30000;
     border: 1px solid #ff4d4d;
 }
+/* Estilos para iconos de acciones */
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    margin: 0 2px;
+    border-radius: 4px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+.action-icon.edit { background-color: #0d6efd; }
+.action-icon.delete { background-color: #dc3545; }
+.action-icon.view { background-color: #17a2b8; }
+.action-icon.history { background-color: #6f42c1; }
+.action-icon.inactivate { background-color: #ffc107; color: #000; }
+.action-icon.activate { background-color: #28a745; }
+.action-icon:hover { filter: brightness(1.15); }
