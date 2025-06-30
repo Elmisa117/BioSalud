@@ -34,11 +34,11 @@
                     <td>{{ p.rol }}</td>
                     <td class="{{ p.estado|yesno:'activo,inactivo'|lower }}">{{ p.estado|yesno:"Activo,Inactivo" }}</td>
                     <td>
-                        <a href="{% url 'editar_personal' p.personalid %}" class="action-icon edit" title="Editar"><i class="bi bi-pencil-square"></i></a>
+                        <a href="{% url 'editar_personal' p.personalid %}" class="action-icon edit" title="Editar"><i class="bi bi-pencil-square"></i> Editar</a>
                         {% if p.estado %}
-                        <a href="{% url 'inactivar_personal' p.personalid %}" class="action-icon inactivate" title="Inactivar"><i class="bi bi-x-circle"></i></a>
+                        <a href="{% url 'inactivar_personal' p.personalid %}" class="action-icon inactivate" title="Inactivar"><i class="bi bi-x-circle"></i> Inactivar</a>
                         {% else %}
-                        <a href="{% url 'reactivar_personal' p.personalid %}" class="action-icon activate" title="Reactivar"><i class="bi bi-check-circle"></i></a>
+                        <a href="{% url 'reactivar_personal' p.personalid %}" class="action-icon activate" title="Reactivar"><i class="bi bi-check-circle"></i> Reactivar</a>
                         {% endif %}
                     </td>
                 </tr>
