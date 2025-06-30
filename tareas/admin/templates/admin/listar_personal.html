@@ -40,7 +40,6 @@
                         {% else %}
                         <a href="{% url 'reactivar_personal' p.personalid %}">Reactivar</a>
                         {% endif %}
-                        <a href="{% url 'eliminar_personal' p.personalid %}" onclick="return confirm('¿Eliminar este registro?');">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}
