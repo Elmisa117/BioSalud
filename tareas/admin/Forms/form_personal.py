@@ -1,4 +1,6 @@
 from django import forms
+from django.core.exceptions import ValidationError
+import re
 from tareas.models import Personal, Especialidades
 
 class PersonalForm(forms.ModelForm):
@@ -57,6 +59,49 @@ class PersonalForm(forms.ModelForm):
             widget=forms.Select()
         )
 
+        # Validaciones HTML
+        self.fields['nombres'].widget.attrs.update({
+            'pattern': r'[A-Za-zÁÉÍÓÚáéíóúÑñ ]+',
+            'title': 'Solo letras'
+        })
+        self.fields['apellidos'].widget.attrs.update({
+            'pattern': r'[A-Za-zÁÉÍÓÚáéíóúÑñ ]+',
+            'title': 'Solo letras'
+        })
+        self.fields['numerodocumento'].widget.attrs.update({
+            'pattern': r'\d+',
+            'title': 'Solo dígitos'
+        })
+        self.fields['telefono'].widget.attrs.update({
+            'pattern': r'\d{7,15}',
+            'title': 'Entre 7 y 15 dígitos'
+        })
+        self.fields['email'] = forms.EmailField(required=True, widget=forms.EmailInput())
+
+    # Validaciones del lado del servidor
+    def clean_nombres(self):
+        nombres = self.cleaned_data.get('nombres', '')
+        if not re.fullmatch(r'[A-Za-zÁÉÍÓÚáéíóúÑñ ]+', nombres):
+            raise ValidationError('El nombre debe contener solo letras y espacios.')
+        return nombres
+
+    def clean_apellidos(self):
+        apellidos = self.cleaned_data.get('apellidos', '')
+        if not re.fullmatch(r'[A-Za-zÁÉÍÓÚáéíóúÑñ ]+', apellidos):
+            raise ValidationError('El apellido debe contener solo letras y espacios.')
+        return apellidos
+
+    def clean_numerodocumento(self):
+        numero = self.cleaned_data.get('numerodocumento', '')
+        if not numero.isdigit():
+            raise ValidationError('El número de documento debe ser numérico.')
+        return numero
+
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono', '')
+        if telefono and not re.fullmatch(r'\d{7,15}', telefono):
+            raise ValidationError('El teléfono debe contener entre 7 y 15 dígitos.')
+        return telefono
 class PersonalEditForm(PersonalForm):
     """Formulario para editar personal sin requerir la contraseña"""
     def __init__(self, *args, **kwargs):
