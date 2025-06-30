@@ -30,8 +30,8 @@
                     <td>{{ m.requiereverificacion|yesno:"Sí,No" }}</td>
                     <td class="{{ m.estado|yesno:'activo,inactivo'|lower }}">{{ m.estado|yesno:"Activo,Inactivo" }}</td>
                     <td>
-                        <a href="{% url 'editar_metodo_pago' m.metodopagoid %}">Editar</a>
-                        <a href="{% url 'eliminar_metodo_pago' m.metodopagoid %}" onclick="return confirm('¿Eliminar este método?');">Eliminar</a>
+                        <a href="{% url 'editar_metodo_pago' m.metodopagoid %}" class="action-icon edit" title="Editar"><i class="bi bi-pencil-square"></i></a>
+                        <a href="{% url 'eliminar_metodo_pago' m.metodopagoid %}" class="action-icon delete" title="Eliminar" onclick="return confirm('¿Eliminar este método?');"><i class="bi bi-trash-fill"></i></a>
                     </td>
                 </tr>
                 {% empty %}
