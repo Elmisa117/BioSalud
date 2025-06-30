@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil del Doctor</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap">
+    <link rel="stylesheet" href="{% static 'doctor/css/PerfilDoctor.css' %}">
+    <style>
+        body {
+            background-image: url("{% static 'img/fondo_clinica.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Panel derecho: Perfil del doctor -->
+    <div class="main-panel">
+        <div class="perfil-contenedor">
+            <h1>Perfil del Personal</h1>
+
+            <div class="perfil-datos">
+                <!-- Columna izquierda -->
+                <div class="columna-izquierda">
+                    <p><strong>Nombre Completo:</strong> {{ doctor.apellidos }}, {{ doctor.nombres }}</p>
+                    <p><strong>Documento:</strong> {{ doctor.tipodocumento }} {{ doctor.numerodocumento }}</p>
+                    <p><strong>Fecha de Nacimiento:</strong> 
+                        {% if doctor.fechanacimiento %}
+                            {{ doctor.fechanacimiento|date:"d/m/Y" }}
+                        {% else %}
+                            No registrado
+                        {% endif %}
+                    </p>
+                    <p><strong>Género:</strong> 
+                        {% if doctor.genero == 'M' %}Masculino{% elif doctor.genero == 'F' %}Femenino{% else %}No especificado{% endif %}
+                    </p>
+                    <p><strong>Dirección:</strong> {{ doctor.direccion|default:"No registrado" }}</p>
+                    <p><strong>Teléfono:</strong> {{ doctor.telefono|default:"No registrado" }}</p>
+                </div>
+
+                <!-- Columna derecha -->
+                <div class="columna-derecha">
+                    <p><strong>Email:</strong> {{ doctor.email|default:"No registrado" }}</p>
+                    <p><strong>Fecha de Ingreso:</strong> 
+                        {% if doctor.fechaingreso %}
+                            {{ doctor.fechaingreso|date:"d/m/Y" }}
+                        {% else %}
+                            No registrado
+                        {% endif %}
+                    </p>
+                    <p><strong>Rol:</strong> {{ doctor.rol }}</p>
+                    <p><strong>Especialidad:</strong> 
+                        {% if doctor.especialidadid %}
+                            {{ doctor.especialidadid.nombreespecialidad }}
+                        {% else %}
+                            No asignada
+                        {% endif %}
+                    </p>
+                    <p><strong>Usuario:</strong> {{ doctor.usuario }}</p>
+                    <p><strong>Estado:</strong> 
+                        {% if doctor.estado %}
+                            Activo
+                        {% else %}
+                            Inactivo
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <a href="{% url 'menu_doctor' %}" class="volver-btn">← Volver al menú</a>
+        </div>
+    </div>
+
+</body>
+</html>

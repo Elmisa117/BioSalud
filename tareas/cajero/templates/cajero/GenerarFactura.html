@@ -12,7 +12,7 @@
   <h2>🧾 Formulario de Facturación</h2>
   <p class="subtitulo">Todos los servicios han sido pre-cargados automáticamente</p>
 
-  <form id="formFactura" method="post" action="{% url 'guardar_factura' %}">
+  <form id="formFactura" method="post" action="{% url 'guardar_factura_y_plan' %}">
     {% csrf_token %}
 
     <!-- Datos del paciente -->
@@ -97,7 +97,7 @@
       <div class="fila-doble">
         <div class="campo">
           <label>📌 Frecuencia:</label>
-          <select id="frecuenciaCuota" name="frecuencia">
+          <select id="frecuenciaCuota">
             <option value="mensual">Mensual</option>
             <option value="quincenal">Quincenal</option>
             <option value="semanal">Semanal</option>
@@ -105,11 +105,11 @@
         </div>
         <div class="campo">
           <label>📘 Número de Cuotas:</label>
-          <select id="numeroCuotas" name="numeroCuotas"></select>
+          <select id="numeroCuotas"></select>
         </div>
         <div class="campo">
           <label>📆 Fecha Primera Cuota:</label>
-          <input type="date" id="fechaPrimeraCuota" name="fechaPrimeraCuota">
+          <input type="date" id="fechaPrimeraCuota">
         </div>
         <div class="campo">
           <label>📆 Fecha Última Cuota:</label>

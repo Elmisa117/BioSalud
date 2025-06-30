@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Consulta Médica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'doctor/css/ConsultaDoctor.css' %}">
+    <script src="{% static 'doctor/js/CrearConsultaDoctor.js' %}" defer></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: url("{% static 'img/fondo_clinica.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h1>Nueva Consulta para {{ paciente.nombres }} {{ paciente.apellidos }}</h1>
+
+    {% if ficha_reciente %}
+    <div class="ficha-reciente">
+        <h2>📝 Ficha Clínica Registrada</h2>
+        <p><strong>Paciente:</strong> {{ ficha_reciente.pacienteid.nombres }} {{ ficha_reciente.pacienteid.apellidos }}</p>
+        <p><strong>Registrado por (Enfermería):</strong> {{ ficha_reciente.personalid.nombres }} {{ ficha_reciente.personalid.apellidos }}</p>
+        <p><strong>Fecha de Apertura:</strong> {{ ficha_reciente.fechaapertura|date:"d/m/Y H:i" }}</p>
+        <p><strong>Motivo de Consulta:</strong> {{ ficha_reciente.motivoconsulta }}</p>
+        <p><strong>Diagnóstico Inicial:</strong> {{ ficha_reciente.diagnosticoinicial }}</p>
+        <p><strong>Antecedentes Personales:</strong> {{ ficha_reciente.antecedentespersonales }}</p>
+        <p><strong>Antecedentes Familiares:</strong> {{ ficha_reciente.antecedentesfamiliares }}</p>
+        <p><strong>Signos Vitales:</strong></p>
+        <ul>
+            {% for key, value in ficha_reciente.signosvitales.items %}
+                <li><strong>{{ key|capfirst }}:</strong> {{ value }}</li>
+            {% endfor %}
+        </ul>
+        <p><strong>Tratamiento Sugerido:</strong> {{ ficha_reciente.tratamientosugerido }}</p>
+        <p><strong>Observaciones:</strong> {{ ficha_reciente.observaciones }}</p>
+        <p><strong>Tipo de Atención:</strong> {{ ficha_reciente.tipoatencion }}</p>
+    </div>
+    {% else %}
+    <p style="color: #b91c1c;"><em>No hay ficha clínica reciente registrada para este paciente.</em></p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="motivocita">Motivo de la Consulta:</label>
+        <input type="text" name="motivocita" id="motivocita" required>
+
+        <label for="diagnostico">Diagnóstico:</label>
+        <textarea name="diagnostico" id="diagnostico" rows="4"></textarea>
+
+        <label for="tratamiento">Tratamiento:</label>
+        <textarea name="tratamiento" id="tratamiento" rows="4"></textarea>
+
+        <label for="observaciones">Observaciones:</label>
+        <textarea name="observaciones" id="observaciones" rows="3"></textarea>
+
+        <label for="costo">Costo de la Consulta ($):</label>
+        <input type="number" step="0.01" name="costo" id="costo">
+
+        <label for="estado">¿Consulta Activa?</label>
+        <select name="estado" id="estado">
+            <option value="True">Activa</option>
+            <option value="False">Cerrada</option>
+        </select>
+
+        <div class="btn-group">
+            <button type="submit">Guardar Consulta</button>
+            <a href="{% url 'perfil_paciente_doctor' paciente.pacienteid %}" class="cancelar">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

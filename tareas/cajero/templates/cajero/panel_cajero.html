@@ -41,7 +41,9 @@
     <div class="contenedor-reportes">
       <!-- Columna izquierda -->
       <div class="columna izquierda">
-        <a href="#"><button class="reporte-btn">🧾 Reporte Diario de Caja</button></a>
+        <button id="daily-report-btn" class="reporte-btn">
+          <i class="fas fa-file-alt"></i> Reporte Diario de Caja
+        </button>
         <a href="#"><button class="reporte-btn">📈 Reporte de Cuotas Pagadas</button></a>
         <a href="#"><button class="reporte-btn">⏰ Reporte de Cuotas Pendientes o Vencidas</button></a>
       </div>
@@ -60,5 +62,5 @@
   </div>
 
   <script src="{% static 'cajero/js/panel_cajero.js' %}"></script>
-</body>
-</html>
+  <script>
+    
