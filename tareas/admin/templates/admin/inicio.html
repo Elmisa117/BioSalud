@@ -2,42 +2,76 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'admin/css/dashboard_roles.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const pagosMetodo = {{ pagos_metodo_json|safe }};
+  const diagnosticosData = {{ diagnosticos_json|safe }};
+  const actividadData = {{ actividad_json|safe }};
+  const accionesData = {{ acciones_json|safe }};
+  const camasOcupadas = {{ camas_ocupadas }};
+  const camasDisponibles = {{ camas_disponibles }};
+</script>
+<script src="{% static 'admin/js/dashboard.js' %}"></script>
 {% endblock %}
 
 {% block title %}Dashboard - BioSalud{% endblock %}
 
 {% block contenido %}
-<div class="dashboard-roles">
-    <div class="role-card role-caja">
-        <h3><i class="bi bi-cash-stack icon"></i> Caja</h3>
-        <ul>
-            <li>Facturas hoy: <span class="value">{{ caja_facturas }}</span></li>
-            <li>Pagos hoy: <span class="value">{{ caja_pagos }}</span></li>
-            <li>Total recaudado: <span class="value">{{ caja_total }}</span></li>
-        </ul>
+<div class="dashboard-container">
+  <div class="stats-cards">
+    <div class="card-role caja">
+      <h4><i class="bi bi-cash-stack"></i> Caja</h4>
+      <p class="stat">Facturas hoy: {{ caja_facturas_hoy }}</p>
+      <p class="stat">Recaudado hoy: {{ caja_total_hoy }}</p>
+      <p class="stat">Recaudado semana: {{ caja_total_semana }}</p>
+      <p class="stat">Recaudado mes: {{ caja_total_mes }}</p>
+      <canvas id="metodoPagoChart" height="180"></canvas>
     </div>
-    <div class="role-card role-enfermeria">
-        <h3><i class="bi bi-clipboard-pulse icon"></i> Enfermería</h3>
-        <ul>
-            <li>Fichas creadas hoy: <span class="value">{{ enfermeria_fichas }}</span></li>
-            <li>Pacientes hospitalizados: <span class="value">{{ enfermeria_hospitalizados }}</span></li>
-        </ul>
+
+    <div class="card-role enfermeria">
+      <h4><i class="bi bi-clipboard-pulse"></i> Enfermería</h4>
+      <p class="stat">Fichas hoy: {{ enf_fichas_hoy }}</p>
+      <p class="stat">Fichas semana: {{ enf_fichas_semana }}</p>
+      <p class="stat">Fichas mes: {{ enf_fichas_mes }}</p>
+      <p class="stat">Pacientes hospitalizados: {{ hospitalizados }}</p>
+      <p class="stat">Signos críticos hoy: {{ signos_criticos }}</p>
+      <canvas id="camasChart" height="180"></canvas>
     </div>
-    <div class="role-card role-doctor">
-        <h3><i class="bi bi-stethoscope icon"></i> Doctor</h3>
-        <ul>
-            <li>Consultas hoy: <span class="value">{{ doctor_consultas }}</span></li>
-            <li>Doctores activos: <span class="value">{{ doctor_activos }}</span></li>
-            <li>Top diagnósticos:</li>
-            <ul class="diag-list">
-                {% for d in diagnosticos_top %}
-                    <li>{{ d.diagnostico }} ({{ d.total }})</li>
-                {% empty %}
-                    <li>Sin datos</li>
-                {% endfor %}
-            </ul>
-        </ul>
+
+    <div class="card-role doctor">
+      <h4><i class="bi bi-stethoscope"></i> Doctor</h4>
+      <p class="stat">Consultas hoy: {{ cons_hoy }}</p>
+      <p class="stat">Consultas semana: {{ cons_semana }}</p>
+      <p class="stat">Consultas mes: {{ cons_mes }}</p>
+      <p class="stat">Doctores activos: {{ doctores_activos }}</p>
+      <p class="stat">Consultas sin cerrar: {{ consultas_abiertas }}</p>
+      <canvas id="diagChart" height="180"></canvas>
     </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-box">
+      <h5>Actividad por hora</h5>
+      <canvas id="actividadChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h5>Acciones por Rol</h5>
+      <canvas id="rolChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h5>Top pacientes de la semana</h5>
+      <ul class="top-pacientes">
+        {% for p in pacientes_top %}
+          <li>{{ p.pacienteid__nombres }} {{ p.pacienteid__apellidos }} ({{ p.total }})</li>
+        {% empty %}
+          <li>Sin datos</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 </div>
 {% endblock %}

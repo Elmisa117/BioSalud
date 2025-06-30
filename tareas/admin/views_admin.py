@@ -21,9 +21,10 @@ from django.core.management import call_command
 from io import StringIO
 from django.utils import timezone
 from django.db.models import Count, Sum
-from django.db.models.functions import TruncDay
+from django.db.models.functions import TruncDay, ExtractHour
 from django.contrib.sessions.models import Session
 import csv
+import json
 
 # ---------------------------
 # DASHBOARD
@@ -668,40 +669,95 @@ def descargar_backup(request):
 
 
 def inicio_admin(request):
-    """Dashboard con indicadores por rol."""
+    """Dashboard con indicadores y gráficas por rol."""
     if 'usuario_id' not in request.session:
         return redirect('login')
 
     hoy = timezone.now().date()
+    inicio_semana = hoy - timezone.timedelta(days=hoy.weekday())
+    inicio_mes = hoy.replace(day=1)
 
+    # --- Caja ---
     facturas_hoy = Facturas.objects.filter(fechaemision__date=hoy).count()
-    pagos_qs = Pagos.objects.filter(fechapago__date=hoy)
-    pagos_hoy = pagos_qs.count()
-    total_recaudado = pagos_qs.aggregate(total=Sum('monto'))['total'] or 0
+    pagos_hoy_qs = Pagos.objects.filter(fechapago__date=hoy)
+    total_hoy = pagos_hoy_qs.aggregate(total=Sum('monto'))['total'] or 0
+    total_semana = (Pagos.objects
+                    .filter(fechapago__date__gte=inicio_semana, fechapago__date__lte=hoy)
+                    .aggregate(total=Sum('monto'))['total'] or 0)
+    total_mes = (Pagos.objects
+                 .filter(fechapago__date__gte=inicio_mes, fechapago__date__lte=hoy)
+                 .aggregate(total=Sum('monto'))['total'] or 0)
+    pagos_metodo = list(pagos_hoy_qs.values('metodopagoid__nombre')
+                                      .annotate(total=Sum('monto'))
+                                      .order_by('metodopagoid__nombre'))
 
+    # --- Enfermería ---
     fichas_hoy = Fichaclinico.objects.filter(fechaapertura__date=hoy).count()
+    fichas_semana = Fichaclinico.objects.filter(fechaapertura__date__gte=inicio_semana).count()
+    fichas_mes = Fichaclinico.objects.filter(fechaapertura__date__gte=inicio_mes).count()
     hospitalizados = Hospitalizaciones.objects.filter(fechaalta__isnull=True).count()
+    total_camas = Habitaciones.objects.count()
+    camas_disponibles = Habitaciones.objects.filter(disponible=True).count()
+    camas_ocupadas = total_camas - camas_disponibles
+    signos_criticos = Fichaclinico.objects.filter(fechaapertura__date=hoy, signosvitales__critico=True).count()
 
-    consultas_qs = Consultas.objects.filter(fechaconsulta__date=hoy)
-    consultas_hoy = consultas_qs.count()
+    # --- Doctor ---
+    consultas_hoy_qs = Consultas.objects.filter(fechaconsulta__date=hoy)
+    consultas_hoy = consultas_hoy_qs.count()
+    consultas_semana = Consultas.objects.filter(fechaconsulta__date__gte=inicio_semana).count()
+    consultas_mes = Consultas.objects.filter(fechaconsulta__date__gte=inicio_mes).count()
     doctores_activos = Personal.objects.filter(rol__iexact='Doctor', estado=True).count()
-    diagnosticos_top = (consultas_qs.exclude(diagnostico__isnull=True)
-                                     .exclude(diagnostico='')
-                                     .values('diagnostico')
-                                     .annotate(total=Count('diagnostico'))
-                                     .order_by('-total')[:5])
+    diagnosticos_mes_qs = (Consultas.objects.filter(fechaconsulta__date__gte=inicio_mes)
+                           .exclude(diagnostico__isnull=True)
+                           .exclude(diagnostico='')
+                           .values('diagnostico')
+                           .annotate(total=Count('diagnostico'))
+                           .order_by('-total')[:5])
+    consultas_abiertas = Consultas.objects.filter(estado=False).count()
+
+    # --- Reportes adicionales ---
+    actividad_horas = list(Consultas.objects.filter(fechaconsulta__date=hoy)
+                                             .annotate(hora=ExtractHour('fechaconsulta'))
+                                             .values('hora')
+                                             .annotate(total=Count('consultaid'))
+                                             .order_by('hora'))
+    acciones_caja = pagos_hoy_qs.count() + facturas_hoy
+    acciones_enf = fichas_hoy
+    acciones_doc = consultas_hoy
+    pacientes_top_qs = (Consultas.objects
+                        .filter(fechaconsulta__date__gte=inicio_semana)
+                        .values('pacienteid__nombres', 'pacienteid__apellidos')
+                        .annotate(total=Count('consultaid'))
+                        .order_by('-total')[:5])
 
     contexto = {
         'nombre': request.session.get('nombre'),
         'rol': request.session.get('rol'),
-        'caja_facturas': facturas_hoy,
-        'caja_pagos': pagos_hoy,
-        'caja_total': total_recaudado,
-        'enfermeria_fichas': fichas_hoy,
-        'enfermeria_hospitalizados': hospitalizados,
-        'doctor_consultas': consultas_hoy,
-        'doctor_activos': doctores_activos,
-        'diagnosticos_top': diagnosticos_top,
+        # Caja
+        'caja_total_hoy': total_hoy,
+        'caja_total_semana': total_semana,
+        'caja_total_mes': total_mes,
+        'caja_facturas_hoy': facturas_hoy,
+        'pagos_metodo_json': json.dumps({p['metodopagoid__nombre']: float(p['total']) for p in pagos_metodo}),
+        # Enfermería
+        'enf_fichas_hoy': fichas_hoy,
+        'enf_fichas_semana': fichas_semana,
+        'enf_fichas_mes': fichas_mes,
+        'hospitalizados': hospitalizados,
+        'camas_ocupadas': camas_ocupadas,
+        'camas_disponibles': camas_disponibles,
+        'signos_criticos': signos_criticos,
+        # Doctor
+        'cons_hoy': consultas_hoy,
+        'cons_semana': consultas_semana,
+        'cons_mes': consultas_mes,
+        'doctores_activos': doctores_activos,
+        'diagnosticos_json': json.dumps({d['diagnostico']: d['total'] for d in diagnosticos_mes_qs}),
+        'consultas_abiertas': consultas_abiertas,
+        # Reportes
+        'actividad_json': json.dumps({str(a['hora']): a['total'] for a in actividad_horas}),
+        'acciones_json': json.dumps({'Caja': acciones_caja, 'Enfermería': acciones_enf, 'Doctor': acciones_doc}),
+        'pacientes_top': pacientes_top_qs,
     }
 
     return render(request, 'admin/inicio.html', contexto)
