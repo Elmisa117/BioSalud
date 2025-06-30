@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -54,6 +53,7 @@
                         placeholder="Buscar pacientes..."
                         value="{{ search_query|default:'' }}"
                         class="search-input"
+                        autocomplete="off"
                     />
                     <button type="submit" class="search-button">
                         <i class="fas fa-search"></i>
@@ -77,12 +77,9 @@
                     {% if pacientes %}
                         {% for paciente in pacientes %}
                             <tr>
-                                <td>{{ paciente.apellidos }}, {{ paciente.nombres }}</td>
+                                <td>{{ paciente.nombres }} {{ paciente.apellidos }}</td>
                                 <td>{{ paciente.numerodocumento }}</td>
                                 <td>
-                                    {% comment %}
-                                    Si tienes el campo 'ultima_visita' en el queryset, úsalo aquí
-                                    {% endcomment %}
                                     {% if paciente.ultima_visita %}
                                         {{ paciente.ultima_visita|date:"d/m/Y" }}
                                     {% else %}
@@ -90,11 +87,8 @@
                                     {% endif %}
                                 </td>
                                 <td class="actions">
-                                    <a href="{% url 'consulta_paciente' paciente.pacienteid %}" class="action-btn view">
-                                        <i class="fas fa-eye"></i> Ver
-                                    </a>
-                                    <a href="{% url 'historial_paciente' paciente.pacienteid %}" class="action-btn history">
-                                        <i class="fas fa-history"></i> Historial
+                                    <a href="{% url 'perfil_paciente_doctor' paciente.pacienteid %}" class="action-btn view">
+                                    <i class="fas fa-eye"></i> Perfil
                                     </a>
                                 </td>
                             </tr>
@@ -134,7 +128,6 @@
                 {% endif %}
             </div>
         {% endif %}
-
     </div>
 
     <script src="{% static 'doctor/js/PacienteDoctor.js' %}"></script>

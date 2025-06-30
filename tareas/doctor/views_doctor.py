@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -19,28 +19,19 @@ def validar_doctor(request):
             request.session.get('rol') == 'Doctor')
 
 def menu_doctor(request):
-    """Vista principal del panel del doctor"""
     if not validar_doctor(request):
         return redirect('login')
 
-    # Obtener datos del doctor desde sesión
     personal_id = request.session.get('usuario_id')
     nombre_completo = request.session.get('nombre', 'Doctor/a')
-    
-    # Obtener estadísticas recientes
+
     ahora = timezone.now()
     hace_24_horas = ahora - timedelta(hours=24)
-    
-    fichas_24h = Fichaclinico.objects.filter(
-        personalid=personal_id,
-        fechaapertura__gte=hace_24_horas
-    )
-    
     consultas_recientes = Consultas.objects.filter(
         personalid=personal_id,
         fechaconsulta__gte=hace_24_horas
     ).count()
-    
+
     pacientes_hospitalizados = Hospitalizaciones.objects.filter(
         personalid=personal_id,
         estado=True
@@ -48,7 +39,6 @@ def menu_doctor(request):
 
     return render(request, 'doctor/MenuDoctor.html', {
         'nombre_completo': nombre_completo,
-        'fichas': fichas_24h,
         'total_consultas': consultas_recientes,
         'total_hospitalizados': pacientes_hospitalizados
     })
@@ -91,7 +81,7 @@ def ver_pacientes(request):
         print(f"Error al obtener pacientes: {e}")
         return redirect('menu_doctor')
     
-# Vista de perfil del doctor (ejemplo adicional)
+
 # Vista de perfil del doctor
 def perfil_doctor(request):
     """Muestra el perfil del doctor actual con estadísticas y últimas consultas"""
@@ -132,7 +122,31 @@ def perfil_doctor(request):
 
     except Personal.DoesNotExist:
         return redirect('menu_doctor')
+    
+# esta es la funcion de PerfilPacienteDoctor
+def perfil_paciente_doctor(request, pacienteid):
+    """Muestra el perfil completo del paciente y sus fichas clínicas recientes"""
+    if not validar_doctor(request):
+        return redirect('login')
 
+    try:
+        paciente = get_object_or_404(Pacientes, pacienteid=pacienteid)
+
+        # Filtrar fichas clínicas de las últimas 24 horas del mismo paciente
+        hace_24h = timezone.now() - timedelta(hours=24)
+        fichas_recientes = Fichaclinico.objects.filter(
+            pacienteid=paciente,
+            fechaapertura__gte=hace_24h
+        ).order_by('-fechaapertura')
+
+        return render(request, 'doctor/PacienteDoctor/PerfilPacienteDoctor.html', {
+            'paciente': paciente,
+            'fichas_recientes': fichas_recientes
+        })
+
+    except Exception as e:
+        print(f"[Error] perfil_paciente_doctor: {e}")
+        return redirect('ver_pacientes')
 # Ver hospitalizaciones desde el módulo doctor
 def ver_hospitalizaciones(request):
     """Muestra las hospitalizaciones activas del doctor"""
@@ -189,6 +203,7 @@ def consulta_paciente(request, id):
     except Pacientes.DoesNotExist:
         return redirect('ver_pacientes')
 
+
 # Vista para ver historial del paciente
 def historial_paciente(request, id):
     """Muestra el historial completo del paciente"""
@@ -236,23 +251,24 @@ def logout_view(request):
     return redirect('login')
 
 # Vista para manejar las fichas clínicas del doctor
+
 def ficha_clinico_doctor(request):
     """Gestiona la creación y visualización de fichas clínicas"""
     if not validar_doctor(request):
         return redirect('login')
-    
+
     personal_id = request.session.get('usuario_id')
-    
+
     if request.method == 'POST':
         try:
             paciente_id = request.POST.get('paciente_id')
-            motivo = request.POST.get('motivo')
-            tipo = request.POST.get('tipo')
-            
-            paciente = Pacientes.objects.get(pacienteid=paciente_id)
-            personal = Personal.objects.get(personal_id=personal_id)
-            
-            ficha = Fichaclinico(
+            motivo = request.POST.get('motivo', '').strip()
+            tipo = request.POST.get('tipo', '').strip()
+
+            paciente = get_object_or_404(Pacientes, pacienteid=paciente_id)
+            personal = get_object_or_404(Personal, personalid=personal_id)
+
+            ficha = Fichaclinico.objects.create(
                 pacienteid=paciente,
                 personalid=personal,
                 fechaapertura=timezone.now(),
@@ -260,26 +276,92 @@ def ficha_clinico_doctor(request):
                 tipoatencion=tipo,
                 estado="Activa",
             )
-            ficha.save()
-            
-            # Devolver respuesta JSON para AJAX
+
             fichas_24h = Fichaclinico.objects.filter(
-                personalid=personal_id,
-                fechaapertura__gte=timezone.now()-timedelta(hours=24)
-            )
+                personalid=personal,
+                fechaapertura__gte=timezone.now() - timedelta(hours=24)
+            ).select_related('pacienteid')
+
             html = render_to_string('doctor/tabla_fichas.html', {'fichas': fichas_24h})
             return JsonResponse({'status': 'success', 'html': html})
-            
+
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
-    
-    # GET request: Mostrar fichas recientes
+
+    # GET: Mostrar fichas creadas en las últimas 24 horas
     fichas_24h = Fichaclinico.objects.filter(
         personalid=personal_id,
-        fechaapertura__gte=timezone.now()-timedelta(hours=24)
+        fechaapertura__gte=timezone.now() - timedelta(hours=24)
     ).select_related('pacienteid')
-    
+
     return render(request, 'doctor/ficha_clinico_doctor.html', {
         'fichas': fichas_24h,
-        'pacientes': Pacientes.objects.all()  # Para el select de pacientes
+        'pacientes': Pacientes.objects.all()  # Para select en formulario
     })
+
+#funcion de perfil del paciente para el modulo de doctor
+def crear_consulta_doctor(request, pacienteid):
+    if not validar_doctor(request):
+        return redirect('login')
+
+    paciente = get_object_or_404(Pacientes, pacienteid=pacienteid)
+    personal_id = request.session.get('usuario_id')
+
+    # Obtenemos la ficha más reciente en las últimas 24h sin filtrar por rol
+    ficha_reciente = (
+        Fichaclinico.objects
+        .filter(
+            pacienteid=paciente,
+            fechaapertura__gte=timezone.now() - timedelta(hours=24)
+        )
+        .order_by('-fechaapertura')
+        .select_related('personalid')
+        .first()
+    )
+
+    if request.method == 'POST':
+        motivocita = request.POST.get('motivocita', '').strip()
+        diagnostico = request.POST.get('diagnostico', '').strip()
+        tratamiento = request.POST.get('tratamiento', '').strip()
+        observaciones = request.POST.get('observaciones', '').strip()
+        estado = request.POST.get('estado', 'True') == 'True'
+        costo = request.POST.get('costo')
+
+        if motivocita and diagnostico and tratamiento:
+            Consultas.objects.create(
+                pacienteid=paciente,
+                personalid_id=personal_id,
+                fechaconsulta=timezone.now(),
+                motivocita=motivocita,
+                diagnostico=diagnostico,
+                tratamiento=tratamiento,
+                observaciones=observaciones,
+                estado=estado,
+                costo=costo
+            )
+            return redirect('perfil_paciente_doctor', pacienteid=pacienteid)
+
+    return render(request, 'doctor/PacienteDoctor/ConsultaDoctor.html', {
+        'paciente': paciente,
+        'ficha_reciente': ficha_reciente
+    })
+
+#actualizar posisiblemente lo eliminemos 
+
+def actualizar_paciente_doctor(request, pacienteid):
+    if not validar_doctor(request):
+        return redirect('login')
+
+    paciente = get_object_or_404(Pacientes, pacienteid=pacienteid)
+
+    if request.method == 'POST':
+        paciente.nombres = request.POST.get('nombres', paciente.nombres)
+        paciente.apellidos = request.POST.get('apellidos', paciente.apellidos)
+        paciente.numerodocumento = request.POST.get('numerodocumento', paciente.numerodocumento)
+        paciente.telefono = request.POST.get('telefono', paciente.telefono)
+        paciente.email = request.POST.get('email', paciente.email)
+        paciente.direccion = request.POST.get('direccion', paciente.direccion)
+        paciente.save()
+        return redirect('perfil_paciente_doctor', pacienteid=pacienteid)
+
+    return render(request, 'doctor/ActualizarPaciente.html', {'paciente': paciente})
