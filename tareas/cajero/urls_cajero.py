@@ -15,7 +15,7 @@ urlpatterns = [
 
     # 📄 Facturación
     path('generar_factura/<int:paciente_id>/', views_cajero.generar_factura, name='generar_factura'),
-    path('guardar_factura/', views_cajero.guardar_factura_y_plan, name='guardar_factura'),
+    path('guardar_factura/', views_cajero.guardar_factura_y_plan, name='guardar_factura_y_plan'),
     path('verificar_servicios/<int:paciente_id>/', views_cajero.verificar_servicios_json, name='verificar_servicios'),
     path('api/factura2/<int:paciente_id>/', views_cajero.api_factura, name='api_factura'),
 
@@ -25,5 +25,10 @@ urlpatterns = [
 
     # 💰 Pagos y anulación
     path('registrar_pago_cuota/', views_cajero.registrar_pago_cuota, name='registrar_pago_cuota'),
-    path('factura/<int:factura_id>/anular/', views_cajero.anular_factura, name='anular_factura'),
+
+    # 🔍 Detalles de factura (dos rutas disponibles por compatibilidad)
+    path('factura/<int:factura_id>/detalle/', views_cajero.factura_detalle, name='factura_detalle'),
+    path('factura_detalle/<int:factura_id>/', views_cajero.factura_detalle, name='factura_detalle_directa'),
+
+    
 ]

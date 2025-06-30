@@ -36,7 +36,7 @@ def resultado_biometrico(request):
             # Generar URL según rol
             rol_urls = {
                 "Administrador": f"/admin/paciente/{paciente_id}/",
-                "Doctor": f"/Doctor/pacientes/perfil/{paciente_id}/",
+                "Doctor": f"/doctor/paciente/{paciente_id}/perfil/",
                 "Enfermeria": f"/enfermeria/pacientes/perfil/{paciente_id}/",
                 "Caja": f"/cajero/ver_paciente/{paciente_id}/"
             }

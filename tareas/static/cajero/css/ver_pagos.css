@@ -1,13 +1,16 @@
 body {
   font-family: Arial, sans-serif;
   margin: 30px;
-  background-color: #f9f9f9;
+  background-image: url('/static/img/fondo_clinica.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 h2,
 .titulo-centrado {
   text-align: center;
-  color: #333;
+  color: #111827;
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 20px;
@@ -18,6 +21,7 @@ h2,
   padding: 30px;
   margin: auto;
   max-width: 950px;
+  border-radius: 16px;
 }
 
 .bloque-unico {
@@ -55,7 +59,7 @@ h2,
   font-weight: bold;
   text-decoration: underline;
   font-size: 18px;
-  color: #222;
+  color: #111827;
 }
 
 table {
@@ -88,11 +92,11 @@ table th, table td {
 
 .btn-volver,
 .btn-pagar {
-  background-color: #007bff;
+  background-color: #14b87c;
   color: white;
   padding: 8px 15px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   text-decoration: none;
   display: inline-block;
   margin-top: 10px;
@@ -101,7 +105,7 @@ table th, table td {
 
 .btn-volver:hover,
 .btn-pagar:hover {
-  background-color: #0056b3;
+  background-color: #0e8a5f;
   cursor: pointer;
 }
 
@@ -116,7 +120,7 @@ table th, table td {
   background-color: #bbb;
 }
 
-/* ========== TOAST SLIDE-IN ========== */
+/* TOAST SLIDE-IN */
 .toast {
   position: fixed;
   top: 20px;
@@ -153,7 +157,7 @@ table th, table td {
   font-size: 18px;
 }
 
-/* ========== MODAL DE PAGO CENTRADO Y ESTILIZADO ========== */
+/* MODAL PAGO */
 .modal {
   display: none;
   position: fixed;
@@ -217,7 +221,7 @@ table th, table td {
 }
 
 .btn-confirmar {
-  background-color: #28a745;
+  background-color: #14b87c;
   color: white;
 }
 
@@ -226,7 +230,7 @@ table th, table td {
   color: white;
 }
 
-/* ============== IMPRESIÓN OPTIMIZADA ============== */
+/* IMPRESIÓN */
 @media print {
   html, body {
     font-size: 10pt !important;
@@ -272,33 +276,13 @@ table th, table td {
     border: 1px solid #ddd !important;
   }
 
-  table th:nth-child(1),
-  table td:nth-child(1) { width: 35px !important; white-space: nowrap; }
-  table th:nth-child(2),
-  table td:nth-child(2) { width: 90px !important; white-space: nowrap; }
-  table th:nth-child(3),
-  table td:nth-child(3) { width: 60px !important; white-space: nowrap; }
-  table th:nth-child(4),
-  table td:nth-child(4) { width: 70px !important; white-space: nowrap; }
-  table th:nth-child(5),
-  table td:nth-child(5) { width: 70px !important; white-space: nowrap; }
-  table th:nth-child(6),
-  table td:nth-child(6) { width: 75px !important; white-space: nowrap; }
-
   h2, .titulo-centrado {
     font-size: 15pt !important;
     margin-bottom: 10px !important;
-    page-break-after: avoid;
   }
 
   .titulo-plan {
     font-size: 13pt !important;
-    margin: 8px 0 12px 0 !important;
-  }
-
-  .columna p {
-    font-size: 10pt !important;
-    margin: 3px 0 !important;
   }
 
   .estado-Pendiente,
@@ -312,19 +296,9 @@ table th, table td {
     size: A4 portrait;
     margin: 5mm;
   }
-
-  .grid-datos {
-    display: block !important;
-    page-break-before: avoid;
-    page-break-after: avoid;
-  }
-
-  .columna {
-    page-break-inside: avoid;
-    margin-bottom: 10px;
-  }
 }
-/* ========== ANIMACIONES SLIDE DEL TOAST ========== */
+
+/* ANIMACIONES */
 @keyframes slideInRight {
   0% {
     transform: translateX(120%);
