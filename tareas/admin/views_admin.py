@@ -270,6 +270,7 @@ def registrar_especialidad(request):
 
 
 def editar_especialidad(request, especialidad_id):
+    """Editar los datos de una especialidad médica."""
     especialidad = Especialidades.objects.get(pk=especialidad_id)
     if request.method == 'POST':
         form = EspecialidadForm(request.POST, instance=especialidad)
@@ -281,7 +282,8 @@ def editar_especialidad(request, especialidad_id):
             messages.error(request, 'Revisa los campos del formulario.')
     else:
         form = EspecialidadForm(instance=especialidad)
-    return render(request, 'admin/registrar_especialidad.html', {
+
+    return render(request, 'admin/editar_especialidad.html', {
         'form': form,
         'nombre': request.session.get('nombre'),
         'rol': request.session.get('rol'),
