@@ -2,7 +2,8 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f5f6;
+  background: url('/static/img/fondo_clinica.jpg') no-repeat center center fixed;
+  background-size: cover;
   display: flex;
   height: 100vh;
 }
