@@ -1,12 +1,19 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenido Doctor</title>
+    <title>Panel del Doctor</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap">
+    <link rel="stylesheet" href="{% static 'doctor/css/MenuDoctor.css' %}">
     <style>
         body {
+            background-image: url("{% static 'img/fondo_clinica.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             margin: 0;
             font-family: 'Roboto', sans-serif;
             background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
@@ -49,11 +56,68 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
-</head>
+  < / head>
 <body>
-    <div class="panel">
-        <h1>Bienvenido, Doctor</h1>
-        <p>Has ingresado exitosamente a tu panel de control.</p>
+
+    <!-- Panel izquierdo con nombre y acciones -->
+    <div class="sidebar">
+        <h2>Bienvenido/a</h2>  <!-- Bienvenida -->
+        <div class="nombre">Dr: {{ nombre_completo }}</div>  <!-- Solo se muestra el nombre completo una vez, con el prefijo Dr: -->
+        
+        <div class="botones-contenedor">
+            <div class="menu-botones">
+                <a href="{% url 'ver_pacientes' %}" class="btn btn-pacientes">Pacientes</a>
+                <a href="{% url 'ver_hospitalizaciones' %}" class="boton">🏥 Hospitalización</a>
+                <a href="{% url 'perfil_doctor' %}" class="boton">👤 Perfil</a>
+                <a href="{% url 'logout' %}" class="boton cerrar-sesion">🚪 Cerrar Sesión</a>
+            </div>
+        </div>
     </div>
+
+    <!-- Panel derecho: Ficha Clínica con formato de tabla -->
+    <div class="main-panel">
+        <div class="fichas-contenedor">
+            <h1>Ficha Clínica</h1>
+
+            <table class="tabla-fichas">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Motivo</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if fichas %}
+                        {% for ficha in fichas %}
+                            <tr class="{% if ficha.tipo == 'Emergencia' %}ficha-emergencia{% endif %}">
+                                <td><strong>{{ ficha.pacienteid.nombres }} {{ ficha.pacienteid.apellidos }}</strong></td>
+                                <td>{{ ficha.motivoconsulta }}</td>
+                                <td>{{ ficha.tipoatencion }}</td>
+                                <td>
+                                    {% if ficha.estado == 'Atendido' %}
+                                        ✅ Atendido
+                                    {% else %}
+                                        ⏳ Pendiente
+                                    {% endif %}
+                                </td>
+                                <td class="ficha-acciones">
+                                    <a href="{% url 'consulta_paciente' ficha.fichaid %}" class="consulta">Iniciar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5">No hay fichas clínicas recientes.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="{% static 'doctor/js/MenuDoctor.js' %}"></script>
 </body>
 </html>

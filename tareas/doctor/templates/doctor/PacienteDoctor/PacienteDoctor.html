@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Control de Pacientes - Doctor</title>
+    <link rel="stylesheet" href="{% static 'doctor/css/PacienteDoctor.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        body {
+            background-image: url("{% static 'img/fondo_clinica.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Botón de regreso -->
+        <div class="paciente-container">
+            <div class="boton-volver">
+                <a href="{% url 'menu_doctor' %}">
+                    <img src="{% static 'img/regresar.png' %}" alt="Regresar" />
+                </a>
+            </div>
+        </div>
+
+        <!-- Encabezado principal -->
+        <header class="header">
+            <h1><i class="fas fa-user-injured"></i> Gestión de Pacientes</h1>
+        </header>
+
+        <!-- Barra de búsqueda -->
+        <div class="action-bar">
+            <form method="get" class="search-form" action="">
+                <div class="search-group">
+                    <select id="search-criteria" name="search-by" class="search-select">
+                        <option value="apellido" {% if search_by == 'apellido' %}selected{% endif %}>Apellido</option>
+                        <option value="nombre" {% if search_by == 'nombre' %}selected{% endif %}>Nombre</option>
+                        <option value="cedula" {% if search_by == 'cedula' %}selected{% endif %}>Cédula</option>
+                    </select>
+                    <input
+                        type="text"
+                        name="q"
+                        placeholder="Buscar pacientes..."
+                        value="{{ search_query|default:'' }}"
+                        class="search-input"
+                        autocomplete="off"
+                    />
+                    <button type="submit" class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabla de pacientes -->
+        <div class="table-container">
+            <table class="patient-table">
+                <thead>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Documento</th>
+                        <th>Última Visita</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if pacientes %}
+                        {% for paciente in pacientes %}
+                            <tr>
+                                <td>{{ paciente.nombres }} {{ paciente.apellidos }}</td>
+                                <td>{{ paciente.numerodocumento }}</td>
+                                <td>
+                                    {% if paciente.ultima_visita %}
+                                        {{ paciente.ultima_visita|date:"d/m/Y" }}
+                                    {% else %}
+                                        Nunca
+                                    {% endif %}
+                                </td>
+                                <td class="actions">
+                                    <a href="{% url 'perfil_paciente_doctor' paciente.pacienteid %}" class="action-btn view">
+                                    <i class="fas fa-eye"></i> Perfil
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="no-results">
+                                <i class="fas fa-info-circle"></i> No se encontraron pacientes
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación -->
+        {% if pacientes.has_other_pages %}
+            <div class="pagination">
+                {% if pacientes.has_previous %}
+                    <a href="?page={{ pacientes.previous_page_number }}&q={{ search_query }}&search-by={{ search_by }}" class="page-item">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% endif %}
+
+                {% for i in pacientes.paginator.page_range %}
+                    {% if pacientes.number == i %}
+                        <span class="page-item active">{{ i }}</span>
+                    {% else %}
+                        <a href="?page={{ i }}&q={{ search_query }}&search-by={{ search_by }}" class="page-item">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pacientes.has_next %}
+                    <a href="?page={{ pacientes.next_page_number }}&q={{ search_query }}&search-by={{ search_by }}" class="page-item">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'doctor/js/PacienteDoctor.js' %}"></script>
+</body>
+</html>
