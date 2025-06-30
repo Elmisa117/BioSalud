@@ -10,6 +10,7 @@ body {
     min-height: 100vh;
 }
 
+/* Contenedor principal */
 .registro-container {
     background-color: #fff;
     margin-top: 50px;
@@ -20,12 +21,14 @@ body {
     max-width: 600px;
 }
 
+/* Título principal */
 h1 {
     text-align: center;
     color: #be185d;
     margin-bottom: 30px;
 }
 
+/* Estilo de formularios */
 form {
     display: flex;
     flex-direction: column;
@@ -49,6 +52,8 @@ textarea {
     border-radius: 8px;
     font-size: 15px;
     transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 input:focus,
@@ -63,6 +68,7 @@ textarea {
     resize: vertical;
 }
 
+/* Botones de acción */
 .botones-acciones {
     display: flex;
     justify-content: center;
@@ -93,4 +99,82 @@ textarea {
 .botones-acciones img {
     width: 20px;
     height: 20px;
+}
+
+/* Botón Regresar */
+.boton-regresar {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.boton-regresar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #e11d48;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.boton-regresar a:hover {
+    background-color: #be123c;
+}
+
+.boton-regresar img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Mensajes del sistema de Django (por si se usan) */
+.messages {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 20px 0;
+}
+
+.messages li {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.messages .error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.messages .success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+/* ✅ Mensajes de éxito/error por AJAX (mostrar dinámicamente) */
+.mensaje-ajax {
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 15px;
+}
+
+.mensaje-ajax.success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.mensaje-ajax.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
 }

@@ -7,6 +7,45 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+from django.db import models
+import secrets
+
+class DispositivoToken(models.Model):
+    token = models.CharField(
+        max_length=40,
+        unique=True,
+        editable=False
+    )
+    rol_autorizado = models.CharField(
+        max_length=50,
+        choices=[
+            ('Administrador', 'Administrador'),
+            ('Doctor', 'Doctor'),
+            ('Enfermeria', 'Enfermeria'),
+            ('Caja', 'Caja')
+        ]
+    )
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    activo = models.BooleanField(default=True)
+    creado = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'dispositivo_token'
+        verbose_name = 'Dispositivo Token'
+        verbose_name_plural = 'Dispositivos Tokens'
+
+    def __str__(self):
+        return f"{self.descripcion or 'Dispositivo'} - {self.rol_autorizado}"
+
+    def save(self, *args, **kwargs):
+        if not self.token:
+            while True:
+                token = secrets.token_hex(20)
+                if not DispositivoToken.objects.filter(token=token).exists():
+                    self.token = token
+                    break
+        super().save(*args, **kwargs)
+
 
 class Consultas(models.Model):
     consultaid = models.AutoField(primary_key=True)
@@ -131,6 +170,7 @@ class Fichaclinico(models.Model):
     tratamientosugerido = models.TextField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
     estado = models.CharField(max_length=20, blank=True, null=True)
+    tipoatencion = models.CharField(max_length=50)
 
     class Meta:
         managed = False
@@ -230,6 +270,8 @@ class Metodospago(models.Model):
 
 class Pacientes(models.Model):
     pacienteid = models.AutoField(primary_key=True)
+    
+    # Datos personales
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
     numerodocumento = models.CharField(max_length=20)
@@ -237,19 +279,39 @@ class Pacientes(models.Model):
     fechanacimiento = models.DateField(blank=True, null=True)
     edad = models.IntegerField(blank=True, null=True)
     genero = models.CharField(max_length=1, blank=True, null=True)
+
+    # Contacto
     direccion = models.CharField(max_length=200, blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
-    email = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(max_length=100, blank=True, null=True)
+
+    # Salud
     gruposanguineo = models.CharField(max_length=5, blank=True, null=True)
     alergias = models.TextField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
+
+    # Registro
     fecharegistro = models.DateTimeField(blank=True, null=True)
-    estado = models.BooleanField(blank=True, null=True)
+    estado = models.BooleanField(default=True)
 
     class Meta:
-        managed = False
+        managed = False  # Si usas una tabla existente
         db_table = 'pacientes'
         unique_together = (('numerodocumento', 'tipodocumento'),)
+
+
+class HuellaDactilar(models.Model):
+    huellaid = models.AutoField(primary_key=True)
+    pacienteid = models.IntegerField()
+    mano = models.CharField(max_length=10)
+    dedo = models.CharField(max_length=20)
+    template = models.BinaryField()
+    fecharegistro = models.DateTimeField()
+
+    class Meta:
+        managed = False  # Impide que Django la modifique
+        db_table = 'huellasdactilares'  # 👈 Exactamente como está en la BD
+
 
 
 class PacienteAudit(models.Model):

@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
     'rest_framework',                 # Para APIs
     'django_extensions',             # Funcionalidades extra (requiere instalación)
     'tareas',                         # Tu app principal
@@ -76,7 +75,7 @@ WSGI_APPLICATION = 'BioSaludCRUD.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'BioSalud_web',
+        'NAME': 'BioSalud',
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',

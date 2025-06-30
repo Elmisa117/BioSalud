@@ -1,8 +1,9 @@
 from django.urls import path
+from . import views_admin
 from .views_admin import (
     dashboard_view, registrar_personal, listar_personal, editar_personal,
     inactivar_personal, reactivar_personal, eliminar_personal,
-    registrar_paciente, listar_pacientes, ver_paciente,
+    listar_pacientes, ver_paciente,
     editar_paciente, inactivar_paciente, reactivar_paciente,
     exportar_pacientes, listar_especialidades, registrar_especialidad,
     editar_especialidad, eliminar_especialidad,
@@ -24,7 +25,6 @@ urlpatterns = [
     path('personal/<int:personal_id>/inactivar/', inactivar_personal, name='inactivar_personal'),
     path('personal/<int:personal_id>/reactivar/', reactivar_personal, name='reactivar_personal'),
     path('personal/<int:personal_id>/eliminar/', eliminar_personal, name='eliminar_personal'),
-    path('registrar_paciente/', registrar_paciente, name='registrar_paciente'),
     path('listar_pacientes/', listar_pacientes, name='listar_pacientes'),
     path('paciente/<int:paciente_id>/', ver_paciente, name='ver_paciente'),
     path('paciente/<int:paciente_id>/editar/', editar_paciente, name='editar_paciente'),
@@ -60,4 +60,6 @@ urlpatterns = [
     path('accesos/', control_accesos, name='control_accesos'),
     path('configuraciones/', configuraciones_generales, name='configuraciones_generales'),
     path('backup/', descargar_backup, name='descargar_backup'),
+    # path('api/registrar-huella/', views_admin.registrar_huella, name='registrar_huella_api'),   
+    # path('api/biometrico/resultado/', views_admin.resultado_biometrico, name='resultado_biometrico'),
 ]
