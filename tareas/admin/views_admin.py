@@ -243,33 +243,43 @@ def exportar_pacientes(request):
 # GESTIÓN DE ESPECIALIDADES
 # ----------------------------
 def listar_especialidades(request):
+    """Mostrar todas las especialidades registradas."""
     especialidades = Especialidades.objects.all()
-    return render(request, 'admin/listar_especialidades.html', {
-        'especialidades': especialidades,
-        'nombre': request.session.get('nombre'),
-        'rol': request.session.get('rol'),
-    })
+    return render(
+        request,
+        'admin/listar_especialidades.html',
+        {
+            'especialidades': especialidades,
+            'nombre': request.session.get('nombre'),
+            'rol': request.session.get('rol'),
+        },
+    )
 
 
 def registrar_especialidad(request):
+    """Registrar una nueva especialidad médica."""
     if request.method == 'POST':
         form = EspecialidadForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Especialidad guardada correctamente.')
             return redirect('listar_especialidades')
-        else:
-            messages.error(request, 'Revisa los campos del formulario.')
+        messages.error(request, 'Revisa los campos del formulario.')
     else:
         form = EspecialidadForm()
-    return render(request, 'admin/registrar_especialidad.html', {
-        'form': form,
-        'nombre': request.session.get('nombre'),
-        'rol': request.session.get('rol'),
-    })
+    return render(
+        request,
+        'admin/registrar_especialidad.html',
+        {
+            'form': form,
+            'nombre': request.session.get('nombre'),
+            'rol': request.session.get('rol'),
+        },
+    )
 
 
 def editar_especialidad(request, especialidad_id):
+    """Editar los datos de una especialidad médica."""
     especialidad = Especialidades.objects.get(pk=especialidad_id)
     if request.method == 'POST':
         form = EspecialidadForm(request.POST, instance=especialidad)
@@ -281,7 +291,8 @@ def editar_especialidad(request, especialidad_id):
             messages.error(request, 'Revisa los campos del formulario.')
     else:
         form = EspecialidadForm(instance=especialidad)
-    return render(request, 'admin/registrar_especialidad.html', {
+
+    return render(request, 'admin/editar_especialidad.html', {
         'form': form,
         'nombre': request.session.get('nombre'),
         'rol': request.session.get('rol'),
