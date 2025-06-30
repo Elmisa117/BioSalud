@@ -1,17 +1,24 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f5f6;
   margin: 0;
   padding: 40px;
+  background-image: url("/static/img/fondo_clinica.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .contenido-container {
   max-width: 1000px;
-  margin: auto;
   background: white;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
 }
 
 .barra-superior {
@@ -34,7 +41,7 @@ body {
 
 .search-form input[type="text"] {
   padding: 10px 15px;
-  border: 2px solid #14b87c;
+  border: 2px solid #0046A4; /* Azul oscuro */
   border-radius: 25px;
   font-size: 15px;
   width: 250px;
@@ -43,12 +50,12 @@ body {
 }
 
 .search-form input[type="text"]:focus {
-  border-color: #0e8a5f;
-  box-shadow: 0 0 8px rgba(20, 184, 124, 0.4);
+  border-color: #003a87;
+  box-shadow: 0 0 8px rgba(0, 70, 164, 0.4);
 }
 
 .search-form button {
-  background-color: #14b87c;
+  background-color: #14b87c; /* Verde */
   border: none;
   border-radius: 50%;
   padding: 10px 12px;
@@ -63,6 +70,7 @@ body {
   background-color: #0e8a5f;
 }
 
+
 .tabla-pacientes {
   width: 100%;
   border-collapse: collapse;
@@ -76,7 +84,7 @@ body {
 }
 
 .tabla-pacientes th {
-  background-color: #14b87c;
+  background-color: #0046A4; /* Azul oscuro */
   color: white;
 }
 

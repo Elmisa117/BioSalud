@@ -1,0 +1,78 @@
+<div id="detalleFacturaContenido" data-factura-id="{{ factura.facturaid }}" class="container">
+  <h5 class="mb-3">Detalles de la Factura</h5>
+
+  <h6 class="mt-4">Resumen de la Factura</h6>
+  <ul class="list-group mb-4">
+    <li class="list-group-item d-flex justify-content-between">
+      <strong>N° Factura:</strong>
+      <span>{{ factura.numerofactura }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <strong>Fecha de Emisión:</strong>
+      <span>{{ factura.fechaemision|date:"d/m/Y H:i" }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <strong>Monto Total:</strong>
+      <span>S/. {{ factura.total }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <strong>Pagado Inicialmente:</strong>
+      <span>S/. {{ total_pagos_directos|floatformat:2 }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <strong>Pagado en Cuotas:</strong>
+      <span>S/. {{ total_cuotas_pagadas|floatformat:2 }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between bg-success-subtle">
+      <strong>Total Pagado:</strong>
+      <span class="fw-bold">S/. {{ total_pagado|floatformat:2 }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between bg-warning-subtle">
+      <strong>Saldo Restante:</strong>
+      <span class="fw-bold">S/. {{ factura.total|floatformat:2|add:"-total_pagado"|floatformat:2 }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <strong>Estado Actual:</strong>
+      {% if factura.estado == "Pagado" %}
+        <span class="badge bg-success">Pagado</span>
+      {% elif factura.estado == "Parcial" %}
+        <span class="badge bg-warning text-dark">Parcial</span>
+      {% else %}
+        <span class="badge bg-secondary">{{ factura.estado }}</span>
+      {% endif %}
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <strong>Observaciones:</strong>
+      <span>{{ factura.observaciones|default:"-" }}</span>
+    </li>
+  </ul>
+
+  {% if cuotas %}
+    <h6>Cuotas del Plan de Pago</h6>
+    <ul class="list-group">
+      {% for cuota in cuotas %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          Cuota {{ cuota.numerocuota }} — S/. {{ cuota.montocuota }} — Vence: {{ cuota.fechavencimiento|date:"d/m/Y" }}
+          {% if cuota.estado == "Pagado" %}
+            <span class="badge bg-success">Pagada</span>
+          {% else %}
+            <span class="badge bg-danger">Pendiente</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No hay cuotas registradas para esta factura.</p>
+  {% endif %}
+
+  {% if pagos_directos %}
+    <h6 class="mt-4">Pagos Directos</h6>
+    <ul class="list-group">
+      {% for pago in pagos_directos %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          {{ pago.fechapago|date:"d/m/Y H:i" }} — S/. {{ pago.monto|floatformat:2 }} — {{ pago.metodopagoid.nombre }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>

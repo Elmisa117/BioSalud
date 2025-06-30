@@ -23,7 +23,7 @@ urlpatterns = [
     # Fichas clínicas creadas por el doctor
     path('ficha_clinico_doctor/', views_doctor.ficha_clinico_doctor, name='ficha_clinico_doctor'),
 
-    # Consulta rápida de paciente desde historial (opcional si se usa)
+    # Consulta rápida de paciente desde historial
     path('consulta_paciente/<int:id>/', views_doctor.consulta_paciente, name='consulta_paciente'),
 
     # Cierre de sesión

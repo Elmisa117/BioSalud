@@ -119,15 +119,6 @@ def reactivar_personal(request, personal_id):
     messages.success(request, 'Personal reactivado.')
     return redirect('listar_personal')
 
-def eliminar_personal(request, personal_id):
-    """
-    Elimina un miembro del personal.
-    """
-    personal = Personal.objects.get(pk=personal_id)
-    personal.delete()
-    messages.success(request, 'Personal eliminado.')
-    return redirect('listar_personal')
-
 # ---------------------------
 # CRUD: PACIENTES
 # ---------------------------
