@@ -37,6 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 `;
             } else if (opcion === "Gestión de Personal") {
                 window.location.href = "/admin/listar_personal/";
+            } else if (opcion === "Gestión de Especialidades") {
+                window.location.href = "/admin/especialidades/";
             } else if (opcion === "Servicios Médicos") {
                 window.location.href = "/admin/servicios/";
             } else if (opcion === "Gestión de Habitaciones") {
