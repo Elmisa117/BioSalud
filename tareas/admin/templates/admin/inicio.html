@@ -1,0 +1,43 @@
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/dashboard_roles.css' %}">
+{% endblock %}
+
+{% block title %}Dashboard - BioSalud{% endblock %}
+
+{% block contenido %}
+<div class="dashboard-roles">
+    <div class="role-card role-caja">
+        <h3><i class="bi bi-cash-stack icon"></i> Caja</h3>
+        <ul>
+            <li>Facturas hoy: <span class="value">{{ caja_facturas }}</span></li>
+            <li>Pagos hoy: <span class="value">{{ caja_pagos }}</span></li>
+            <li>Total recaudado: <span class="value">{{ caja_total }}</span></li>
+        </ul>
+    </div>
+    <div class="role-card role-enfermeria">
+        <h3><i class="bi bi-clipboard-pulse icon"></i> Enfermería</h3>
+        <ul>
+            <li>Fichas creadas hoy: <span class="value">{{ enfermeria_fichas }}</span></li>
+            <li>Pacientes hospitalizados: <span class="value">{{ enfermeria_hospitalizados }}</span></li>
+        </ul>
+    </div>
+    <div class="role-card role-doctor">
+        <h3><i class="bi bi-stethoscope icon"></i> Doctor</h3>
+        <ul>
+            <li>Consultas hoy: <span class="value">{{ doctor_consultas }}</span></li>
+            <li>Doctores activos: <span class="value">{{ doctor_activos }}</span></li>
+            <li>Top diagnósticos:</li>
+            <ul class="diag-list">
+                {% for d in diagnosticos_top %}
+                    <li>{{ d.diagnostico }} ({{ d.total }})</li>
+                {% empty %}
+                    <li>Sin datos</li>
+                {% endfor %}
+            </ul>
+        </ul>
+    </div>
+</div>
+{% endblock %}

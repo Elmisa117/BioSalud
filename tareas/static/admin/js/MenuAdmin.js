@@ -26,15 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (opcion === "Inicio") {
-                const saludo = obtenerSaludo();
-                mainContent.innerHTML = `
-                    <div class="welcome">
-                        <img src="/static/admin/img/bienvenido.png" alt="Bienvenido" class="welcome-img">
-                        <h1>${saludo}, ${NOMBRE}!</h1>
-                        <p>Rol asignado: <strong>${ROL}</strong></p>
-                        <p>Selecciona una opción del menú para comenzar.</p>
-                    </div>
-                `;
+                window.location.href = "/admin/inicio/";
             } else if (opcion === "Gestión de Personal") {
                 window.location.href = "/admin/listar_personal/";
             } else if (opcion === "Gestión de Especialidades") {

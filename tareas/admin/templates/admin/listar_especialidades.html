@@ -32,7 +32,6 @@
                     <td>
                         <a href="{% url 'editar_especialidad' e.especialidadid %}" class="action-icon edit" title="Editar"><i class="bi bi-pencil-square"></i> Editar</a>
                         <a href="{% url 'eliminar_especialidad' e.especialidadid %}" class="action-icon delete" title="Eliminar" onclick="return confirm('¿Eliminar esta especialidad?');"><i class="bi bi-trash-fill"></i> Eliminar</a>
-
                     </td>
                 </tr>
                 {% empty %}
