@@ -5,17 +5,18 @@
   <meta charset="UTF-8">
   <title>Perfil del Paciente</title>
   <link rel="stylesheet" href="{% static 'cajero/css/perfil_paciente.css' %}">
-  <script src="{% static 'cajero/js/factura_script.js' %}" defer></script>
+  <script src="{% static 'cajero/js/perfil_paciente.js' %}" defer></script>
 </head>
 <body>
-
   <div class="contenedor-perfil">
     <h2 class="titulo-perfil">Perfil del Paciente</h2>
 
     {% if messages %}
       <div class="alertas">
         {% for message in messages %}
-          <div class="alerta">{{ message }}</div>
+          <div class="alerta alerta-warning">
+            ⚠️ {{ message }}
+          </div>
         {% endfor %}
       </div>
     {% endif %}
@@ -24,7 +25,7 @@
     <div class="item-perfil"><strong>Nombre:</strong> {{ paciente.nombres }}</div>
     <div class="item-perfil"><strong>Apellido:</strong> {{ paciente.apellidos }}</div>
     <div class="item-perfil"><strong>CI:</strong> {{ paciente.numerodocumento }}</div>
-    <div class="item-perfil"><strong>Fecha de Nacimiento:</strong> {{ paciente.fechanacimiento }}</div>
+    <div class="item-perfil"><strong>Fecha de Nacimiento:</strong> {{ paciente.fechanacimiento|date:"M. d, Y" }}</div>
     <div class="item-perfil"><strong>Teléfono:</strong> {{ paciente.telefono }}</div>
     <div class="item-perfil"><strong>Dirección:</strong> {{ paciente.direccion }}</div>
     <div class="item-perfil"><strong>Email:</strong> {{ paciente.email }}</div>
@@ -46,87 +47,7 @@
     </div>
   </div>
 
-  <div id="mensajeError" style="display: none;"></div>
-
-  <style>
-    .alertas {
-      margin-bottom: 15px;
-    }
-    .alerta {
-      background-color: #ffc107;
-      color: #000;
-      padding: 10px 15px;
-      border-radius: 6px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .botones-acciones {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 30px;
-    }
-
-    .botones-acciones a,
-    .botones-acciones button {
-      background-color: #14b87c;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      font-size: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: background-color 0.3s;
-    }
-
-    .botones-acciones a:hover,
-    .botones-acciones button:hover {
-      background-color: #0e8a5f;
-    }
-
-    .btn-volver {
-      background-color: #14b87c;
-    }
-  </style>
-
-  <script>
-    function verificarYGenerarFactura(pacienteId) {
-      fetch(`/cajero/verificar_servicios/${pacienteId}/`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'ok') {
-            window.location.href = `/cajero/generar_factura/${pacienteId}/`;
-          } else {
-            mostrarMensaje(data.mensaje || "⚠️ No hay servicios pendientes para facturar.");
-          }
-        })
-        .catch(err => {
-          console.error("Error al verificar servicios:", err);
-          mostrarMensaje("❌ Error al verificar los servicios.");
-        });
-    }
-
-    function mostrarMensaje(texto, exito = false) {
-      let toast = document.getElementById("toast");
-      if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "toast";
-        document.body.appendChild(toast);
-      }
-
-      toast.textContent = texto;
-      toast.className = "toast show";
-      toast.style.backgroundColor = exito ? "#28a745" : "#ffc107";
-
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 3000);
-    }
-  </script>
-
+  <!-- Toast dinámico (por JS) -->
+  <div id="toast" class="toast"></div>
 </body>
 </html>

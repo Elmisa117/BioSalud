@@ -12,18 +12,21 @@ from django.db.models import F, Value, ExpressionWrapper, DecimalField
 from datetime import date
 from django.contrib import messages  # Asegúrate de tener esto arriba
 from django.db.models import Q
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+import os #esto agregue
 
 from tareas.models import (
-    Pacientes as Paciente,
-    Consultas as Consulta,
-    Consultaservicios as ConsultaServicios,
-    Hospitalizaciones as Hospitalizacion,
-    Hospitalizacionservicios as HospitalizacionServicios,
-    Metodospago as MetodoPago,
-    Facturas as Factura,
-    Pagos as Pago,
-    Planespago as PlanPago,
-    Cuotasplanpago as CuotaPlanPago
+    Pacientes,
+    Consultas,
+    Consultaservicios,
+    Hospitalizaciones,
+    Hospitalizacionservicios,
+    Metodospago,
+    Facturas,
+    Pagos,
+    Planespago,
+    Cuotasplanpago
 )
 
 
@@ -51,8 +54,14 @@ def buscar_paciente_cajero(request):
 # 👁️ PERFIL DEL PACIENTE
 def ver_paciente(request, id):
     paciente = get_object_or_404(Pacientes, pk=id)
-    return render(request, 'cajero/PerfilPaciente.html', {'paciente': paciente})
 
+    # Mostrar mensajes si viene un parámetro GET
+    if request.GET.get("sin_servicios") == "1":
+        messages.warning(request, "⚠️ El paciente no tiene servicios pendientes para facturar.")
+    elif request.GET.get("error") == "1":
+        messages.error(request, "❌ Error al verificar los servicios. Intenta nuevamente.")
+
+    return render(request, 'cajero/PerfilPaciente.html', {'paciente': paciente})
 
 
 def generar_factura(request, paciente_id):
@@ -109,159 +118,106 @@ def generar_factura(request, paciente_id):
 
 
 # 📅 GUARDAR FACTURA Y PLAN DE PAGO
+
 @csrf_exempt
 def guardar_factura_y_plan(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
+    if request.method == 'POST':
+        try:
+            data = request.POST
 
-    try:
-        paciente_id = request.POST.get('paciente_id')
-        paciente = Pacientes.objects.get(pk=paciente_id)
-        hoy = timezone.now().date()
+            # 📥 Datos principales
+            numero = data.get('numeroFactura')
+            fechaemision = timezone.now()
+            paciente = Pacientes.objects.get(pk=int(data.get('paciente_id')))
+            total = float(data.get('total'))
+            metodo_pago = Metodospago.objects.get(pk=int(data.get('metodoPago')))
+            monto_pagado = float(data.get('montoPagado', 0))
+            observaciones = data.get('observaciones', '')
 
-        numero_factura = request.POST.get('numeroFactura')
-        fecha_emision = timezone.now()
-        subtotal = float(request.POST.get('total', 0))
-        monto_pagado = float(request.POST.get('montoPagado', 0))
-        metodo_id = request.POST.get('metodoPago')
-        numero_referencia = request.POST.get('numeroReferencia', '')
-        observaciones = request.POST.get('observaciones', '')
-        estado_factura = 'Pendiente' if monto_pagado < subtotal else 'Pagada'
-
-        factura = Facturas.objects.create(
-            pacienteid=paciente,
-            numerofactura=numero_factura,
-            fechaemision=fecha_emision,
-            subtotal=subtotal,
-            descuento=0,
-            impuesto=0,
-            total=subtotal,
-            observaciones=observaciones,
-            estado=estado_factura
-        )
-
-        metodo_pago = Metodospago.objects.get(pk=metodo_id)
-        Pagos.objects.create(
-            factura=factura,
-            metodopago=metodo_pago,
-            monto=monto_pagado,
-            fechapago=fecha_emision,
-            numeroreferencia=numero_referencia,
-            observaciones=observaciones
-        )
-
-        # Marcar como facturado
-        Consultas.objects.filter(
-            pacienteid=paciente,
-            estado=True,
-            facturado=False,
-            fechaconsulta__date=hoy
-        ).update(facturado=True)
-
-        consulta_ids = Consultas.objects.filter(
-            pacienteid=paciente,
-            estado=True,
-            fechaconsulta__date=hoy
-        ).values_list('consultaid', flat=True)
-
-        Consultaservicios.objects.filter(
-            consultaid_id__in=consulta_ids,
-            estado=True,
-            facturado=False,
-            fechaservicio__date=hoy
-        ).update(facturado=True)
-
-        Hospitalizaciones.objects.filter(
-            pacienteid=paciente,
-            estado=True,
-            facturado=False,
-            fechaingreso__date=hoy
-        ).update(facturado=True)
-
-        hosp_ids = Hospitalizaciones.objects.filter(
-            pacienteid=paciente,
-            fechaingreso__date=hoy
-        ).values_list('hospitalizacionid', flat=True)
-
-        Hospitalizacionservicios.objects.filter(
-            hospitalizacionid_id__in=hosp_ids,
-            estado=True,
-            facturado=False,
-            fechaservicio__date=hoy
-        ).update(facturado=True)
-
-        # Plan de pago
-        if request.POST.get('planPagoActivado') == 'true':
-            planes_anteriores = Planespago.objects.filter(factura__paciente=paciente)
-            tiene_pendientes = Cuotasplanpago.objects.filter(
-                planpago__in=planes_anteriores,
-                estado='Pendiente'
-            ).exists()
-
-            if tiene_pendientes:
-                return JsonResponse({
-                    'error': 'El paciente ya tiene un plan de pago con cuotas pendientes. No puede registrar uno nuevo.'
-                }, status=400)
-
-            numero_cuotas = int(request.POST.get('planNumeroCuotas'))
-            fecha_inicio = request.POST.get('planFechaInicio')
-            fecha_fin = request.POST.get('planFechaFin')
-            frecuencia = request.POST.get('frecuencia', 'mensual')
-            cuotas_json = request.POST.get('planCuotasJSON')
-
-            plan = Planespago.objects.create(
-                factura=factura,
-                fechainicio=fecha_inicio,
-                fechafin=fecha_fin,
-                numerocuotas=numero_cuotas,
-                montototal=subtotal - monto_pagado,
-                frecuencia=frecuencia,
-                observaciones="Generado automáticamente",
-                estado='Activo'
+            # 📄 Crear factura
+            factura = Facturas.objects.create(
+                pacienteid=paciente,
+                numerofactura=numero,
+                fechaemision=fechaemision,
+                subtotal=total,
+                total=total,
+                estado='Pagado' if monto_pagado >= total else 'Parcial',
+                observaciones=observaciones,
+                fecharegistro=timezone.now()
             )
 
-            cuotas = json.loads(cuotas_json)
-            for i, cuota in enumerate(cuotas, start=1):
-                Cuotasplanpago.objects.create(
-                    planpago=plan,
-                    numerocuota=i,
-                    fechavencimiento=cuota['fecha'],
-                    montocuota=cuota['monto'],
-                    estado='Pendiente'
+            # 💰 Registrar pago
+            Pagos.objects.create(
+                facturaid=factura,
+                metodopagoid=metodo_pago,
+                monto=monto_pagado,
+                fechapago=timezone.now(),
+                observaciones=observaciones,
+                fecharegistro=timezone.now(),
+                estado=True
+            )
+
+            # 📆 Si se activó plan de pago
+            if data.get('planPagoActivado') == 'true':
+                cuotas_json = json.loads(data.get('planCuotasJSON', '[]'))
+                plan = Planespago.objects.create(
+                    facturaid=factura,
+                    fechainicio=data.get('planFechaInicio'),
+                    fechafin=data.get('planFechaFin'),
+                    numerocuotas=int(data.get('planNumeroCuotas')),
+                    montototal=float(data.get('planMontoTotal')),
+                    observaciones='Plan de pago generado automáticamente',
+                    frecuencia=data.get('frecuencia'),
+                    estado='Activo',
+                    fecharegistro=timezone.now()
                 )
 
-        return JsonResponse({
-            'mensaje': 'Factura y pagos registrados correctamente',
-            'redirect_url': reverse('ver_paciente', args=[paciente.pacienteid])
-        })
+                # 💳 Crear cada cuota
+                for cuota in cuotas_json:
+                    Cuotasplanpago.objects.create(
+                        planpagoid=plan,
+                        numerocuota=cuota['numero'],
+                        montocuota=cuota['monto'],
+                        fechavencimiento=cuota['fecha'],
+                        estado='Pendiente',
+                        fecharegistro=timezone.now()
+                    )
 
-    except Exception as e:
-        print("🚨 Error al guardar factura y plan de pago:")
-        traceback.print_exc()
-        return JsonResponse({'error': str(e)}, status=400)
+            # ✅ Marcar servicios como facturados
+            consultas = Consultas.objects.filter(pacienteid=paciente, facturado=False)
+            for consulta in consultas:
+                consulta.facturado = True
+                consulta.save()
+
+                Consultaservicios.objects.filter(consultaid=consulta.consultaid, facturado=False).update(facturado=True)
+
+            hospitalizaciones = Hospitalizaciones.objects.filter(pacienteid=paciente, facturado=False)
+            for hosp in hospitalizaciones:
+                hosp.facturado = True
+                hosp.save()
+
+                Hospitalizacionservicios.objects.filter(hospitalizacionid=hosp.hospitalizacionid, facturado=False).update(facturado=True)
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Factura y plan guardados correctamente.',
+                'redirect_url': f'/cajero/ver_paciente/{paciente.pacienteid}/'
+            })
+
+        except Exception as e:
+            print("🚨 Error al guardar factura y plan de pago:", e)
+            return JsonResponse({'success': False, 'message': 'Error interno al guardar.'}, status=400)
+
+    return JsonResponse({'success': False, 'message': 'Método no permitido.'}, status=405)
+
 
 
 def verificar_servicios_json(request, paciente_id):
-    print(f"🔍 Verificando servicios para paciente {paciente_id} en fecha: {date.today()}")
-
-    # Consultas no facturadas
-    consultas = Consultas.objects.filter(
-        pacienteid=paciente_id,
-        facturado=False,
-        estado=True
-    )
-    print(f"📋 Consultas encontradas: {consultas.count()}")
-
-    # Servicios de hospitalización no facturados, accediendo al paciente a través de la relación
+    consultas = Consultas.objects.filter(pacienteid=paciente_id, facturado=False, estado=True)
     hospitalizacion_servicios = Hospitalizacionservicios.objects.filter(
-        hospitalizacionid__pacienteid=paciente_id,
-        facturado=False,
-        estado=True
-    )
-    print(f"🏥 Servicios de hospitalización encontrados: {hospitalizacion_servicios.count()}")
+        hospitalizacionid__pacienteid=paciente_id, facturado=False, estado=True)
 
     tiene_servicios = consultas.exists() or hospitalizacion_servicios.exists()
-    print(f"✅ Tiene servicios: {tiene_servicios}")
 
     if tiene_servicios:
         return JsonResponse({'status': 'ok'})
@@ -345,7 +301,7 @@ def registrar_pago_cuota(request):
         if cuota.estado != 'Pendiente':
             return JsonResponse({'status': 'error', 'mensaje': 'La cuota ya fue pagada o no es válida.'})
 
-        # ✅ Corrección aquí: planpagoid es el nombre real del campo
+        # Verificar cuotas anteriores impagas
         cuotas_anteriores = Cuotasplanpago.objects.filter(
             planpagoid=cuota.planpagoid,
             numerocuota__lt=cuota.numerocuota
@@ -357,20 +313,33 @@ def registrar_pago_cuota(request):
                 'mensaje': 'Debe pagar las cuotas anteriores antes de esta.'
             })
 
-        # ✅ También usamos cuota.planpagoid.facturaid para obtener la factura asociada
+        # Crear el pago
         pago = Pagos.objects.create(
-            factura=cuota.planpagoid.facturaid,
-            metodopago=metodo,
+            facturaid=cuota.planpagoid.facturaid,
+            metodopagoid=metodo,
             monto=monto,
             fechapago=timezone.now(),
             numeroreferencia='Pago Manual desde Cuota',
-            observaciones='Registro desde VerPagosPaciente'
+            observaciones='Registro desde VerPagosPaciente',
+            fecharegistro=timezone.now(),
+            estado=True
         )
 
+        # Actualizar cuota
         cuota.estado = 'Pagada'
         cuota.fechapago = timezone.now()
-        cuota.pagoid = pago  # ✅ Enlazar la cuota con el pago registrado
+        cuota.pagoid = pago
         cuota.save()
+
+        # ✅ Verificar si todas las cuotas del plan ya están pagadas
+        cuotas_restantes = Cuotasplanpago.objects.filter(
+            planpagoid=cuota.planpagoid,
+        ).exclude(estado='Pagada')
+
+        if not cuotas_restantes.exists():
+            factura = cuota.planpagoid.facturaid
+            factura.estado = 'Pagado'
+            factura.save()
 
         return JsonResponse({'status': 'ok', 'mensaje': 'Pago registrado correctamente'})
 
@@ -403,22 +372,47 @@ def buscar_pacientes_json(request):
     return JsonResponse({'pacientes': data})
 
 def ver_facturas_pagadas(request, paciente_id):
-    paciente = get_object_or_404(Pacientes, pacienteid=paciente_id)
-    facturas = Facturas.objects.filter(pacienteid=paciente, estado='Pagado')
+    paciente = Pacientes.objects.get(pacienteid=paciente_id)
+
+    facturas = Facturas.objects.filter(
+        pacienteid=paciente,
+        estado__in=["Pagado", "Parcial"]
+    ).order_by('-fechaemision')
+
+    facturas_con_detalle = []
+    for factura in facturas:
+        plan = Planespago.objects.filter(facturaid=factura).first()
+
+        # ✅ Aquí corregido
+        cuotas = Cuotasplanpago.objects.filter(planpagoid=plan) if plan else Cuotasplanpago.objects.none()
+
+        cuotas_pagadas = cuotas.filter(estado="Pagado")
+        total_cuotas_pagadas = sum(c.montocuota for c in cuotas_pagadas)
+
+        pagos_directos = Pagos.objects.filter(facturaid=factura)
+        total_pagos_directos = sum(p.monto for p in pagos_directos)
+
+        total_pagado = total_cuotas_pagadas + total_pagos_directos
+
+        if factura.estado == "Parcial" and total_pagado >= factura.total:
+            factura.estado = "Pagado"
+            factura.save()
+
+        facturas_con_detalle.append({
+            'factura': factura,
+            'cuotas': cuotas,
+            'total_pagado': total_pagado,
+        })
 
     return render(request, 'cajero/ver_facturas_pagadas.html', {
         'paciente': paciente,
-        'facturas': facturas,
+        'facturas': facturas_con_detalle,
     })
 
-# ✅ ANULAR FACTURA
-def anular_factura(request, factura_id):
-    factura = get_object_or_404(Facturas, pk=factura_id)
-    factura.estado = 'Anulada'
-    factura.save()
-    messages.success(request, f"Factura #{factura.numerofactura} anulada correctamente.")
-    return redirect('ver_paciente', id=factura.paciente.pacienteid)
 
+def factura_detalle(request, factura_id):
+    factura = Facturas.objects.get(pk=factura_id)
+    return render(request, 'partials/detalle_factura_modal.html', {'factura': factura})
 
 
 @csrf_exempt
@@ -499,3 +493,28 @@ def api_factura(request, paciente_id):
     except Exception as e:
         print(f"❌ Error en api_factura: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
+
+def factura_detalle(request, factura_id):
+    factura = get_object_or_404(Facturas, pk=factura_id)
+
+    plan = Planespago.objects.filter(facturaid=factura).first()
+    cuotas = Cuotasplanpago.objects.filter(planpagoid=plan).order_by('numerocuota') if plan else []
+
+    pagos_directos = Pagos.objects.filter(facturaid=factura)
+
+    total_cuotas_pagadas = sum(c.montocuota for c in cuotas if c.estado == 'Pagado')
+    total_pagos_directos = sum(p.monto for p in pagos_directos)
+    total_pagado = total_cuotas_pagadas + total_pagos_directos
+
+    html = render_to_string('cajero/detalle_factura_modal.html', {
+        'factura': factura,
+        'plan': plan,
+        'cuotas': cuotas,
+        'pagos_directos': pagos_directos,
+        'total_pagos_directos': total_pagos_directos,
+        'total_cuotas_pagadas': total_cuotas_pagadas,
+        'total_pagado': total_pagado,
+    })
+
+    return HttpResponse(html)
+

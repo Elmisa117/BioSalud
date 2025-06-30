@@ -72,7 +72,19 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(data => {
       if (data.status === "ok") {
         mostrarToast("✅ Pago registrado correctamente", "exito");
-        setTimeout(() => location.reload(), 2000);
+
+        const contenedor = document.getElementById("detalleFacturaContenido");
+        if (contenedor && contenedor.dataset.facturaId) {
+          const facturaId = contenedor.dataset.facturaId;
+          fetch(`/cajero/factura/${facturaId}/detalle/`)
+            .then(res => res.text())
+            .then(html => {
+              contenedor.innerHTML = html;
+            });
+        } else {
+          // Página general, recarga completa
+          setTimeout(() => location.reload(), 2000);
+        }
       } else {
         mostrarToast("❌ Error al registrar el pago: " + data.mensaje, "error");
       }

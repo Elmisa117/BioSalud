@@ -2,9 +2,27 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f5f6;
+  background-image: url("/static/img/fondo_clinica.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   height: 100vh;
+}
+
+/* ===== CAPA TRANSLÚCIDA SOBRE EL FONDO ===== */
+.main-content {
+  flex-grow: 1;
+  padding: 60px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo negro con transparencia */
+  border-radius: 20px;
+  margin: 40px;
+  color: white;
 }
 
 /* ===== PANEL LATERAL ===== */
@@ -63,26 +81,16 @@ body {
   pointer-events: none;
 }
 
-/* ===== PANEL PRINCIPAL ===== */
-.main-content {
-  flex-grow: 1;
-  padding: 60px 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
+/* ===== TÍTULOS ===== */
 .main-content h1 {
   font-size: 36px;
   margin-bottom: 20px;
-  color: #111;
+  color: #fff;
 }
 
 .main-content p {
   font-size: 18px;
-  color: #333;
+  color: #ddd;
   max-width: 800px;
 }
 
@@ -92,7 +100,7 @@ body {
   right: 40px;
   top: 30px;
   font-size: 18px;
-  color: #222;
+  color: #f1f1f1;
   font-weight: normal;
 }
 
@@ -101,7 +109,7 @@ body {
   font-size: 28px;
   margin-top: 50px;
   margin-bottom: 30px;
-  color: #007BFF;
+  color: #00e5a5;
 }
 
 /* ===== CONTENEDOR DE REPORTES EN DOS COLUMNAS ===== */
@@ -142,3 +150,4 @@ body {
 .reporte-btn:active {
   transform: scale(0.95);
 }
+
