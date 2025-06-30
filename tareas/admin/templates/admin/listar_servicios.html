@@ -30,8 +30,8 @@
                     <td>{{ s.costo }}</td>
                     <td class="{{ s.estado|yesno:'activo,inactivo'|lower }}">{{ s.estado|yesno:"Activo,Inactivo" }}</td>
                     <td>
-                        <a href="{% url 'editar_servicio' s.servicioid %}">Editar</a>
-                        <a href="{% url 'eliminar_servicio' s.servicioid %}" onclick="return confirm('¿Eliminar este servicio?');">Eliminar</a>
+                        <a href="{% url 'editar_servicio' s.servicioid %}" class="action-icon edit" title="Editar"><i class="bi bi-pencil-square"></i></a>
+                        <a href="{% url 'eliminar_servicio' s.servicioid %}" class="action-icon delete" title="Eliminar" onclick="return confirm('¿Eliminar este servicio?');"><i class="bi bi-trash-fill"></i></a>
                     </td>
                 </tr>
                 {% empty %}

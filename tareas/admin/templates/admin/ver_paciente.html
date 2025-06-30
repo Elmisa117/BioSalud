@@ -20,7 +20,7 @@
         <tr><th>Alergias</th><td>{{ paciente.alergias }}</td></tr>
         <tr><th>Observaciones</th><td>{{ paciente.observaciones }}</td></tr>
     </table>
-    <a href="{% url 'historial_paciente' paciente.pacienteid %}" class="volver">Historial</a>
+    <a href="{% url 'historial_paciente' paciente.pacienteid %}" class="action-icon history" title="Historial"><i class="bi bi-clock-history"></i></a>
     <a href="{% url 'listar_pacientes' %}" class="volver">← Volver al listado</a>
 </div>
 {% endblock %}
