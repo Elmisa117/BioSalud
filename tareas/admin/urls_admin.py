@@ -13,12 +13,14 @@ from .views_admin import (
     control_accesos, configuraciones_generales, descargar_backup,
     listar_habitaciones, registrar_habitacion, editar_habitacion, eliminar_habitacion,
     listar_tipos_habitacion, registrar_tipohabitacion, editar_tipohabitacion, eliminar_tipohabitacion,
-    listar_metodos_pago, registrar_metodo_pago, editar_metodo_pago, eliminar_metodo_pago
+    listar_metodos_pago, registrar_metodo_pago, editar_metodo_pago, eliminar_metodo_pago,
+    inicio_admin
 )
 
 
 urlpatterns = [
     path('', dashboard_view, name='admin_dashboard'),
+    path('inicio/', inicio_admin, name='inicio_admin'),
     path('registrar_personal/', registrar_personal, name='registrar_personal'),
     path('listar_personal/', listar_personal, name='listar_personal'),
     path('personal/<int:personal_id>/editar/', editar_personal, name='editar_personal'),

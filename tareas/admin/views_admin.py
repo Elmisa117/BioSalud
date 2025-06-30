@@ -10,7 +10,8 @@ from tareas.admin.config_utils import load_config, save_config
 from tareas.models import (
     Personal, Pacientes, PacienteAudit, Especialidades,
     Servicios, Facturas, Pagos, Consultas, Consultaservicios,
-    Habitaciones, Tiposhabitacion, Metodospago
+    Habitaciones, Tiposhabitacion, Metodospago,
+    Fichaclinico, Hospitalizaciones
 )
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
@@ -664,3 +665,43 @@ def descargar_backup(request):
     response = HttpResponse(buffer.getvalue(), content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="backup.json"'
     return response
+
+
+def inicio_admin(request):
+    """Dashboard con indicadores por rol."""
+    if 'usuario_id' not in request.session:
+        return redirect('login')
+
+    hoy = timezone.now().date()
+
+    facturas_hoy = Facturas.objects.filter(fechaemision__date=hoy).count()
+    pagos_qs = Pagos.objects.filter(fechapago__date=hoy)
+    pagos_hoy = pagos_qs.count()
+    total_recaudado = pagos_qs.aggregate(total=Sum('monto'))['total'] or 0
+
+    fichas_hoy = Fichaclinico.objects.filter(fechaapertura__date=hoy).count()
+    hospitalizados = Hospitalizaciones.objects.filter(fechaalta__isnull=True).count()
+
+    consultas_qs = Consultas.objects.filter(fechaconsulta__date=hoy)
+    consultas_hoy = consultas_qs.count()
+    doctores_activos = Personal.objects.filter(rol__iexact='Doctor', estado=True).count()
+    diagnosticos_top = (consultas_qs.exclude(diagnostico__isnull=True)
+                                     .exclude(diagnostico='')
+                                     .values('diagnostico')
+                                     .annotate(total=Count('diagnostico'))
+                                     .order_by('-total')[:5])
+
+    contexto = {
+        'nombre': request.session.get('nombre'),
+        'rol': request.session.get('rol'),
+        'caja_facturas': facturas_hoy,
+        'caja_pagos': pagos_hoy,
+        'caja_total': total_recaudado,
+        'enfermeria_fichas': fichas_hoy,
+        'enfermeria_hospitalizados': hospitalizados,
+        'doctor_consultas': consultas_hoy,
+        'doctor_activos': doctores_activos,
+        'diagnosticos_top': diagnosticos_top,
+    }
+
+    return render(request, 'admin/inicio.html', contexto)
