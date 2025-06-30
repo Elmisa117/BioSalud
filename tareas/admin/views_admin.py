@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from tareas.admin.Forms.form_personal import PersonalForm, PersonalEditForm
-from tareas.admin.Forms.form_paciente import PacienteForm, PacienteEditForm
+from tareas.admin.Forms.form_paciente import PacienteEditForm
 from tareas.admin.Forms.form_especialidad import EspecialidadForm
 from tareas.admin.Forms.form_servicio import ServicioForm
 from tareas.admin.Forms.form_habitacion import HabitacionForm, TipoHabitacionForm
@@ -131,24 +131,6 @@ def eliminar_personal(request, personal_id):
 # ---------------------------
 # CRUD: PACIENTES
 # ---------------------------
-def registrar_paciente(request):
-    """
-    Registra un nuevo paciente.
-    """
-    if request.method == 'POST':
-        form = PacienteForm(request.POST)
-        if form.is_valid():
-            if Pacientes.objects.filter(numerodocumento=form.cleaned_data['numerodocumento']).exists():
-                messages.error(request, "⚠️ El número de documento ya está registrado.")
-            else:
-                paciente = form.save()
-                messages.success(request, f"✅ Paciente registrado exitosamente. ID: {paciente.pacienteid}")
-                form = PacienteForm()  # Reiniciar el formulario
-        else:
-            messages.error(request, "❌ Revisa los campos del formulario.")
-    else:
-        form = PacienteForm()
-    return render(request, 'admin/registrar_paciente.html', {'form': form, 'nombre': request.session.get('nombre'), 'rol': request.session.get('rol')})
 
 def listar_pacientes(request):
     """
