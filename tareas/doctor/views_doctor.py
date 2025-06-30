@@ -18,6 +18,8 @@ def validar_doctor(request):
     return (request.session.get('usuario_id') and 
             request.session.get('rol') == 'Doctor')
 
+from tareas.models import Fichaclinico
+
 def menu_doctor(request):
     if not validar_doctor(request):
         return redirect('login')
@@ -27,6 +29,7 @@ def menu_doctor(request):
 
     ahora = timezone.now()
     hace_24_horas = ahora - timedelta(hours=24)
+
     consultas_recientes = Consultas.objects.filter(
         personalid=personal_id,
         fechaconsulta__gte=hace_24_horas
@@ -37,11 +40,18 @@ def menu_doctor(request):
         estado=True
     ).count()
 
+    # ✅ Traer todas las fichas clínicas creadas en las últimas 24 horas
+    fichas = Fichaclinico.objects.filter(
+        fechaapertura__gte=hace_24_horas
+    ).select_related('pacienteid')
+
     return render(request, 'doctor/MenuDoctor.html', {
         'nombre_completo': nombre_completo,
         'total_consultas': consultas_recientes,
-        'total_hospitalizados': pacientes_hospitalizados
+        'total_hospitalizados': pacientes_hospitalizados,
+        'fichas': fichas,  # 👈 Añadimos al contexto
     })
+
 
 def ver_pacientes(request):
     if not validar_doctor(request):

@@ -24,8 +24,8 @@
 
     <!-- Panel izquierdo con nombre y acciones -->
     <div class="sidebar">
-        <h2>Bienvenido/a</h2>  <!-- Bienvenida -->
-        <div class="nombre">Dr: {{ nombre_completo }}</div>  <!-- Solo se muestra el nombre completo una vez, con el prefijo Dr: -->
+        <h2>Bienvenido/a</h2>
+        <div class="nombre">Dr: {{ nombre_completo }}</div> 
         
         <div class="botones-contenedor">
             <div class="menu-botones">
@@ -55,7 +55,7 @@
                 <tbody>
                     {% if fichas %}
                         {% for ficha in fichas %}
-                            <tr class="{% if ficha.tipo == 'Emergencia' %}ficha-emergencia{% endif %}">
+                            <tr class="{% if ficha.tipoatencion == 'Emergencia' %}ficha-emergencia{% endif %}">
                                 <td><strong>{{ ficha.pacienteid.nombres }} {{ ficha.pacienteid.apellidos }}</strong></td>
                                 <td>{{ ficha.motivoconsulta }}</td>
                                 <td>{{ ficha.tipoatencion }}</td>
@@ -67,7 +67,7 @@
                                     {% endif %}
                                 </td>
                                 <td class="ficha-acciones">
-                                    <a href="{% url 'consulta_paciente' ficha.fichaid %}" class="consulta">Iniciar</a>
+                                    <a href="{% url 'perfil_paciente_doctor' ficha.pacienteid.pacienteid %}" class="consulta">Iniciar</a>
                                 </td>
                             </tr>
                         {% endfor %}
