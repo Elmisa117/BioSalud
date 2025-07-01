@@ -2,7 +2,7 @@ from django.urls import path
 from . import views_admin
 from .views_admin import (
     dashboard_view, registrar_personal, listar_personal, editar_personal,
-    inactivar_personal, reactivar_personal, eliminar_personal,
+    inactivar_personal, reactivar_personal,
     listar_pacientes, ver_paciente,
     editar_paciente, inactivar_paciente, reactivar_paciente,
     exportar_pacientes, listar_especialidades, registrar_especialidad,
@@ -13,20 +13,21 @@ from .views_admin import (
     control_accesos, configuraciones_generales, descargar_backup,
     listar_habitaciones, registrar_habitacion, editar_habitacion, eliminar_habitacion,
     listar_tipos_habitacion, registrar_tipohabitacion, editar_tipohabitacion, eliminar_tipohabitacion,
-    listar_metodos_pago, registrar_metodo_pago, editar_metodo_pago, eliminar_metodo_pago
+    listar_metodos_pago, registrar_metodo_pago, editar_metodo_pago, eliminar_metodo_pago,
+    inicio_admin
 )
 
 
 urlpatterns = [
     path('', dashboard_view, name='admin_dashboard'),
+    path('inicio/', inicio_admin, name='inicio_admin'),
     path('registrar_personal/', registrar_personal, name='registrar_personal'),
     path('listar_personal/', listar_personal, name='listar_personal'),
     path('personal/<int:personal_id>/editar/', editar_personal, name='editar_personal'),
     path('personal/<int:personal_id>/inactivar/', inactivar_personal, name='inactivar_personal'),
     path('personal/<int:personal_id>/reactivar/', reactivar_personal, name='reactivar_personal'),
-    path('personal/<int:personal_id>/eliminar/', eliminar_personal, name='eliminar_personal'),
     path('listar_pacientes/', listar_pacientes, name='listar_pacientes'),
-    path('paciente/<int:paciente_id>/', ver_paciente, name='ver_paciente'),
+    path('paciente/<int:paciente_id>/', ver_paciente, name='ver_paciente_admin'),
     path('paciente/<int:paciente_id>/editar/', editar_paciente, name='editar_paciente'),
     path('paciente/<int:paciente_id>/inactivar/', inactivar_paciente, name='inactivar_paciente'),
     path('paciente/<int:paciente_id>/reactivar/', reactivar_paciente, name='reactivar_paciente'),

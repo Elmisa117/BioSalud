@@ -4,17 +4,19 @@
     --accent-color: #42a5f5;
 }
 .listado-card {
-    background: white;
-    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
     padding: 40px;
     max-width: 1100px;
     width: 100%;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    color: white;
 }
 
 .listado-card h2 {
     text-align: center;
-    color: var(--primary-color);
+    color: white;
     font-size: 24px;
     margin-bottom: 25px;
 }
@@ -25,17 +27,20 @@
 }
 
 .btn-nuevo {
-    background-color: var(--accent-color);
+    background-color: #3b82f6;
     color: white;
     padding: 10px 20px;
     font-size: 15px;
     border-radius: 8px;
     text-decoration: none;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
+    font-weight: bold;
 }
 
 .btn-nuevo:hover {
-    background-color: var(--primary-color);
+    background-color: #2563eb;
+    transform: scale(1.02);
+    box-shadow: 0 0 18px #60a5fa80;
 }
 
 .tabla-scroll {
@@ -49,27 +54,27 @@
 }
 
 .tabla-personal thead {
-    background-color: var(--primary-color);
+    background-color: rgba(15, 23, 42, 0.8);
     color: white;
 }
 
 .tabla-personal th, .tabla-personal td {
     padding: 12px;
-    border: 1px solid #d0d0d0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     text-align: center;
 }
 
 .tabla-personal tbody tr:hover {
-    background-color: #f0f9ff;
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .activo {
-    color: green;
+    color: #4ade80;
     font-weight: bold;
 }
 
 .inactivo {
-    color: red;
+    color: #f87171;
     font-weight: bold;
 }
 
@@ -92,3 +97,22 @@
     color: #a30000;
     border: 1px solid #ff4d4d;
 }
+/* Estilos para iconos de acciones */
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    margin: 0 2px;
+    border-radius: 4px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+.action-icon.edit { background-color: #0d6efd; }
+.action-icon.delete { background-color: #dc3545; }
+.action-icon.view { background-color: #17a2b8; }
+.action-icon.history { background-color: #6f42c1; }
+.action-icon.inactivate { background-color: #ffc107; color: #000; }
+.action-icon.activate { background-color: #28a745; }
+.action-icon:hover { filter: brightness(1.15); }

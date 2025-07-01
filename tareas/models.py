@@ -270,7 +270,7 @@ class Metodospago(models.Model):
 
 class Pacientes(models.Model):
     pacienteid = models.AutoField(primary_key=True)
-    
+
     # Datos personales
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
@@ -285,17 +285,24 @@ class Pacientes(models.Model):
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(max_length=100, blank=True, null=True)
 
+    # Contacto de emergencia
+    nombre_contacto_emergencia = models.CharField(max_length=100, blank=True, null=True)
+    telefono_contacto_emergencia = models.CharField(max_length=20, blank=True, null=True)
+    parentesco_contacto_emergencia = models.CharField(max_length=50, blank=True, null=True)
+
     # Salud
     gruposanguineo = models.CharField(max_length=5, blank=True, null=True)
     alergias = models.TextField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
+    enfermedades_base = models.TextField(blank=True, null=True)
+    idioma_principal = models.CharField(max_length=50, blank=True, null=True)
 
     # Registro
     fecharegistro = models.DateTimeField(blank=True, null=True)
     estado = models.BooleanField(default=True)
 
     class Meta:
-        managed = False  # Si usas una tabla existente
+        managed = False  # Si usas una tabla ya creada en la BD
         db_table = 'pacientes'
         unique_together = (('numerodocumento', 'tipodocumento'),)
 

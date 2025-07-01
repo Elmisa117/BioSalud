@@ -1,8 +1,15 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f5f6;
   margin: 0;
   padding: 40px;
+  background-image: url("/static/img/fondo_clinica.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .contenedor-perfil {
@@ -20,7 +27,7 @@ body {
   font-weight: 700;
   color: #111827;
   margin-bottom: 30px;
-  border-bottom: 2px solid #14b87c;
+  border-bottom: 2px solid #0046A4;
   padding-bottom: 10px;
 }
 
@@ -32,10 +39,28 @@ body {
 
 .item-perfil strong {
   font-weight: 600;
-  color: #0e8a5f;
+  color: #111827;
 }
 
-/* ✅ Agrupación de botones */
+/* ===================== ALERTAS INTERNAS ===================== */
+.alertas {
+  margin-bottom: 20px;
+}
+
+.alerta {
+  background-color: #ffc107;
+  color: #000;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+/* ===================== BOTONES ===================== */
 .botones-acciones {
   display: flex;
   flex-wrap: wrap;
@@ -43,7 +68,6 @@ body {
   margin-top: 30px;
 }
 
-/* Botón volver */
 .btn-volver {
   background-color: #14b87c;
   color: white;
@@ -62,7 +86,6 @@ body {
   box-shadow: 0 6px 12px rgba(14, 138, 95, 0.5);
 }
 
-/* Botones de acción (Factura, Plan, Facturas Pagadas) */
 .btn-factura {
   text-decoration: none;
   background-color: #1abc9c;
@@ -84,7 +107,7 @@ body {
   box-shadow: 0 6px 12px rgba(23, 165, 137, 0.4);
 }
 
-/* Estilos formulario de factura (si aplica en esta vista) */
+/* ===================== FORMULARIO FACTURA ===================== */
 .formulario-factura {
   background-color: #ffffff;
   padding: 20px;
@@ -115,4 +138,60 @@ body {
 
 .btn-guardar:hover {
   background-color: #5a0ca3;
+}
+
+/* ===================== TOAST (MENSAJE FLOTANTE OPCIONAL) ===================== */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: #000;
+  background-color: #ffc107;
+  display: none;
+  max-width: 350px;
+  line-height: 1.4;
+}
+
+.toast.visible {
+  display: block;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+.toast.exito {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.toast.info {
+  background-color: #ffc107;
+  color: #000;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeout {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.alerta-paciente {
+  background-color: #ffc107;
+  color: #111;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  border: 1px solid #e0a800;
 }
