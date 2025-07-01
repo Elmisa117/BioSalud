@@ -17,9 +17,9 @@
     width: 320px;
     padding: 20px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-    color: white;
+    background: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+    color: rgb(255, 255, 255);
     backdrop-filter: blur(3px);
 }
 
@@ -51,9 +51,9 @@
     width: 360px;
     padding: 20px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-    color: white;
+    background: rgba(0, 0, 0, 0.445);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.575);
+    color: rgb(255, 255, 255);
     backdrop-filter: blur(3px);
     text-align: center;
 }
