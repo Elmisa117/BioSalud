@@ -80,6 +80,15 @@
             <label for="telefono">Teléfono:</label>
             <input type="text" id="telefono" name="telefono" value="{{ paciente.telefono|default:'' }}" pattern="^\d{7,15}$" title="Solo números (mínimo 7 dígitos)">
 
+            <label for="nombre_contacto_emergencia">Nombre Contacto Emergencia:</label>
+            <input type="text" id="nombre_contacto_emergencia" name="nombre_contacto_emergencia" value="{{ paciente.nombre_contacto_emergencia|default:'' }}">
+
+            <label for="telefono_contacto_emergencia">Teléfono Emergencia:</label>
+            <input type="text" id="telefono_contacto_emergencia" name="telefono_contacto_emergencia" value="{{ paciente.telefono_contacto_emergencia|default:'' }}" pattern="^\d{7,15}$" title="Solo números (mínimo 7 dígitos)">
+
+            <label for="parentesco_contacto_emergencia">Parentesco Emergencia:</label>
+            <input type="text" id="parentesco_contacto_emergencia" name="parentesco_contacto_emergencia" value="{{ paciente.parentesco_contacto_emergencia|default:'' }}">
+
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="{{ paciente.email|default:'' }}">
 
@@ -91,6 +100,12 @@
 
             <label for="observaciones">Observaciones:</label>
             <textarea id="observaciones" name="observaciones" rows="3">{{ paciente.observaciones|default:'' }}</textarea>
+
+            <label for="enfermedades_base">Enfermedades Base:</label>
+            <textarea id="enfermedades_base" name="enfermedades_base" rows="2">{{ paciente.enfermedades_base|default:'' }}</textarea>
+
+            <label for="idioma_principal">Idioma Principal:</label>
+            <input type="text" id="idioma_principal" name="idioma_principal" value="{{ paciente.idioma_principal|default:'' }}">
 
             <div class="botones-acciones">
                 <button type="submit" name="accion" value="guardar">

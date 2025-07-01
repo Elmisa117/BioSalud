@@ -16,9 +16,14 @@
         <tr><th>Sexo</th><td>{{ paciente.genero }}</td></tr>
         <tr><th>Dirección</th><td>{{ paciente.direccion }}</td></tr>
         <tr><th>Teléfono</th><td>{{ paciente.telefono }}</td></tr>
+        <tr><th>Contacto Emergencia</th><td>{{ paciente.nombre_contacto_emergencia }}</td></tr>
+        <tr><th>Tel. Emergencia</th><td>{{ paciente.telefono_contacto_emergencia }}</td></tr>
+        <tr><th>Parentesco</th><td>{{ paciente.parentesco_contacto_emergencia }}</td></tr>
         <tr><th>Grupo sanguíneo</th><td>{{ paciente.gruposanguineo }}</td></tr>
         <tr><th>Alergias</th><td>{{ paciente.alergias }}</td></tr>
         <tr><th>Observaciones</th><td>{{ paciente.observaciones }}</td></tr>
+        <tr><th>Enfermedades Base</th><td>{{ paciente.enfermedades_base }}</td></tr>
+        <tr><th>Idioma Principal</th><td>{{ paciente.idioma_principal }}</td></tr>
     </table>
     <a href="{% url 'historial_paciente_admin' paciente.pacienteid %}" class="action-icon history" title="Historial"><i class="bi bi-clock-history"></i> Historial</a>
     <a href="{% url 'listar_pacientes' %}" class="volver">← Volver al listado</a>
