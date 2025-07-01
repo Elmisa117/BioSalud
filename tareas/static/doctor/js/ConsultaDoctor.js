@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 const habitaciones = data.habitaciones || [];
                 habitacionSelect.innerHTML = '';
-
                 if (habitaciones.length === 0) {
                     habitacionSelect.innerHTML = '<option value="">No hay habitaciones disponibles</option>';
                     return;
@@ -109,14 +108,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 defaultOption.value = '';
                 defaultOption.textContent = '-- Seleccione --';
                 habitacionSelect.appendChild(defaultOption);
-
                 habitaciones.forEach(h => {
                     const option = document.createElement('option');
                     option.value = h.id;
                     option.textContent = h.nombre;
                     habitacionSelect.appendChild(option);
                 });
-
                 habitacionSelect.disabled = false;
             })
             .catch(err => {
@@ -124,14 +121,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 habitacionSelect.innerHTML = '<option value="">Error al cargar</option>';
             });
     }
-
     // Actualizar habitaciones cuando el tipo cambie
     if (tipoHabitacionSelect) {
         tipoHabitacionSelect.addEventListener('change', function () {
             cargarHabitaciones(this.value);
         });
     }
-
     // Si ya hay un tipo de habitación seleccionado al cargar la página, cargar sus opciones
     if (tipoHabitacionSelect && tipoHabitacionSelect.value) {
         cargarHabitaciones(tipoHabitacionSelect.value);
