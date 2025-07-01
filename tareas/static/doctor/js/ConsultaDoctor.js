@@ -19,9 +19,20 @@ document.addEventListener('DOMContentLoaded', function () {
         boxServicios.style.display = checkboxServicios.checked ? 'block' : 'none';
     });
 
-    // Mostrar/ocultar hospitalización
+    // Mostrar/ocultar hospitalización y gestionar cambios
     checkboxHospitalizacion?.addEventListener('change', () => {
-        boxHospitalizacion.style.display = checkboxHospitalizacion.checked ? 'block' : 'none';
+        const activo = checkboxHospitalizacion.checked;
+        boxHospitalizacion.style.display = activo ? 'block' : 'none';
+
+        if (activo) {
+            if (tipoHabitacionSelect && tipoHabitacionSelect.value) {
+                cargarHabitaciones(tipoHabitacionSelect.value);
+            }
+        } else {
+            tipoHabitacionSelect.selectedIndex = 0;
+            habitacionSelect.innerHTML = '<option value="">-- Primero seleccione tipo --</option>';
+            habitacionSelect.disabled = true;
+        }
     });
 
     // Validación del formulario
@@ -75,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function cargarHabitaciones(tipoId) {
-        const habitacionSelect = document.getElementById('habitacionid');
         habitacionSelect.innerHTML = '<option value="">Cargando...</option>';
         habitacionSelect.disabled = true;
 
@@ -89,16 +99,15 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 const habitaciones = data.habitaciones || [];
                 habitacionSelect.innerHTML = '';
-
                 if (habitaciones.length === 0) {
                     habitacionSelect.innerHTML = '<option value="">No hay habitaciones disponibles</option>';
                     return;
                 }
+
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.textContent = '-- Seleccione --';
                 habitacionSelect.appendChild(defaultOption);
-
                 habitaciones.forEach(h => {
                     const option = document.createElement('option');
                     option.value = h.id;
@@ -118,14 +127,6 @@ document.addEventListener('DOMContentLoaded', function () {
             cargarHabitaciones(this.value);
         });
     }
-
-    // Si se activa la hospitalización y ya hay un tipo seleccionado, cargar
-    checkboxHospitalizacion?.addEventListener('change', () => {
-        if (checkboxHospitalizacion.checked && tipoHabitacionSelect?.value) {
-            cargarHabitaciones(tipoHabitacionSelect.value);
-        }
-    });
-
     // Si ya hay un tipo de habitación seleccionado al cargar la página, cargar sus opciones
     if (tipoHabitacionSelect && tipoHabitacionSelect.value) {
         cargarHabitaciones(tipoHabitacionSelect.value);
