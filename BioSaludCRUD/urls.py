@@ -18,10 +18,10 @@ urlpatterns = [
     #Super AdministradorDjango
     path('djangoadmin/', admin.site.urls),  # Habilita el Django admin clásico en /djangoadmin/
     # Rutas por módulo (rol)
-    path('admin/', include('tareas.admin.urls_admin')),
+    path('admin/', include(('tareas.admin.urls_admin', 'adminpanel'), namespace='adminpanel')),
     path('doctor/', include('tareas.doctor.urls_doctor')),
     path('enfermeria/', include('tareas.enfermeria.urls_enfermeria')),
-    path('cajero/', include('tareas.cajero.urls_cajero')),
+    path('cajero/', include(('tareas.cajero.urls_cajero', 'cajero'), namespace='cajero')),
     # Ruta específica del cajero (fuera del include)
     path('facturar/<int:paciente_id>/', views.generar_factura, name='generar_factura'),
     # Rutas para las API biometricos
