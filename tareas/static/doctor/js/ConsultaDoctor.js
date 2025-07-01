@@ -75,51 +75,59 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function cargarHabitaciones(tipoId) {
+        const habitacionSelect = document.getElementById('habitacionid');
+
+        console.log("🔄 Tipo de habitación seleccionado:", tipoId);
+        habitacionSelect.innerHTML = '<option value="">Cargando...</option>';
+
+        if (!tipoId) {
+            habitacionSelect.innerHTML = '<option value="">-- Primero seleccione tipo --</option>';
+            return;
+        }
+
+        fetch(`/doctor/ajax/habitaciones_disponibles/${tipoId}/`)
+            .then(res => {
+                console.log("📡 Respuesta recibida del servidor");
+                return res.json();
+            })
+            .then(data => {
+                console.log("📦 Datos recibidos:", data);
+                const habitaciones = data.habitaciones || [];
+                habitacionSelect.innerHTML = '';
+
+                if (habitaciones.length === 0) {
+                    habitacionSelect.innerHTML = '<option value="">No hay habitaciones disponibles</option>';
+                    return;
+                }
+
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Seleccione --';
+                habitacionSelect.appendChild(defaultOption);
+
+                habitaciones.forEach(h => {
+                    const option = document.createElement('option');
+                    option.value = h.id;
+                    option.textContent = h.nombre;
+                    habitacionSelect.appendChild(option);
+                });
+            })
+            .catch(err => {
+                console.error('❌ Error al cargar habitaciones:', err);
+                habitacionSelect.innerHTML = '<option value="">Error al cargar</option>';
+            });
+    }
+
     // Delegación para detectar cambio de tipo de habitación
     document.addEventListener('change', function (e) {
         if (e.target && e.target.id === 'tipo_habitacion') {
-            const tipoId = e.target.value;
-            const habitacionSelect = document.getElementById('habitacionid');
-
-            console.log("🔄 Tipo de habitación seleccionado:", tipoId);
-            habitacionSelect.innerHTML = '<option value="">Cargando...</option>';
-
-            if (!tipoId) {
-                habitacionSelect.innerHTML = '<option value="">-- Primero seleccione tipo --</option>';
-                return;
-            }
-
-            fetch(`/doctor/ajax/habitaciones_disponibles/${tipoId}/`)
-                .then(res => {
-                    console.log("📡 Respuesta recibida del servidor");
-                    return res.json();
-                })
-                .then(data => {
-                    console.log("📦 Datos recibidos:", data);
-                    const habitaciones = data.habitaciones || [];
-                    habitacionSelect.innerHTML = '';
-
-                    if (habitaciones.length === 0) {
-                        habitacionSelect.innerHTML = '<option value="">No hay habitaciones disponibles</option>';
-                        return;
-                    }
-
-                    const defaultOption = document.createElement('option');
-                    defaultOption.value = '';
-                    defaultOption.textContent = '-- Seleccione --';
-                    habitacionSelect.appendChild(defaultOption);
-
-                    habitaciones.forEach(h => {
-                        const option = document.createElement('option');
-                        option.value = h.id;
-                        option.textContent = h.nombre;
-                        habitacionSelect.appendChild(option);
-                    });
-                })
-                .catch(err => {
-                    console.error('❌ Error al cargar habitaciones:', err);
-                    habitacionSelect.innerHTML = '<option value="">Error al cargar</option>';
-                });
+            cargarHabitaciones(e.target.value);
         }
     });
+
+    // Si ya hay un tipo de habitación seleccionado al cargar la página, cargar sus opciones
+    if (tipoHabitacionSelect && tipoHabitacionSelect.value) {
+        cargarHabitaciones(tipoHabitacionSelect.value);
+    }
 });
