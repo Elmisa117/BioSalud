@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarHabitaciones(tipoId) {
         const habitacionSelect = document.getElementById('habitacionid');
-
         habitacionSelect.innerHTML = '<option value="">Cargando...</option>';
         habitacionSelect.disabled = true;
 
@@ -95,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     habitacionSelect.innerHTML = '<option value="">No hay habitaciones disponibles</option>';
                     return;
                 }
-
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.textContent = '-- Seleccione --';
@@ -107,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     option.textContent = h.nombre;
                     habitacionSelect.appendChild(option);
                 });
-
                 habitacionSelect.disabled = false;
             })
             .catch(err => {
@@ -115,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 habitacionSelect.innerHTML = '<option value="">Error al cargar</option>';
             });
     }
-
     // Actualizar habitaciones cuando el tipo cambie
     if (tipoHabitacionSelect) {
         tipoHabitacionSelect.addEventListener('change', function () {
