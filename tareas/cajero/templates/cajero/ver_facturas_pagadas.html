@@ -12,7 +12,7 @@
 
   <div class="contenedor-facturas">
     <div class="encabezado-botones">
-      <a href="{% url 'ver_paciente' paciente.pacienteid %}" class="btn-volver">⟵ Volver al Perfil</a>
+      <a href="{% url 'cajero:ver_paciente' paciente.pacienteid %}" class="btn-volver">⟵ Volver al Perfil</a>
     </div>
 
     <h2 class="titulo">Facturas Pagadas de {{ paciente.nombres }} {{ paciente.apellidos }}</h2>

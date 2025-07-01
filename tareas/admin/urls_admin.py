@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views_admin
+
+app_name = "adminpanel"
 from .views_admin import (
     dashboard_view, registrar_personal, listar_personal, editar_personal,
     inactivar_personal, reactivar_personal,
