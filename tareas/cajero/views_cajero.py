@@ -100,7 +100,7 @@ def generar_factura(request, paciente_id):
     # Verificar si no hay ningún servicio
     if not (consultas.exists() or consulta_servicios.exists() or hospitalizaciones.exists() or hospitalizacion_servicios.exists()):
         messages.warning(request, "⚠️ El paciente no tiene servicios pendientes para facturar.")
-        return redirect('cajero:ver_paciente', id=paciente.pacienteid)
+        return redirect('ver_paciente', id=paciente.pacienteid)
 
     # Métodos de pago activos
     metodos_pago = Metodospago.objects.filter(estado=True)
@@ -366,7 +366,7 @@ def buscar_pacientes_json(request):
             'ci': p.numerodocumento,
             'fechanacimiento': p.fechanacimiento.strftime('%b. %d, %Y'),
             'telefono': p.telefono,
-            'url': reverse('cajero:ver_paciente', args=[p.pacienteid])
+            'url': reverse('ver_paciente', args=[p.pacienteid])
         })
 
     return JsonResponse({'pacientes': data})
