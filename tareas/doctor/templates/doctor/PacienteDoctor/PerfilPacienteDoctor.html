@@ -83,6 +83,7 @@
                             <td>{{ ficha.estado }}</td>
                             <td>
                                 <a href="{% url 'crear_consulta_doctor' ficha.pacienteid.pacienteid %}" class="btn-accion">Consulta</a>
+                                <a href="{% url 'crear_consulta_doctor' ficha.pacienteid.pacienteid %}" class="btn-accion">Hospitalización</a>
                             </td>
                         </tr>
                     {% endfor %}

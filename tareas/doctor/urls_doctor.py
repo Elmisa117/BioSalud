@@ -11,6 +11,9 @@ urlpatterns = [
     path('paciente/<int:pacienteid>/consulta/', views_doctor.crear_consulta_doctor, name='crear_consulta_doctor'),
     path('paciente/<int:pacienteid>/actualizar/', views_doctor.actualizar_paciente_doctor, name='actualizar_paciente_doctor'),
 
+    # ✅ SOLO UNA VEZ
+    path('ajax/habitaciones_disponibles/<int:tipoid>/', views_doctor.habitaciones_disponibles, name='habitaciones_disponibles'),
+
     # Historial completo del paciente
     path('historial/<int:id>/', views_doctor.historial_paciente, name='historial_paciente'),
 

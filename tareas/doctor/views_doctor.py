@@ -4,13 +4,18 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from datetime import timedelta
 from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 from django.template.loader import render_to_string
 from tareas.models import (
     Pacientes, 
     Fichaclinico, 
     Personal,
     Consultas,
-    Hospitalizaciones
+    Hospitalizaciones,
+    Consultaservicios, 
+    Servicios,
+    Habitaciones,
+    Tiposhabitacion
 )
 
 def validar_doctor(request):
@@ -317,7 +322,6 @@ def crear_consulta_doctor(request, pacienteid):
     paciente = get_object_or_404(Pacientes, pacienteid=pacienteid)
     personal_id = request.session.get('usuario_id')
 
-    # Obtenemos la ficha más reciente en las últimas 24h sin filtrar por rol
     ficha_reciente = (
         Fichaclinico.objects
         .filter(
@@ -329,6 +333,10 @@ def crear_consulta_doctor(request, pacienteid):
         .first()
     )
 
+    servicios = Servicios.objects.filter(estado=True)
+    tipos_habitacion = Tiposhabitacion.objects.all()
+    habitaciones_disponibles = Habitaciones.objects.filter(estado=True, disponible=True)
+
     if request.method == 'POST':
         motivocita = request.POST.get('motivocita', '').strip()
         diagnostico = request.POST.get('diagnostico', '').strip()
@@ -337,8 +345,18 @@ def crear_consulta_doctor(request, pacienteid):
         estado = request.POST.get('estado', 'True') == 'True'
         costo = request.POST.get('costo')
 
+        requiere_servicio = request.POST.get('requiere_servicio') == 'on'
+        servicio_id = request.POST.get('servicioid')
+        cantidad = request.POST.get('cantidad')
+        observacion_servicio = request.POST.get('observaciones_servicio', '').strip()
+
+        requiere_hospitalizacion = request.POST.get('requiere_hospitalizacion') == 'on'
+        tipo_habitacion_id = request.POST.get('tipo_habitacion')
+        habitacion_id = request.POST.get('habitacionid')
+        motivo_hosp = request.POST.get('motivohospitalizacion', '').strip()
+
         if motivocita and diagnostico and tratamiento:
-            Consultas.objects.create(
+            consulta = Consultas.objects.create(
                 pacienteid=paciente,
                 personalid_id=personal_id,
                 fechaconsulta=timezone.now(),
@@ -349,12 +367,58 @@ def crear_consulta_doctor(request, pacienteid):
                 estado=estado,
                 costo=costo
             )
+
+            if requiere_servicio and servicio_id and cantidad:
+                Consultaservicios.objects.create(
+                    consultaid=consulta,
+                    servicioid_id=servicio_id,
+                    cantidad=int(cantidad),
+                    fechaservicio=timezone.now(),
+                    observaciones=observacion_servicio,
+                    fecharegistro=timezone.now(),
+                    estado=True,
+                    facturado=False
+                )
+
+            if requiere_hospitalizacion and habitacion_id and motivo_hosp:
+                Hospitalizaciones.objects.create(
+                    pacienteid=paciente,
+                    personalid_id=personal_id,
+                    habitacionid_id=habitacion_id,
+                    fechaingreso=timezone.now(),
+                    motivohospitalizacion=motivo_hosp,
+                    fecharegistro=timezone.now(),
+                    estado=True,
+                    facturado=False
+                )
+                # Opcionalmente marcar la habitación como ocupada
+                Habitaciones.objects.filter(pk=habitacion_id).update(disponible=False)
+
             return redirect('perfil_paciente_doctor', pacienteid=pacienteid)
 
     return render(request, 'doctor/PacienteDoctor/ConsultaDoctor.html', {
         'paciente': paciente,
-        'ficha_reciente': ficha_reciente
+        'ficha_reciente': ficha_reciente,
+        'servicios': servicios,
+        'tipos_habitacion': tipos_habitacion,
+        'habitaciones': habitaciones_disponibles,
     })
+
+# habitaciones disponibles para los pacientes 
+@require_GET
+def habitaciones_disponibles(request, tipoid):
+    habitaciones = Habitaciones.objects.filter(
+        tipohabitacionid=tipoid,
+        disponible=True,
+        estado=True
+    )
+
+    data = {
+        'habitaciones': [
+            {'id': h.habitacionid, 'nombre': f"{h.numero} - {h.tipohabitacionid.nombre}"} for h in habitaciones
+        ]
+    }
+    return JsonResponse(data)
 
 #actualizar posisiblemente lo eliminemos 
 
