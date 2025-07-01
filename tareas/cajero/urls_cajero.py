@@ -1,8 +1,6 @@
 from django.urls import path
 from . import views_cajero
 
-app_name = "cajero"
-
 urlpatterns = [
     # 🧾 Panel principal del cajero
     path('', views_cajero.panel_cajero, name='panel_cajero'),
