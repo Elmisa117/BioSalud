@@ -72,10 +72,13 @@ def perfil_paciente_enfermeria(request, paciente_id):
     # Query para obtener los detalles del paciente
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT 
+            SELECT
                 pacienteid, nombres, apellidos, numerodocumento, tipodocumento,
                 fechanacimiento, edad, genero, direccion, telefono, email,
-                gruposanguineo, alergias, observaciones
+                nombre_contacto_emergencia, telefono_contacto_emergencia,
+                parentesco_contacto_emergencia,
+                gruposanguineo, alergias, observaciones,
+                enfermedades_base, idioma_principal
             FROM pacientes
             WHERE pacienteid = %s
         """, [paciente_id])
@@ -96,9 +99,14 @@ def perfil_paciente_enfermeria(request, paciente_id):
         'direccion': fila[8],
         'telefono': fila[9],
         'email': fila[10],
-        'gruposanguineo': fila[11],
-        'alergias': fila[12],
-        'observaciones': fila[13],
+        'nombre_contacto_emergencia': fila[11],
+        'telefono_contacto_emergencia': fila[12],
+        'parentesco_contacto_emergencia': fila[13],
+        'gruposanguineo': fila[14],
+        'alergias': fila[15],
+        'observaciones': fila[16],
+        'enfermedades_base': fila[17],
+        'idioma_principal': fila[18],
     }
 
     return render(request, 'enfermeria/Paciente/PerfilPaciente.html', {'paciente': paciente})
@@ -128,9 +136,14 @@ def registrar_paciente_enfermeria(request):
         direccion = request.POST.get('direccion')
         telefono = request.POST.get('telefono')
         email = request.POST.get('email')
+        nombre_contacto_emergencia = request.POST.get('nombre_contacto_emergencia')
+        telefono_contacto_emergencia = request.POST.get('telefono_contacto_emergencia')
+        parentesco_contacto_emergencia = request.POST.get('parentesco_contacto_emergencia')
         grupo_sanguineo = request.POST.get('gruposanguineo')
         alergias = request.POST.get('alergias')
         observaciones = request.POST.get('observaciones')
+        enfermedades_base = request.POST.get('enfermedades_base')
+        idioma_principal = request.POST.get('idioma_principal')
 
         # Validación de fecha de nacimiento
         if fecha_nacimiento_str:
@@ -168,13 +181,20 @@ def registrar_paciente_enfermeria(request):
                     UPDATE pacientes SET
                         nombres = %s, apellidos = %s, numerodocumento = %s, tipodocumento = %s,
                         fechanacimiento = %s, edad = %s, genero = %s, direccion = %s,
-                        telefono = %s, email = %s, gruposanguineo = %s,
-                        alergias = %s, observaciones = %s
+                        telefono = %s, email = %s,
+                        nombre_contacto_emergencia = %s, telefono_contacto_emergencia = %s,
+                        parentesco_contacto_emergencia = %s,
+                        gruposanguineo = %s, alergias = %s, observaciones = %s,
+                        enfermedades_base = %s, idioma_principal = %s
                     WHERE pacienteid = %s
                 """, [
                     nombres, apellidos, numero_documento, tipo_documento,
                     fecha_nacimiento, edad, genero, direccion,
-                    telefono, email, grupo_sanguineo, alergias, observaciones,
+                    telefono, email,
+                    nombre_contacto_emergencia, telefono_contacto_emergencia,
+                    parentesco_contacto_emergencia,
+                    grupo_sanguineo, alergias, observaciones,
+                    enfermedades_base, idioma_principal,
                     paciente_id
                 ])
             else:
@@ -182,13 +202,19 @@ def registrar_paciente_enfermeria(request):
                     INSERT INTO pacientes (
                         nombres, apellidos, numerodocumento, tipodocumento,
                         fechanacimiento, edad, genero, direccion, telefono,
-                        email, gruposanguineo, alergias, observaciones,
+                        email, nombre_contacto_emergencia, telefono_contacto_emergencia,
+                        parentesco_contacto_emergencia,
+                        gruposanguineo, alergias, observaciones,
+                        enfermedades_base, idioma_principal,
                         fecharegistro, estado
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, TRUE)
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, TRUE)
                 """, [
                     nombres, apellidos, numero_documento, tipo_documento,
                     fecha_nacimiento, edad, genero, direccion,
-                    telefono, email, grupo_sanguineo, alergias, observaciones
+                    telefono, email, nombre_contacto_emergencia, telefono_contacto_emergencia,
+                    parentesco_contacto_emergencia,
+                    grupo_sanguineo, alergias, observaciones,
+                    enfermedades_base, idioma_principal
                 ])
 
         if is_ajax:
@@ -203,7 +229,10 @@ def registrar_paciente_enfermeria(request):
             cursor.execute("""
                 SELECT nombres, apellidos, numerodocumento, tipodocumento,
                        fechanacimiento, edad, genero, direccion, telefono,
-                       email, gruposanguineo, alergias, observaciones
+                       email, nombre_contacto_emergencia, telefono_contacto_emergencia,
+                       parentesco_contacto_emergencia,
+                       gruposanguineo, alergias, observaciones,
+                       enfermedades_base, idioma_principal
                 FROM pacientes
                 WHERE pacienteid = %s
             """, [paciente_id])
@@ -221,9 +250,14 @@ def registrar_paciente_enfermeria(request):
                     'direccion': fila[7],
                     'telefono': fila[8],
                     'email': fila[9],
-                    'gruposanguineo': fila[10],
-                    'alergias': fila[11],
-                    'observaciones': fila[12]
+                    'nombre_contacto_emergencia': fila[10],
+                    'telefono_contacto_emergencia': fila[11],
+                    'parentesco_contacto_emergencia': fila[12],
+                    'gruposanguineo': fila[13],
+                    'alergias': fila[14],
+                    'observaciones': fila[15],
+                    'enfermedades_base': fila[16],
+                    'idioma_principal': fila[17]
                 }
 
     return render(request, 'enfermeria/Paciente/RegistrarPaciente/RegistrarPaciente.html', {

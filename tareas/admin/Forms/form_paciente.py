@@ -10,8 +10,11 @@ class PacienteForm(forms.ModelForm):
         fields = [
             'nombres', 'apellidos', 'numerodocumento', 'tipodocumento',
             'fechanacimiento', 'edad', 'genero', 'direccion', 'telefono',
+            'nombre_contacto_emergencia', 'telefono_contacto_emergencia',
+            'parentesco_contacto_emergencia',
             'email', 'gruposanguineo', 'alergias',
-            'observaciones', 'estado', 'fecharegistro'
+            'observaciones', 'enfermedades_base', 'idioma_principal',
+            'estado', 'fecharegistro'
         ]
         widgets = {
             'fechanacimiento': forms.DateInput(attrs={'type': 'date'}),
@@ -52,6 +55,10 @@ class PacienteForm(forms.ModelForm):
             'title': 'Solo dígitos'
         })
         self.fields['telefono'].widget.attrs.update({
+            'pattern': r'\d{7,15}',
+            'title': 'Entre 7 y 15 dígitos'
+        })
+        self.fields['telefono_contacto_emergencia'].widget.attrs.update({
             'pattern': r'\d{7,15}',
             'title': 'Entre 7 y 15 dígitos'
         })

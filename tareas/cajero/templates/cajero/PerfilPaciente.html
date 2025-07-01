@@ -27,8 +27,13 @@
     <div class="item-perfil"><strong>CI:</strong> {{ paciente.numerodocumento }}</div>
     <div class="item-perfil"><strong>Fecha de Nacimiento:</strong> {{ paciente.fechanacimiento|date:"M. d, Y" }}</div>
     <div class="item-perfil"><strong>Teléfono:</strong> {{ paciente.telefono }}</div>
+    <div class="item-perfil"><strong>Contacto Emergencia:</strong> {{ paciente.nombre_contacto_emergencia }}</div>
+    <div class="item-perfil"><strong>Tel. Emergencia:</strong> {{ paciente.telefono_contacto_emergencia }}</div>
+    <div class="item-perfil"><strong>Parentesco:</strong> {{ paciente.parentesco_contacto_emergencia }}</div>
     <div class="item-perfil"><strong>Dirección:</strong> {{ paciente.direccion }}</div>
     <div class="item-perfil"><strong>Email:</strong> {{ paciente.email }}</div>
+    <div class="item-perfil"><strong>Enfermedades Base:</strong> {{ paciente.enfermedades_base }}</div>
+    <div class="item-perfil"><strong>Idioma Principal:</strong> {{ paciente.idioma_principal }}</div>
 
     <div class="botones-acciones">
       <a href="{% url 'buscar_paciente' %}" class="btn-volver">⟵ Volver al Listado</a>
