@@ -24,6 +24,8 @@ class HabitacionForm(forms.ModelForm):
             coerce=lambda x: x == 'True',
             empty_value=None
         )
+        self.fields['tipohabitacionid'].label = 'Tipo de habitación'
+        self.fields['tipohabitacionid'].empty_label = 'Seleccione...'
         self.fields['numero'].widget.attrs.update({'pattern': r'\d+', 'title': 'Solo números'})
         self.fields['capacidad'].widget.attrs.update({'min': 1})
 
