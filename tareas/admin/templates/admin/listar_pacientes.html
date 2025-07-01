@@ -58,7 +58,7 @@
                     <td class="{{ p.estado|yesno:'activo,inactivo'|lower }}">{{ p.estado|yesno:"Activo,Inactivo" }}</td>
                     <td>
                         <a href="{% url 'ver_paciente_admin' p.pacienteid %}" class="action-icon view" title="Ver"><i class="bi bi-eye"></i> Ver</a>
-                        <a href="{% url 'historial_paciente' p.pacienteid %}" class="action-icon history" title="Historial"><i class="bi bi-clock-history"></i> Historial</a>
+                        <a href="{% url 'historial_paciente_admin' p.pacienteid %}" class="action-icon history" title="Historial"><i class="bi bi-clock-history"></i> Historial</a>
                         <a href="{% url 'editar_paciente' p.pacienteid %}" class="action-icon edit" title="Editar"><i class="bi bi-pencil-square"></i> Editar</a>
                         {% if p.estado %}
                         <a href="{% url 'inactivar_paciente' p.pacienteid %}" class="action-icon inactivate" title="Inactivar"><i class="bi bi-x-circle"></i> Inactivar</a>
