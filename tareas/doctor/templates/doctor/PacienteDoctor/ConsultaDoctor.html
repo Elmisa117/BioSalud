@@ -6,7 +6,6 @@
     <title>Nueva Consulta Médica</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'doctor/css/ConsultaDoctor.css' %}">
-    <script src="{% static 'doctor/js/CrearConsultaDoctor.js' %}" defer></script>
     <style>
         body {
             margin: 0;
@@ -73,12 +72,78 @@
             <option value="False">Cerrada</option>
         </select>
 
+        <!-- Checkbox para servicios -->
+        <div class="checkbox-servicio">
+            <label>
+                <input type="checkbox" id="requiere_servicio" name="requiere_servicio">
+                ¿REQUIERE OTRO SERVICIO DENTRO DE LA CLÍNICA?
+            </label>
+        </div>
+
+        <!-- Campos de servicios -->
+        <div id="servicio_box" style="display: none; margin-top: 15px;">
+            <label for="servicioid">Seleccione un Servicio:</label>
+            <select name="servicioid" id="servicioid">
+                <option value="">-- Seleccione --</option>
+                {% for servicio in servicios %}
+                    <option value="{{ servicio.servicioid }}">{{ servicio.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantidad" id="cantidad" min="1">
+
+            <label for="observaciones_servicio">Observaciones del Servicio:</label>
+            <textarea name="observaciones_servicio" id="observaciones_servicio" rows="2"></textarea>
+        </div>
+
+        <!-- Checkbox para hospitalización -->
+        <div class="checkbox-hospitalizacion" style="margin-top: 20px;">
+            <label>
+                <input type="checkbox" id="requiere_hospitalizacion" name="requiere_hospitalizacion">
+                ¿HOSPITALIZAR AL PACIENTE?
+            </label>
+        </div>
+
+        <!-- Campos de hospitalización -->
+        <div id="hospitalizacion_box" style="display: none; margin-top: 15px;">
+            <label for="tipo_habitacion">🛏️ Tipo de Habitación:</label>
+            <select name="tipo_habitacion" id="tipo_habitacion">
+                <option value="">-- Seleccione tipo --</option>
+                {% for tipo in tipos_habitacion %}
+                    <option value="{{ tipo.tipoid }}">{{ tipo.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="habitacionid">🏨 Habitación Disponible:</label>
+            <select name="habitacionid" id="habitacionid">
+                <option value="">-- Primero seleccione tipo --</option>
+            </select>
+            <small style="color: #555; display: block; margin-top: 5px;">
+                Las habitaciones disponibles aparecerán según el tipo seleccionado.
+            </small>
+
+            <label for="motivohospitalizacion">Motivo de Hospitalización:</label>
+            <input type="text" name="motivohospitalizacion" id="motivohospitalizacion">
+
+            <label for="diagnostico_h">Diagnóstico para Hospitalización:</label>
+            <textarea name="diagnostico_h" id="diagnostico_h" rows="3"></textarea>
+
+            <label for="tratamiento_h">Tratamiento Aplicado:</label>
+            <textarea name="tratamiento_h" id="tratamiento_h" rows="3"></textarea>
+
+            <label for="observaciones_h">Observaciones:</label>
+            <textarea name="observaciones_h" id="observaciones_h" rows="2"></textarea>
+        </div>
+
         <div class="btn-group">
             <button type="submit">Guardar Consulta</button>
             <a href="{% url 'perfil_paciente_doctor' paciente.pacienteid %}" class="cancelar">Cancelar</a>
         </div>
     </form>
 </div>
+
+<script src="{% static 'doctor/js/ConsultaDoctor.js' %}"></script>
 
 </body>
 </html>
