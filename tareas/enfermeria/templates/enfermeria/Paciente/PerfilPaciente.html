@@ -52,10 +52,14 @@
             </div>
             <div><strong>Dirección:</strong> {{ paciente.direccion }}</div>
             <div><strong>Teléfono:</strong> {{ paciente.telefono }}</div>
+            <div><strong>Contacto Emergencia:</strong> {{ paciente.nombre_contacto_emergencia }}</div>
+            <div><strong>Tel. Emergencia:</strong> {{ paciente.telefono_contacto_emergencia }}</div>
+            <div><strong>Parentesco:</strong> {{ paciente.parentesco_contacto_emergencia }}</div>
             <div><strong>Email:</strong> {{ paciente.email }}</div>
             <div><strong>Grupo Sanguíneo:</strong> {{ paciente.gruposanguineo }}</div>
             <div><strong>Alergias:</strong> {{ paciente.alergias }}</div>
             <div><strong>Observaciones:</strong> {{ paciente.observaciones }}</div>
+<<<<<<< HEAD
 
             <!-- Campos adicionales -->
             <div><strong>Enfermedades de Base:</strong> {{ paciente.enfermedades_base|default:"No registradas" }}</div>
@@ -65,6 +69,10 @@
             <div><strong>Nombre:</strong> {{ paciente.nombre_contacto_emergencia|default:"-" }}</div>
             <div><strong>Teléfono:</strong> {{ paciente.telefono_contacto_emergencia|default:"-" }}</div>
             <div><strong>Parentesco:</strong> {{ paciente.parentesco_contacto_emergencia|default:"-" }}</div>
+=======
+            <div><strong>Enfermedades Base:</strong> {{ paciente.enfermedades_base }}</div>
+            <div><strong>Idioma Principal:</strong> {{ paciente.idioma_principal }}</div>
+>>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
         </div>
     </div>
 </body>

@@ -424,6 +424,8 @@ class Tiposhabitacion(models.Model):
     fechacreacion = models.DateTimeField(blank=True, null=True)
     estado = models.BooleanField(blank=True, null=True)
 
+    def __str__(self):
+        return self.nombre
     class Meta:
         managed = False
         db_table = 'tiposhabitacion'

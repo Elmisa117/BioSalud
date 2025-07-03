@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    console.log("✅ JS CARGADO: ConsultaDoctor.js está ejecutándose");
 
     const form = document.querySelector('form');
     const motivo = document.getElementById('motivocita');
@@ -21,9 +20,20 @@ document.addEventListener('DOMContentLoaded', function () {
         boxServicios.style.display = checkboxServicios.checked ? 'block' : 'none';
     });
 
-    // Mostrar/ocultar hospitalización
+    // Mostrar/ocultar hospitalización y gestionar cambios
     checkboxHospitalizacion?.addEventListener('change', () => {
-        boxHospitalizacion.style.display = checkboxHospitalizacion.checked ? 'block' : 'none';
+        const activo = checkboxHospitalizacion.checked;
+        boxHospitalizacion.style.display = activo ? 'block' : 'none';
+
+        if (activo) {
+            if (tipoHabitacionSelect && tipoHabitacionSelect.value) {
+                cargarHabitaciones(tipoHabitacionSelect.value);
+            }
+        } else {
+            tipoHabitacionSelect.selectedIndex = 0;
+            habitacionSelect.innerHTML = '<option value="">-- Primero seleccione tipo --</option>';
+            habitacionSelect.disabled = true;
+        }
     });
 
     // Validación del formulario
@@ -75,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+<<<<<<< HEAD
     // Buscar habitaciones disponibles al hacer clic
     if (btnBuscarHabitaciones) {
         btnBuscarHabitaciones.addEventListener('click', function () {
@@ -129,4 +140,52 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     }
+=======
+    function cargarHabitaciones(tipoId) {
+        habitacionSelect.innerHTML = '<option value="">Cargando...</option>';
+        habitacionSelect.disabled = true;
+
+        if (!tipoId) {
+            habitacionSelect.innerHTML = '<option value="">-- Primero seleccione tipo --</option>';
+            return;
+        }
+
+        fetch(`/doctor/ajax/habitaciones_disponibles/${tipoId}/`)
+            .then(res => res.json())
+            .then(data => {
+                const habitaciones = data.habitaciones || [];
+                habitacionSelect.innerHTML = '';
+                if (habitaciones.length === 0) {
+                    habitacionSelect.innerHTML = '<option value="">No hay habitaciones disponibles</option>';
+                    return;
+                }
+
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Seleccione --';
+                habitacionSelect.appendChild(defaultOption);
+                habitaciones.forEach(h => {
+                    const option = document.createElement('option');
+                    option.value = h.id;
+                    option.textContent = h.nombre;
+                    habitacionSelect.appendChild(option);
+                });
+                habitacionSelect.disabled = false;
+            })
+            .catch(err => {
+                console.error('❌ Error al cargar habitaciones:', err);
+                habitacionSelect.innerHTML = '<option value="">Error al cargar</option>';
+            });
+    }
+    // Actualizar habitaciones cuando el tipo cambie
+    if (tipoHabitacionSelect) {
+        tipoHabitacionSelect.addEventListener('change', function () {
+            cargarHabitaciones(this.value);
+        });
+    }
+    // Si ya hay un tipo de habitación seleccionado al cargar la página, cargar sus opciones
+    if (tipoHabitacionSelect && tipoHabitacionSelect.value) {
+        cargarHabitaciones(tipoHabitacionSelect.value);
+    }
+>>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
 });
