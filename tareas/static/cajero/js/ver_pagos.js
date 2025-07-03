@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".btn-pagar").forEach(btn => {
     btn.addEventListener("click", () => {
       if (btn.classList.contains("cuota-bloqueada")) {
-        mostrarToast("⚠️ Para abonar esta cuota primero debe pagar las anteriores.", "info");
+        mostrarErrorDebajoMonto("Debe pagar las cuotas anteriores antes de esta.");
         return;
       }
 
@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       confirmacionPagoContainer.style.display = "none";
       if (radioConfirmacion) radioConfirmacion.checked = false;
+
+      limpiarErrorDebajoMonto();
 
       modal.style.display = "flex";
     });
@@ -46,13 +48,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const requiereConfirmacion = metodoTexto.includes("qr") || metodoTexto.includes("transferencia");
     const confirmado = radioConfirmacion && radioConfirmacion.checked;
 
+    limpiarErrorDebajoMonto();
+
     if (!metodo) {
-      mostrarToast("Debe seleccionar un método de pago.", "error");
+      mostrarErrorDebajoMonto("Debe seleccionar un método de pago.");
       return;
     }
 
     if (requiereConfirmacion && !confirmado) {
-      mostrarToast("Debe confirmar que recibió el monto.", "error");
+      mostrarErrorDebajoMonto("Debe confirmar que recibió el monto.");
       return;
     }
 
@@ -68,37 +72,34 @@ document.addEventListener("DOMContentLoaded", () => {
         metodo_pago_id: metodo
       })
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === "ok") {
-        mostrarToast("✅ Pago registrado correctamente", "exito");
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "ok") {
+          mostrarToast("✅ Pago registrado correctamente", "exito");
 
-        const contenedor = document.getElementById("detalleFacturaContenido");
-        if (contenedor && contenedor.dataset.facturaId) {
-          const facturaId = contenedor.dataset.facturaId;
-          fetch(`/cajero/factura/${facturaId}/detalle/`)
-            .then(res => res.text())
-            .then(html => {
-              contenedor.innerHTML = html;
-            });
+          const contenedor = document.getElementById("detalleFacturaContenido");
+          if (contenedor && contenedor.dataset.facturaId) {
+            const facturaId = contenedor.dataset.facturaId;
+            fetch(`/cajero/factura/${facturaId}/detalle/`)
+              .then(res => res.text())
+              .then(html => {
+                contenedor.innerHTML = html;
+              });
+          } else {
+            setTimeout(() => location.reload(), 2000);
+          }
         } else {
-          // Página general, recarga completa
-          setTimeout(() => location.reload(), 2000);
+          mostrarErrorDebajoMonto(data.mensaje || "Error al registrar el pago.");
         }
-      } else {
-        mostrarToast("❌ Error al registrar el pago: " + data.mensaje, "error");
-      }
-    })
-    .catch(() => mostrarToast("❌ Error de red al intentar registrar el pago.", "error"));
+      })
+      .catch(() => mostrarErrorDebajoMonto("Error de red al intentar registrar el pago."));
   });
 });
 
-// Extraer solo la fecha de una fecha-hora
 function formatearFechaSoloFecha(fechaHora) {
   return fechaHora.split(" ")[0];
 }
 
-// CSRF token helper
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -112,16 +113,13 @@ function getCookie(name) {
   return cookieValue;
 }
 
-// Mostrar notificación tipo toast con animación slide-in/slide-out
 function mostrarToast(mensaje, tipo = "error") {
   const toast = document.getElementById("toast");
   const texto = document.getElementById("toast-mensaje");
   const icono = document.getElementById("toast-icon");
 
-  // Reset clases
   toast.className = "toast";
 
-  // Estilo por tipo
   if (tipo === "exito") {
     toast.classList.add("exito");
     icono.textContent = "✅";
@@ -133,12 +131,27 @@ function mostrarToast(mensaje, tipo = "error") {
   }
 
   texto.textContent = mensaje;
-
-  // Mostrar
   toast.classList.add("visible");
-
-  // Ocultar después de 4 segundos
   setTimeout(() => {
     toast.classList.remove("visible");
   }, 4000);
+}
+
+// Nueva función para mostrar errores dentro del modal, debajo del campo Monto
+function mostrarErrorDebajoMonto(mensaje) {
+  let errorDiv = document.getElementById("mensajeErrorPago");
+  if (!errorDiv) {
+    errorDiv = document.createElement("div");
+    errorDiv.id = "mensajeErrorPago";
+    errorDiv.style.color = "#c0392b";
+    errorDiv.style.margin = "10px 0";
+    errorDiv.style.fontWeight = "bold";
+    montoInput.parentElement.appendChild(errorDiv);
+  }
+  errorDiv.textContent = mensaje;
+}
+
+function limpiarErrorDebajoMonto() {
+  const errorDiv = document.getElementById("mensajeErrorPago");
+  if (errorDiv) errorDiv.remove();
 }

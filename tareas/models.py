@@ -270,7 +270,7 @@ class Metodospago(models.Model):
 
 class Pacientes(models.Model):
     pacienteid = models.AutoField(primary_key=True)
-    
+
     # Datos personales
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
@@ -294,10 +294,20 @@ class Pacientes(models.Model):
     fecharegistro = models.DateTimeField(blank=True, null=True)
     estado = models.BooleanField(default=True)
 
+    # Contacto de emergencia
+    nombre_contacto_emergencia = models.CharField(max_length=100, blank=True, null=True)
+    telefono_contacto_emergencia = models.CharField(max_length=20, blank=True, null=True)
+    parentesco_contacto_emergencia = models.CharField(max_length=50, blank=True, null=True)
+
+    # Otros
+    idioma_principal = models.CharField(max_length=50, blank=True, null=True)
+    enfermedades_base = models.TextField(blank=True, null=True)
+
     class Meta:
-        managed = False  # Si usas una tabla existente
+        managed = False  # Si estás usando una tabla existente (sin migraciones)
         db_table = 'pacientes'
         unique_together = (('numerodocumento', 'tipodocumento'),)
+
 
 
 class HuellaDactilar(models.Model):
