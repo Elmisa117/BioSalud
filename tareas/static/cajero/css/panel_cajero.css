@@ -1,156 +1,69 @@
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-<<<<<<< HEAD
-  background-image: url("/static/img/fondo_clinica.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-=======
-  background: url('/static/img/fondo_clinica.jpg') no-repeat center center fixed;
-  background-size: cover;
->>>>>>> cbde4bb02a59da9f4ff32e494ba4eb68cc414590
-  display: flex;
-  height: 100vh;
+    color: #000;
 }
 
-/* ===== CAPA TRANSLÚCIDA SOBRE EL FONDO ===== */
-.main-content {
-  flex-grow: 1;
-  padding: 60px 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo negro con transparencia */
-  border-radius: 20px;
-  margin: 40px;
-  color: white;
-}
-
-/* ===== PANEL LATERAL ===== */
 .sidebar {
-  width: 260px;
-  background-color: #007BFF; /* Azul */
-  padding: 30px 20px;
-  color: white;
-  display: flex;
-  flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #007bff;
+    padding: 20px;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.logo {
-  font-size: 20px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 40px;
+.sidebar h2 {
+    color: white;
+    margin-bottom: 40px;
 }
 
-.menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.sidebar .btn {
+    display: block;
+    background-color: #10b981;
+    color: white;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    text-align: left;
 }
 
-.menu li {
-  margin: 20px 0;
+.sidebar .btn:hover {
+    background-color: #0e9e6f;
 }
 
-.menu a {
-  text-decoration: none;
-  background-color: #0CA678;
-  color: white;
-  padding: 12px 20px;
-  font-size: 16px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.2s ease;
-  box-shadow: 0 0 15px rgba(12, 166, 120, 0.5);
+.main-content {
+    margin-left: 270px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.menu a:hover {
-  transform: scale(1.04);
-  box-shadow: 0 0 25px rgba(12, 166, 120, 0.8);
+/* 🔷 Glass effect */
+.glass-panel {
+    backdrop-filter: blur(15px) brightness(1.1);
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 50px 70px;
+    text-align: center;
+    color: #111; /* ✅ TEXTO EN NEGRO */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
 }
 
-.menu a:active {
-  transform: scale(0.96);
+
+.glass-panel h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #111; /* ✅ NEGRO */
 }
 
-.menu a span, .menu a i {
-  pointer-events: none;
-}
-
-/* ===== TÍTULOS ===== */
-.main-content h1 {
-  font-size: 36px;
-  margin-bottom: 20px;
-  color: #fff;
-}
-
-.main-content p {
-  font-size: 18px;
-  color: #ddd;
-  max-width: 800px;
-}
-
-/* ===== TOP-BAR ===== */
-.top-bar {
-  position: absolute;
-  right: 40px;
-  top: 30px;
-  font-size: 18px;
-  color: #f1f1f1;
-  font-weight: normal;
-}
-
-/* ===== TÍTULO DE REPORTES ===== */
-.titulo-reportes {
-  font-size: 28px;
-  margin-top: 50px;
-  margin-bottom: 30px;
-  color: #00e5a5;
-}
-
-/* ===== CONTENEDOR DE REPORTES EN DOS COLUMNAS ===== */
-.contenedor-reportes {
-  display: flex;
-  justify-content: center;
-  gap: 80px;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-
-.columna {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* ===== BOTONES DE REPORTE ===== */
-.reporte-btn {
-  background-color: #0CA678;
-  color: white;
-  padding: 15px 30px;
-  font-size: 18px;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  width: 320px;
-  box-shadow: 0 0 15px rgba(12, 166, 120, 0.5);
-  transition: all 0.2s ease;
-  text-align: left;
-}
-
-.reporte-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(12, 166, 120, 0.8);
-}
-
-.reporte-btn:active {
-  transform: scale(0.95);
+.glass-panel p {
+    font-size: 1.2em;
+    color: #222; /* ✅ Gris oscuro legible */
 }
