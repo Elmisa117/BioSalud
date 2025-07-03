@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Servicios de Hospitalización</title>
+    <link rel="stylesheet" href="{% static 'enfermeria/css/ServiciosHospitalizacion.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background-image: url("{% static 'img/fondo_clinica.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor">
+    <div class="volver">
+        <a href="{% url 'ver_hospitalizaciones_enfermeria' %}">⬅ Volver</a>
+    </div>
+
+    <h2>📝 Servicios Aplicados a la Hospitalización</h2>
+
+    {% if servicios %}
+    <table>
+        <thead>
+            <tr>
+                <th>🧪 Servicio</th>
+                <th>📦 Cantidad</th>
+                <th>📅 Fecha</th>
+                <th>👤 Solicitado por</th>
+                <th>📝 Observaciones</th>
+                <th>✅ Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in servicios %}
+            <tr>
+                <td>{{ s.servicioid.nombre }}</td>
+                <td>{{ s.cantidad }}</td>
+                <td>{{ s.fechaservicio|date:"d/m/Y H:i" }}</td>
+                <td>{{ s.personalsolicitanteid.nombres }} {{ s.personalsolicitanteid.apellidos }}</td>
+                <td>{{ s.observaciones|default:"-" }}</td>
+                <td>
+                    {% if s.estado %}
+                        <span class="estado-activo">Activo</span>
+                    {% else %}
+                        <span class="estado-anulado">Anulado</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="sin-servicios">⚠️ No hay servicios registrados para esta hospitalización.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

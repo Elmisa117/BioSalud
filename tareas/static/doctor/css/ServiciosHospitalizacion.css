@@ -1,0 +1,164 @@
+/* Estilo para el contenedor principal */
+.container {
+    background: rgba(0, 0, 0, 0.5); /* Fondo negro transparente */
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 1000px;
+    margin: auto;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    color: #fff;
+}
+
+/* Título principal */
+h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+/* Estilo para las tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+table th, table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+table th {
+    background-color: #444;
+}
+
+table td {
+    background-color: #555;
+}
+
+/* Estilo para los botones */
+button {
+    padding: 0.5rem 1.5rem;
+    margin: 0.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-block;
+}
+
+/* Botón de Servicios */
+.btn-ver-servicio {
+    background-color: #0ea5e9;
+    color: white;
+    border: none;
+}
+
+.btn-ver-servicio:hover {
+    background-color: #0369a1;
+}
+
+/* Botón de Alta */
+.btn-alta {
+    background-color: #10b981;
+    color: white;
+    border: none;
+}
+
+.btn-alta:hover {
+    background-color: #059669;
+}
+
+/* Estilo para el formulario de agregar servicios */
+form {
+    margin-top: 2rem;
+}
+
+.servicio-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.servicio-item label {
+    margin-right: 10px;
+    font-size: 1rem;
+}
+
+.servicio-item input[type="number"] {
+    width: 80px;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.servicio-item input[type="text"] {
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-right: 10px;
+    width: 300px;
+}
+
+/* Botón de guardar */
+.btn-guardar {
+    background-color: #10b981;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-guardar:hover {
+    background-color: #059669;
+}
+
+/* Mensajes de alerta */
+.sin-hospitalizados {
+    color: #f9a825;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.alert {
+    padding: 1rem;
+    background-color: #f44336;
+    color: white;
+    border-radius: 5px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+    table th, table td {
+        padding: 0.5rem;
+    }
+
+    .servicio-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .servicio-item input[type="number"],
+    .servicio-item input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .btn-guardar {
+        width: 100%;
+    }
+}

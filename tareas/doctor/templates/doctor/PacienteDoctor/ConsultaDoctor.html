@@ -105,35 +105,32 @@
             </label>
         </div>
 
-        <!-- Campos de hospitalización -->
+        <!-- Campos de hospitalización (solo lo esencial) -->
         <div id="hospitalizacion_box" style="display: none; margin-top: 15px;">
             <label for="tipo_habitacion">🛏️ Tipo de Habitación:</label>
             <select name="tipo_habitacion" id="tipo_habitacion">
                 <option value="">-- Seleccione tipo --</option>
                 {% for tipo in tipos_habitacion %}
-                    <option value="{{ tipo.tipoid }}">{{ tipo.nombre }}</option>
+                    <option value="{{ tipo.tipohabitacionid }}">{{ tipo.nombre }}</option>
                 {% endfor %}
             </select>
 
-            <label for="habitacionid">🏨 Habitación Disponible:</label>
-            <select name="habitacionid" id="habitacionid">
-                <option value="">-- Primero seleccione tipo --</option>
-            </select>
-            <small style="color: #555; display: block; margin-top: 5px;">
-                Las habitaciones disponibles aparecerán según el tipo seleccionado.
-            </small>
+            <button type="button" id="btnBuscarHabitaciones" style="margin-top: 10px; background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">
+                <i class="fas fa-search"></i> Buscar habitaciones disponibles
+            </button>
+
+            <div id="resultado_habitaciones" style="margin-top: 10px;">
+                <label>🏨 Habitaciones Disponibles:</label>
+                <div id="habitaciones_lista" style="color: #888;">
+                    Las habitaciones disponibles aparecerán aquí tras presionar "Buscar".
+                </div>
+            </div>
 
             <label for="motivohospitalizacion">Motivo de Hospitalización:</label>
             <input type="text" name="motivohospitalizacion" id="motivohospitalizacion">
 
             <label for="diagnostico_h">Diagnóstico para Hospitalización:</label>
             <textarea name="diagnostico_h" id="diagnostico_h" rows="3"></textarea>
-
-            <label for="tratamiento_h">Tratamiento Aplicado:</label>
-            <textarea name="tratamiento_h" id="tratamiento_h" rows="3"></textarea>
-
-            <label for="observaciones_h">Observaciones:</label>
-            <textarea name="observaciones_h" id="observaciones_h" rows="2"></textarea>
         </div>
 
         <div class="btn-group">

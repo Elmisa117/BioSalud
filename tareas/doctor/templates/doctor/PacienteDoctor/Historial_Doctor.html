@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Fichas Clínicas</title>
+    <link rel="stylesheet" href="{% static 'doctor/css/Historial_Doctor.css' %}" />
+    <script src="{% static 'doctor/js/Historial.js' %}" defer></script>
+    <style>
+        body {
+            background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="historial-container">
+        <!-- Botón Regresar alineado con el título -->
+        <div class="header-container">
+            <div class="boton-volver">
+                <a href="{% url 'perfil_paciente_doctor' paciente.pacienteid %}" class="btn-volver">
+                    <img src="{% static 'img/regresar.png' %}" alt="Regresar"> Regresar
+                </a>
+            </div>
+            <h1>📋 Historial Clínico</h1>
+        </div>
+
+        <!-- Datos del paciente -->
+        <div class="datos-paciente">
+            <p><strong>Nombre:</strong> {{ paciente.nombres }} {{ paciente.apellidos }}</p>
+            <p><strong>CI:</strong> {{ paciente.numerodocumento }}</p>
+            <p><strong>Celular:</strong> {{ paciente.telefono }}</p>
+        </div>
+
+        <!-- Filtro por fechas -->
+        <form method="get" class="filtro-fechas">
+            <label for="fecha_inicio">Desde:</label>
+            <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio }}">
+            <label for="fecha_fin">Hasta:</label>
+            <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin }}">
+            <button type="submit">🔍 Filtrar</button>
+        </form>
+
+        <!-- Tabla de fichas -->
+        <table class="tabla-fichas">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Motivo</th>
+                    <th>Tipo Atención</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ficha in fichas %}
+                <tr>
+                    <td>{{ ficha.fechaapertura|date:"d/m/Y H:i" }}</td>
+                    <td>{{ ficha.motivoconsulta }}</td>
+                    <td>{{ ficha.tipoatencion }}</td>
+                    <td>
+                        <a href="{% url 'ver_historial_detalle_doctor' ficha.fichaid %}" class="btn-historial" title="Ver detalle del historial">
+                            👁️ Ver Historial
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No se encontraron fichas clínicas en este rango de fechas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

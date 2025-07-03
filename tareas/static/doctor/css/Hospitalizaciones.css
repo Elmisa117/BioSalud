@@ -1,0 +1,83 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f4f8;
+    padding: 2rem;
+    margin: 0;
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.6);  /* Fondo negro transparente */
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 1000px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: white;  /* Color del texto en blanco */
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: white;  /* Asegura que el título sea blanco */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+}
+
+table th, table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+    color: white;  /* Asegura que el texto de la tabla sea blanco */
+}
+
+table th {
+    background-color: #333;  /* Fondo oscuro para los encabezados */
+}
+
+table tr:nth-child(even) {
+    background-color: #444;  /* Fila par con un fondo ligeramente más oscuro */
+}
+
+table tr:hover {
+    background-color: #555;  /* Color de fondo cuando el cursor pasa sobre una fila */
+}
+
+.btn-ver-servicio {
+    padding: 0.5rem 1rem;
+    background-color: #0ea5e9;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease; /* Transición suave al pasar el mouse */
+}
+
+.btn-ver-servicio:hover {
+    background-color: #0369a1;  /* Color al pasar el mouse por encima */
+}
+
+/* Botón ALTA */
+.btn-alta {
+    padding: 0.5rem 1rem;
+    background-color: #dc2626;  /* Color de fondo rojo */
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease; /* Transición suave al pasar el mouse */
+    margin-left: 10px;
+}
+
+.btn-alta:hover {
+    background-color: #991b1b;  /* Color rojo más oscuro al pasar el mouse */
+}
+
+.sin-hospitalizados {
+    text-align: center;
+    color: #ff0000;  /* Rojo para advertir que no hay pacientes hospitalizados */
+    font-size: 1.2rem;
+}

@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial Detallado del Paciente</title>
+    <link rel="stylesheet" href="{% static 'doctor/css/Ver_Historial_Doctor.css' %}">
+    <script src="{% static 'doctor/js/HistorialDoctor.js' %}" defer></script>
+</head>
+<body>
+    <div class="contenedor-historial">
+
+        <!-- 🔙 Botón Regresar -->
+        <div class="boton-regresar">
+            <a href="{% url 'historial_paciente' ficha.pacienteid.pacienteid %}">⬅ Regresar al Historial</a>
+        </div>
+
+        <!-- 🧍 Datos del Paciente -->
+        <div class="cabecera-paciente">
+            <h2>👤 Datos del Paciente</h2>
+            <p><strong>Nombre Completo:</strong> {{ ficha.pacienteid.nombres }} {{ ficha.pacienteid.apellidos }}</p>
+            <p><strong>CI:</strong> {{ ficha.pacienteid.tipodocumento }} {{ ficha.pacienteid.numerodocumento }}</p>
+            <p><strong>Fecha de Nacimiento:</strong> {{ ficha.pacienteid.fechanacimiento|date:"d/m/Y" }}</p>
+            <p><strong>Edad:</strong> {{ ficha.pacienteid.edad }} años</p>
+            <p><strong>Género:</strong> {{ ficha.pacienteid.genero }}</p>
+            <p><strong>Teléfono:</strong> {{ ficha.pacienteid.telefono }}</p>
+            <p><strong>Dirección:</strong> {{ ficha.pacienteid.direccion }}</p>
+            <p><strong>Grupo Sanguíneo:</strong> {{ ficha.pacienteid.gruposanguineo }}</p>
+            <p><strong>Alergias:</strong> {{ ficha.pacienteid.alergias }}</p>
+            <p><strong>Email:</strong> {{ ficha.pacienteid.email }}</p>
+            <p><strong>Observaciones:</strong> {{ ficha.pacienteid.observaciones }}</p>
+        </div>
+
+        <!-- 📄 Ficha Clínica -->
+        <div class="ficha-clinica">
+            <h2>📄 Ficha Clínica</h2>
+            <p><strong>Tipo de Atención:</strong> {{ ficha.tipoatencion }}</p>
+            <p><strong>Fecha de Apertura:</strong> {{ ficha.fechaapertura|date:"d/m/Y H:i" }}</p>
+            <p><strong>Motivo de Consulta:</strong> {{ ficha.motivoconsulta }}</p>
+            <p><strong>Diagnóstico Inicial:</strong> {{ ficha.diagnosticoinicial }}</p>
+            <p><strong>Antecedentes Personales:</strong> {{ ficha.antecedentespersonales }}</p>
+            <p><strong>Antecedentes Familiares:</strong> {{ ficha.antecedentesfamiliares }}</p>
+
+            {% if ficha.signosvitales %}
+            <div class="signos-vitales">
+                <h3>Signos Vitales</h3>
+                <p><strong>TA:</strong> {{ ficha.signosvitales.ta }}</p>
+                <p><strong>FC:</strong> {{ ficha.signosvitales.fc }}</p>
+                <p><strong>FR:</strong> {{ ficha.signosvitales.fr }}</p>
+                <p><strong>Temperatura:</strong> {{ ficha.signosvitales.temp }} °C</p>
+                <p><strong>SpO₂:</strong> {{ ficha.signosvitales.spo2 }} %</p>
+            </div>
+            {% else %}
+            <p><strong>Signos Vitales:</strong> No registrados</p>
+            {% endif %}
+
+            <p><strong>Tratamiento Sugerido:</strong> {{ ficha.tratamientosugerido }}</p>
+            <p><strong>Observaciones:</strong> {{ ficha.observaciones }}</p>
+            <p><strong>Estado:</strong> {{ ficha.estado }}</p>
+
+            {% if doctor_responsable %}
+            <p><strong>Doctor Responsable:</strong> {{ doctor_responsable.nombres }} {{ doctor_responsable.apellidos }}</p>
+            {% else %}
+            <p><strong>Doctor Responsable:</strong> No asignado</p>
+            {% endif %}
+        </div>
+
+        <!-- 🩺 Consultas Relacionadas -->
+        <div class="historial-atenciones">
+            <h2>🩺 Consultas Médicas</h2>
+            {% if consultas %}
+                {% for consulta in consultas %}
+                <div class="consulta-item">
+                    <p><strong>Fecha:</strong> {{ consulta.fechaconsulta|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Motivo:</strong> {{ consulta.motivocita }}</p>
+                    <p><strong>Diagnóstico:</strong> {{ consulta.diagnostico }}</p>
+                    <p><strong>Tratamiento:</strong> {{ consulta.tratamiento }}</p>
+                    <p><strong>Observaciones:</strong> {{ consulta.observaciones }}</p>
+                    <p><strong>Costo:</strong> Bs. {{ consulta.costo }}</p>
+                    <p><strong>Doctor:</strong> {{ consulta.personalid.nombres }} {{ consulta.personalid.apellidos }}</p>
+                    <p><strong>Fecha de Registro:</strong> {{ consulta.fecharegistro|date:"d/m/Y H:i" }}</p>
+                </div>
+                <hr>
+                {% endfor %}
+            {% else %}
+                <p>No se encontraron consultas relacionadas a esta ficha.</p>
+            {% endif %}
+        </div>
+
+        <!-- 🏥 Hospitalizaciones Relacionadas -->
+        <div class="historial-atenciones">
+            <h2>🏥 Hospitalizaciones</h2>
+            {% if hospitalizaciones %}
+                {% for hosp in hospitalizaciones %}
+                <div class="hospitalizacion-item">
+                    <p><strong>Ingreso:</strong> {{ hosp.fechaingreso|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Alta:</strong> {% if hosp.fechaalta %}{{ hosp.fechaalta|date:"d/m/Y H:i" }}{% else %}Aún hospitalizado{% endif %}</p>
+                    <p><strong>Habitación:</strong> {{ hosp.habitacionid.numero }}</p>
+                    <p><strong>Tipo:</strong> {{ hosp.habitacionid.tipohabitacionid.nombre }}</p>
+                    <p><strong>Diagnóstico:</strong> {{ hosp.diagnostico }}</p>
+                    <p><strong>Tratamiento:</strong> {{ hosp.tratamientoaplicado }}</p>
+                    <p><strong>Motivo:</strong> {{ hosp.motivohospitalizacion }}</p>
+                    <p><strong>Observaciones:</strong> {{ hosp.observaciones }}</p>
+                    <p><strong>Tipo de Alta:</strong> {% if hosp.tipoaltaid %}{{ hosp.tipoaltaid.nombre }}{% else %}No registrado{% endif %}</p>
+                    <p><strong>Doctor Responsable:</strong> {{ hosp.personalid.nombres }} {{ hosp.personalid.apellidos }}</p>
+                    <p><strong>Estado:</strong> {% if hosp.estado %}Activa{% else %}Inactiva{% endif %}</p>
+                </div>
+                <hr>
+                {% endfor %}
+            {% else %}
+                <p>No se encontraron hospitalizaciones relacionadas a esta ficha.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

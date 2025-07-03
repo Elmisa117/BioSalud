@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from datetime import datetime
 from django.core.paginator import Paginator
 from django.db.models import Q
 from datetime import timedelta
@@ -15,7 +16,9 @@ from tareas.models import (
     Consultaservicios, 
     Servicios,
     Habitaciones,
-    Tiposhabitacion
+    Tiposhabitacion,
+    Hospitalizacionservicios,
+    Tiposalta
 )
 
 def validar_doctor(request):
@@ -154,6 +157,9 @@ def perfil_paciente_doctor(request, pacienteid):
             fechaapertura__gte=hace_24h
         ).order_by('-fechaapertura')
 
+        # No necesitas desglosar campos aquí, el template puede acceder directamente a:
+        # paciente.contactoemergencia, paciente.enfermedadesbase, paciente.idioma, etc.
+
         return render(request, 'doctor/PacienteDoctor/PerfilPacienteDoctor.html', {
             'paciente': paciente,
             'fichas_recientes': fichas_recientes
@@ -162,31 +168,122 @@ def perfil_paciente_doctor(request, pacienteid):
     except Exception as e:
         print(f"[Error] perfil_paciente_doctor: {e}")
         return redirect('ver_pacientes')
+    
+
 # Ver hospitalizaciones desde el módulo doctor
 def ver_hospitalizaciones(request):
     """Muestra las hospitalizaciones activas del doctor"""
     if not validar_doctor(request):
         return redirect('login')
-    
+
     try:
         personal_id = request.session.get('usuario_id')
         hospitalizaciones = Hospitalizaciones.objects.filter(
             personalid=personal_id,
             estado=True  # Solo hospitalizaciones activas
-        ).select_related(
-            'pacienteid',
-            'habitacionid'
-        ).order_by('-fechaingreso')
-        
-        return render(request, 'doctor/ver_hospitalizaciones.html', {
+        ).select_related('pacienteid', 'habitacionid', 'habitacionid__tipohabitacionid')
+
+        print("✅ Renderizando plantilla Hospitalizaciones.html")
+
+        return render(request, 'doctor/Hospitalizaciones.html', {
             'hospitalizaciones': hospitalizaciones,
             'total_hospitalizados': hospitalizaciones.count()
         })
-        
+
     except Exception as e:
         print(f"Error al obtener hospitalizaciones: {str(e)}")
         return redirect('menu_doctor')
 
+#servicios de hospitalizacion
+
+def servicios_hospitalizacion(request, hosp_id):
+    try:
+        # Obtener la hospitalización usando el id
+        hospitalizacion = Hospitalizaciones.objects.get(hospitalizacionid=hosp_id)
+
+        # Obtener el personal que solicitó la hospitalización
+        personal_solicitante = hospitalizacion.personalid
+
+        # Si el formulario ha sido enviado
+        if request.method == 'POST':
+            # Obtener los servicios seleccionados y otros datos
+            servicios_seleccionados = request.POST.getlist('servicios')
+            
+            for servicio_id in servicios_seleccionados:
+                # Obtener el servicio
+                servicio = Servicios.objects.get(servicioid=servicio_id)
+                
+                # Obtener cantidad y observación (si existen)
+                cantidad = int(request.POST.get(f'cantidad_{servicio_id}', 1))  # Definir cantidad por defecto como 1
+                observaciones = request.POST.get(f'observacion_{servicio_id}', '')
+
+                # Crear una nueva entrada en la tabla Hospitalizacionservicios
+                Hospitalizacionservicios.objects.create(
+                    hospitalizacionid=hospitalizacion,
+                    servicioid=servicio,
+                    cantidad=cantidad,
+                    fechaservicio=timezone.now(),
+                    observaciones=observaciones,
+                    personalsolicitanteid=personal_solicitante,  # Personal solicitante
+                    fecharegistro=timezone.now(),
+                    estado=True,  # O el estado que desees
+                    facturado=False  # O lo que corresponda
+                )
+
+            # Redirigir a la misma página o a otra página después de guardar
+            return redirect('servicios_hospitalizacion', hosp_id=hosp_id)
+
+        # Si el formulario no ha sido enviado, simplemente renderiza los servicios registrados
+        servicios_hospitalizacion = Hospitalizacionservicios.objects.filter(hospitalizacionid=hospitalizacion)
+
+        return render(request, 'doctor/ServiciosHospitalizacion.html', {
+            'hospitalizacion': hospitalizacion,
+            'servicios_hospitalizacion': servicios_hospitalizacion,
+            'personal_solicitante': personal_solicitante,
+            'servicios_disponibles': Servicios.objects.all(),  # Los servicios disponibles
+        })
+
+    except Hospitalizaciones.DoesNotExist:
+        return redirect('ver_hospitalizaciones')
+#
+# alta doctor
+#     
+def alta_doctor(request, hosp_id):
+    hospitalizacion = get_object_or_404(Hospitalizaciones, hospitalizacionid=hosp_id)
+
+    if request.method == 'POST':
+        tipoaltaid = request.POST.get('tipoaltaid')  # Obtener el tipo de alta
+        fechaalta = request.POST.get('fechaalta')
+        diagnostico = request.POST.get('diagnostico')
+        tratamientoaplicado = request.POST.get('tratamientoaplicado')
+        observaciones = request.POST.get('observaciones')  # Obtener las observaciones
+
+        # Verificar si se llenan los campos de diagnóstico y tratamiento
+        if not diagnostico:
+            diagnostico = ''
+        if not tratamientoaplicado:
+            tratamientoaplicado = ''
+        if not observaciones:
+            observaciones = ''  # Asegurarse de que las observaciones no queden vacías
+
+        # Convertir la fecha de alta a la zona horaria adecuada
+        fechaalta = timezone.make_aware(timezone.datetime.strptime(fechaalta, "%Y-%m-%d"), timezone.get_current_timezone())
+
+        # Actualizar la hospitalización
+        hospitalizacion.tipoaltaid_id = tipoaltaid
+        hospitalizacion.fechaalta = fechaalta
+        hospitalizacion.diagnostico = diagnostico
+        hospitalizacion.tratamientoaplicado = tratamientoaplicado
+        hospitalizacion.observaciones = observaciones  # Asignar las observaciones
+
+        hospitalizacion.save()  # Guardar los cambios
+
+        return redirect('ver_hospitalizaciones')  # Redirigir a la vista de hospitalizaciones
+
+    return render(request, 'doctor/AltaDoctor.html', {
+        'hospitalizacion': hospitalizacion,
+        'tiposalta': Tiposalta.objects.all(),  # Pasar los tipos de alta para el formulario
+    })
 # Vista para consultar un paciente específico
 def consulta_paciente(request, id):
     """Muestra detalles de un paciente para consulta"""
@@ -391,7 +488,8 @@ def crear_consulta_doctor(request, pacienteid):
                     estado=True,
                     facturado=False
                 )
-                # Opcionalmente marcar la habitación como ocupada
+
+                # Marcar la habitación como ocupada
                 Habitaciones.objects.filter(pk=habitacion_id).update(disponible=False)
 
             return redirect('perfil_paciente_doctor', pacienteid=pacienteid)
@@ -411,11 +509,14 @@ def habitaciones_disponibles(request, tipoid):
         tipohabitacionid=tipoid,
         disponible=True,
         estado=True
-    )
+    ).values('habitacionid', 'numero')
 
     data = {
         'habitaciones': [
-            {'id': h.habitacionid, 'nombre': f"{h.numero} - {h.tipohabitacionid.nombre}"} for h in habitaciones
+            {
+                'id': h['habitacionid'],
+                'nombre': h['numero']
+            } for h in habitaciones
         ]
     }
     return JsonResponse(data)
@@ -439,3 +540,73 @@ def actualizar_paciente_doctor(request, pacienteid):
         return redirect('perfil_paciente_doctor', pacienteid=pacienteid)
 
     return render(request, 'doctor/ActualizarPaciente.html', {'paciente': paciente})
+
+def historial_paciente(request, pacienteid):
+    # Obtener el paciente por ID o lanzar 404 si no existe
+    paciente = get_object_or_404(Pacientes, pacienteid=pacienteid)
+
+    # Obtener parámetros GET para el filtro de fechas
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    # Obtener fichas del paciente
+    fichas = Fichaclinico.objects.filter(pacienteid=paciente)
+
+    # Aplicar filtros de fecha si se reciben correctamente
+    if fecha_inicio:
+        try:
+            fecha_inicio_obj = datetime.strptime(fecha_inicio, '%Y-%m-%d').date()
+            fichas = fichas.filter(fechaapertura__date__gte=fecha_inicio_obj)
+        except ValueError:
+            fecha_inicio = None  # Si el formato es incorrecto, se ignora el filtro
+
+    if fecha_fin:
+        try:
+            fecha_fin_obj = datetime.strptime(fecha_fin, '%Y-%m-%d').date()
+            fichas = fichas.filter(fechaapertura__date__lte=fecha_fin_obj)
+        except ValueError:
+            fecha_fin = None  # Si el formato es incorrecto, se ignora el filtro
+
+    # Preparar contexto para el template
+    context = {
+        'paciente': paciente,
+        'fichas': fichas.order_by('-fechaapertura'),
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
+    }
+
+    # Renderizar plantilla correspondiente al historial del doctor
+    return render(request, 'doctor/PacienteDoctor/Historial_Doctor.html', context)
+#
+#historiral de los pacientes del doctor
+#
+def ver_historial_detalle_doctor(request, fichaid):
+    """Muestra todos los detalles clínicos de una ficha específica (módulo Doctor)"""
+    if not validar_doctor(request):
+        return redirect('login')
+
+    try:
+        ficha = get_object_or_404(Fichaclinico, fichaid=fichaid)  # ✅ Campo corregido
+
+        doctor_responsable = ficha.personalid if ficha.personalid.rol == 'Doctor' else None
+
+        consultas = Consultas.objects.filter(
+            pacienteid=ficha.pacienteid,
+            fechaconsulta__gte=ficha.fechaapertura
+        ).order_by('-fechaconsulta')
+
+        hospitalizaciones = Hospitalizaciones.objects.filter(
+            pacienteid=ficha.pacienteid,
+            fechaingreso__gte=ficha.fechaapertura
+        ).order_by('-fechaingreso')
+
+        return render(request, 'doctor/PacienteDoctor/Ver_Historial_Doctor.html', {
+            'ficha': ficha,
+            'doctor_responsable': doctor_responsable,
+            'consultas': consultas,
+            'hospitalizaciones': hospitalizaciones
+        })
+
+    except Exception as e:
+        print(f"[Error] ver_historial_detalle_doctor: {str(e)}")
+        return redirect('menu_doctor')

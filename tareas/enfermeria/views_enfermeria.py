@@ -75,7 +75,9 @@ def perfil_paciente_enfermeria(request, paciente_id):
             SELECT 
                 pacienteid, nombres, apellidos, numerodocumento, tipodocumento,
                 fechanacimiento, edad, genero, direccion, telefono, email,
-                gruposanguineo, alergias, observaciones
+                gruposanguineo, alergias, observaciones,
+                nombre_contacto_emergencia, telefono_contacto_emergencia, parentesco_contacto_emergencia,
+                enfermedades_base, idioma_principal
             FROM pacientes
             WHERE pacienteid = %s
         """, [paciente_id])
@@ -92,13 +94,18 @@ def perfil_paciente_enfermeria(request, paciente_id):
         'tipodocumento': fila[4],
         'fechanacimiento': fila[5].strftime('%Y-%m-%d') if fila[5] else '',
         'edad': fila[6],
-        'genero': fila[7],  # No cambiarlo a "Masculino" aquí, eso ya lo manejas en el template
+        'genero': fila[7],
         'direccion': fila[8],
         'telefono': fila[9],
         'email': fila[10],
         'gruposanguineo': fila[11],
         'alergias': fila[12],
         'observaciones': fila[13],
+        'nombre_contacto_emergencia': fila[14],
+        'telefono_contacto_emergencia': fila[15],
+        'parentesco_contacto_emergencia': fila[16],
+        'enfermedades_base': fila[17],
+        'idioma_principal': fila[18],
     }
 
     return render(request, 'enfermeria/Paciente/PerfilPaciente.html', {'paciente': paciente})
@@ -106,7 +113,6 @@ def perfil_paciente_enfermeria(request, paciente_id):
 # ----------------------------
 # REGISTRAR O EDITAR PACIENTE
 # ----------------------------
-
 @csrf_exempt
 def registrar_paciente_enfermeria(request):
     if not request.session.get('usuario_id'):
@@ -132,7 +138,14 @@ def registrar_paciente_enfermeria(request):
         alergias = request.POST.get('alergias')
         observaciones = request.POST.get('observaciones')
 
-        # Validación de fecha de nacimiento
+        # Nuevos campos
+        nombre_contacto = request.POST.get('nombre_contacto_emergencia')
+        telefono_contacto = request.POST.get('telefono_contacto_emergencia')
+        parentesco_contacto = request.POST.get('parentesco_contacto_emergencia')
+        enfermedades_base = request.POST.get('enfermedades_base')
+        idioma_principal = request.POST.get('idioma_principal')
+
+        # Validación de fecha
         if fecha_nacimiento_str:
             fecha_nacimiento = datetime.strptime(fecha_nacimiento_str, "%Y-%m-%d").date()
             hoy = date.today()
@@ -168,14 +181,16 @@ def registrar_paciente_enfermeria(request):
                     UPDATE pacientes SET
                         nombres = %s, apellidos = %s, numerodocumento = %s, tipodocumento = %s,
                         fechanacimiento = %s, edad = %s, genero = %s, direccion = %s,
-                        telefono = %s, email = %s, gruposanguineo = %s,
-                        alergias = %s, observaciones = %s
+                        telefono = %s, email = %s, gruposanguineo = %s, alergias = %s, observaciones = %s,
+                        nombre_contacto_emergencia = %s, telefono_contacto_emergencia = %s,
+                        parentesco_contacto_emergencia = %s, enfermedades_base = %s, idioma_principal = %s
                     WHERE pacienteid = %s
                 """, [
                     nombres, apellidos, numero_documento, tipo_documento,
                     fecha_nacimiento, edad, genero, direccion,
                     telefono, email, grupo_sanguineo, alergias, observaciones,
-                    paciente_id
+                    nombre_contacto, telefono_contacto, parentesco_contacto,
+                    enfermedades_base, idioma_principal, paciente_id
                 ])
             else:
                 cursor.execute("""
@@ -183,12 +198,16 @@ def registrar_paciente_enfermeria(request):
                         nombres, apellidos, numerodocumento, tipodocumento,
                         fechanacimiento, edad, genero, direccion, telefono,
                         email, gruposanguineo, alergias, observaciones,
+                        nombre_contacto_emergencia, telefono_contacto_emergencia,
+                        parentesco_contacto_emergencia, enfermedades_base, idioma_principal,
                         fecharegistro, estado
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, TRUE)
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, TRUE)
                 """, [
                     nombres, apellidos, numero_documento, tipo_documento,
                     fecha_nacimiento, edad, genero, direccion,
-                    telefono, email, grupo_sanguineo, alergias, observaciones
+                    telefono, email, grupo_sanguineo, alergias, observaciones,
+                    nombre_contacto, telefono_contacto, parentesco_contacto,
+                    enfermedades_base, idioma_principal
                 ])
 
         if is_ajax:
@@ -203,7 +222,9 @@ def registrar_paciente_enfermeria(request):
             cursor.execute("""
                 SELECT nombres, apellidos, numerodocumento, tipodocumento,
                        fechanacimiento, edad, genero, direccion, telefono,
-                       email, gruposanguineo, alergias, observaciones
+                       email, gruposanguineo, alergias, observaciones,
+                       nombre_contacto_emergencia, telefono_contacto_emergencia,
+                       parentesco_contacto_emergencia, enfermedades_base, idioma_principal
                 FROM pacientes
                 WHERE pacienteid = %s
             """, [paciente_id])
@@ -223,12 +244,18 @@ def registrar_paciente_enfermeria(request):
                     'email': fila[9],
                     'gruposanguineo': fila[10],
                     'alergias': fila[11],
-                    'observaciones': fila[12]
+                    'observaciones': fila[12],
+                    'nombre_contacto_emergencia': fila[13],
+                    'telefono_contacto_emergencia': fila[14],
+                    'parentesco_contacto_emergencia': fila[15],
+                    'enfermedades_base': fila[16],
+                    'idioma_principal': fila[17],
                 }
 
     return render(request, 'enfermeria/Paciente/RegistrarPaciente/RegistrarPaciente.html', {
         'paciente': paciente_datos
     })
+
 
 # ----------------------------
 # REGISTRAR FICHA CLÍNICA
@@ -385,66 +412,79 @@ def ver_historial_enfermeria(request, fichaid):
     # Obtener el usuario actual, que es la enfermera responsable si está autenticado
     enfermera_responsable = None
     if request.user and request.user.is_authenticated:
-        # Aquí verificamos si el usuario tiene el rol de 'Enfermería'
-        if request.user.groups.filter(name='Enfermería').exists():  # Verifica si el usuario pertenece al grupo "Enfermería"
-            enfermera_responsable = request.user  # Asignamos el usuario actual como la enfermera responsable
+        if request.user.groups.filter(name='Enfermería').exists():
+            enfermera_responsable = request.user
 
-    # Obtener las consultas y hospitalizaciones
-    consultas = Consultas.objects.filter(pacienteid=ficha.pacienteid).select_related('personalid').order_by('-fechaconsulta')
+    # Obtener las consultas con servicios relacionados
+    consultas = Consultas.objects.filter(pacienteid=ficha.pacienteid)\
+        .select_related('personalid')\
+        .order_by('-fechaconsulta')
+
     for consulta in consultas:
-        consulta.servicios = Consultaservicios.objects.filter(consultaid=consulta.id).select_related('servicioid')
+        consulta.servicios = Consultaservicios.objects.filter(consultaid=consulta.consultaid)\
+            .select_related('servicioid')
 
-    hospitalizaciones = Hospitalizaciones.objects.filter(pacienteid=ficha.pacienteid).select_related(
-        'habitacionid', 'habitacionid__tipohabitacionid', 'tipoaltaid', 'personalid').order_by('-fechaingreso')
+    # Obtener las hospitalizaciones con sus servicios
+    hospitalizaciones = Hospitalizaciones.objects.filter(pacienteid=ficha.pacienteid)\
+        .select_related('habitacionid', 'habitacionid__tipohabitacionid', 'tipoaltaid', 'personalid')\
+        .order_by('-fechaingreso')
+
     for hosp in hospitalizaciones:
-        hosp.servicios = Hospitalizacionservicios.objects.filter(hospitalizacionid=hosp.id).select_related('servicioid')
+        hosp.servicios = Hospitalizacionservicios.objects.filter(hospitalizacionid=hosp.hospitalizacionid)\
+            .select_related('servicioid')
 
-    # Pasar los datos a la plantilla con los signos vitales deserializados y la enfermera responsable
+    # Renderizar la plantilla
     return render(request, 'enfermeria/Paciente/Historial/VerHistorial.html', {
         'ficha': ficha,
-        'signos_vitales': signos_dict,  # Pasamos los signos vitales deserializados
-        'enfermera_responsable': enfermera_responsable,  # Pasamos la enfermera responsable
+        'signos_vitales': signos_dict,
+        'enfermera_responsable': enfermera_responsable,
         'consultas': consultas,
         'hospitalizaciones': hospitalizaciones
     })
 
-# Vista para el mapa de hospitalización de enfermería
 def vista_hospitalizacion_enfermeria(request):
-    hospitalizaciones = Hospitalizaciones.objects.select_related('pacienteid', 'habitacionid', 'habitacionid__tipohabitacionid').filter(estado=True)
+    """Vista que muestra todas las hospitalizaciones activas en forma de tabla (para enfermería)."""
+    if not request.session.get('usuario_id') or request.session.get('rol') != 'Enfermería':
+        return redirect('login')
 
-    # Diccionario para camas ocupadas por tipo de habitación
-    camas_ocupadas = {}
-    for h in hospitalizaciones:
-        tipo = h.habitacionid.tipohabitacionid.nombre
-        camas_ocupadas.setdefault(tipo, []).append({
-            'nombre': f"{h.pacienteid.nombres} {h.pacienteid.apellidos}",
-            'habitacion': h.habitacionid.numero,
-            'ocupada': True
+    try:
+        hospitalizaciones = Hospitalizaciones.objects.filter(
+            estado=True
+        ).select_related('pacienteid', 'habitacionid', 'habitacionid__tipohabitacionid')
+
+        return render(request, 'enfermeria/Hospitalizacion/Hospitalizacion.html', {
+            'hospitalizaciones': hospitalizaciones
         })
 
-    # Definir habitaciones vacías de cada tipo
-    privadas = [{'habitacion': f'P{n}', 'ocupada': False} for n in range(1, 7)]
-    suites = [{'habitacion': f'S{n}', 'ocupada': False} for n in range(1, 5)]
-    salas = [{'habitacion': f'Sala1-{n}', 'ocupada': False} for n in range(1, 10)]
+    except Exception as e:
+        print(f"❌ Error al cargar hospitalizaciones: {e}")
+        return redirect('menu_enfermeria')
+#
+#Servicios de hospitalizaciones de enfermeria----------------------------------------------------------------------------
+#
+def servicios_hospitalizacion_enfermeria(request, id):
+    """Vista para mostrar los servicios aplicados a una hospitalización (Enfermería)."""
+    if not request.session.get('usuario_id') or request.session.get('rol') != 'Enfermería':
+        return redirect('login')
 
-    # Función para reemplazar camas vacías por las ocupadas
-    def reemplazar(camas, tipo):
-        for ocupada in camas_ocupadas.get(tipo, []):
-            for cama in camas:
-                if cama['habitacion'] == ocupada['habitacion']:
-                    cama.update(ocupada)
+    try:
+        hospitalizacion = get_object_or_404(Hospitalizaciones, pk=id)
 
-    reemplazar(privadas, 'Privada')
-    reemplazar(suites, 'Suite')
-    reemplazar(salas, 'Sala')
+        servicios = Hospitalizacionservicios.objects.filter(
+            hospitalizacionid=hospitalizacion
+        ).select_related('servicioid', 'personalsolicitanteid')
 
-    return render(request, 'enfermeria/Hospitalizacion/Hospitalizacion.html', {
-        'privadas': privadas,
-        'suites': suites,
-        'salas': salas
-    })
+        return render(request, 'enfermeria/Hospitalizacion/ServiciosHospitalizacion.html', {
+            'hospitalizacion': hospitalizacion,
+            'servicios': servicios
+        })
+
+    except Exception as e:
+        print(f"❌ Error cargando servicios: {e}")
+        return redirect('ver_hospitalizaciones_enfermeria') 
+    
 # ----------------------------
-# PERFIL DEL PERSONAL LOGUEADO
+# PERFIL DEL PERSONAL LOGUEADO------------------------------------------------------------------------------------------------
 # ----------------------------
 def perfil_personal_enfermeria(request):
     if not request.session.get('usuario_id'):

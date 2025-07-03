@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Perfil del Paciente</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'doctor/css/PerfilPacienteDoctor.css' %}" />
     <style>
         body {
@@ -33,8 +33,6 @@
     <div class="perfil-header">
         <h1>👤 Perfil del Paciente</h1>
         <div class="botones-superiores">
-            <a href="{% url 'actualizar_paciente_doctor' paciente.pacienteid %}" class="btn">Actualizar</a>
-            <a href="{% url 'crear_consulta_doctor' paciente.pacienteid %}" class="btn">Consulta</a>
             <a href="{% url 'historial_paciente' paciente.pacienteid %}" class="btn">Historial</a>
         </div>
     </div>
@@ -58,6 +56,13 @@
         <div><strong>Grupo Sanguíneo:</strong> {{ paciente.gruposanguineo }}</div>
         <div><strong>Alergias:</strong> {{ paciente.alergias }}</div>
         <div><strong>Observaciones:</strong> {{ paciente.observaciones }}</div>
+
+        <!-- Campos adicionales -->
+        <div><strong>Contacto de Emergencia:</strong> {{ paciente.nombre_contacto_emergencia }}</div>
+        <div><strong>Teléfono de Emergencia:</strong> {{ paciente.telefono_contacto_emergencia }}</div>
+        <div><strong>Parentesco:</strong> {{ paciente.parentesco_contacto_emergencia }}</div>
+        <div><strong>Enfermedades de Base:</strong> {{ paciente.enfermedades_base }}</div>
+        <div><strong>Idioma Principal:</strong> {{ paciente.idioma_principal }}</div>
     </div>
 
     <!-- Fichas clínicas recientes -->
@@ -83,7 +88,6 @@
                             <td>{{ ficha.estado }}</td>
                             <td>
                                 <a href="{% url 'crear_consulta_doctor' ficha.pacienteid.pacienteid %}" class="btn-accion">Consulta</a>
-                                <a href="{% url 'crear_consulta_doctor' ficha.pacienteid.pacienteid %}" class="btn-accion">Hospitalización</a>
                             </td>
                         </tr>
                     {% endfor %}
