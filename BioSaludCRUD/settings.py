@@ -8,29 +8,31 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 """
 
 from pathlib import Path
+from decouple import config  # ✅ Importar decouple
+import os
 
 # BASE_DIR apunta a la raíz del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ⚠️ Seguridad
-SECRET_KEY = 'django-insecure-8xjx5zl9u&_o%v^)!%x0fgma^(m5pt4u^fomm9ykj(-qfpl&l!'
-DEBUG = True
-ALLOWED_HOSTS = []
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
 # 🧩 Aplicaciones instaladas
 INSTALLED_APPS = [
-    'django.contrib.admin',           # Admin Django
-    'django.contrib.auth',            # Sistema de autenticación
-    'django.contrib.contenttypes',    
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',                 # Para APIs
-    'django_extensions',             # Funcionalidades extra (requiere instalación)
-    'tareas',                         # Tu app principal
+    'rest_framework',
+    'django_extensions',
+    'tareas',
 ]
 
-# 🧱 Middlewares (capa intermedia entre request y response)
+# 🧱 Middlewares
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -44,7 +46,7 @@ MIDDLEWARE = [
 # 🌐 Configuración de URLs
 ROOT_URLCONF = 'BioSaludCRUD.urls'
 
-# 🎨 Templates y procesadores de contexto
+# 🎨 Templates y contexto
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -68,22 +70,22 @@ TEMPLATES = [
     },
 ]
 
-# 🚀 WSGI para producción
+# 🚀 WSGI
 WSGI_APPLICATION = 'BioSaludCRUD.wsgi.application'
 
-# 🗃️ Base de datos PostgreSQL
+# 🗃️ Base de datos desde .env
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Web_testeo',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
-# 🔐 Validadores de contraseñas
+# 🔐 Validadores de contraseña
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -99,17 +101,22 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# 🌍 Configuración internacional
+# 🌍 Internacionalización
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# 📁 Archivos estáticos (CSS, JS, imágenes)
+# 📁 Archivos estáticos
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "tareas" / "static"
 ]
 
-# 🔑 Campo por defecto para claves primarias
+# 🔑 Clave primaria automática
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 🔐 Configuración biométrica (opcional)
+BIOMETRIC_CONFIG = {
+    'ENCRYPTION_KEY': config('BIO_ENCRYPTION_KEY', default=''),
+}

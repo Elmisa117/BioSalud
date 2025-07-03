@@ -87,8 +87,8 @@ sudo apt-get install build-essential libpq-dev
 
 ```bash
 # 1. Clonar repositorio
-git clone https://github.com/tu-repo/biosalud-pro.git
-cd biosalud-pro
+git clone https://github.com/tu-repo/biosalud.git
+cd biosalud
 
 # 2. Entorno virtual
 python3.13 -m venv venv
@@ -485,7 +485,7 @@ Este proyecto está bajo la **licencia GPL-3.0**.
 Para uso comercial del módulo biométrico, se requiere licencia especial.
 
 ```
-Copyright (C) 2025 BioSalud Pro
+Copyright (C) 2025 BioSalud
 
 Este programa es software libre: usted puede redistribuirlo y/o modificarlo
 bajo los términos de la GNU General Public License publicada por
@@ -494,5 +494,5 @@ la Free Software Foundation, ya sea la versión 3 de la Licencia, o
 ```
 
 
-¡Gracias por usar **BioSalud Pro**! 🚀  
+¡Gracias por usar **BioSalud**! 🚀  
 *Innovación tecnológica al servicio de la salud*
