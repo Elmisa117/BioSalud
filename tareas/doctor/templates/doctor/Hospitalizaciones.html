@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacientes Hospitalizados</title>
+    <link rel="stylesheet" href="{% static 'doctor/css/Hospitalizaciones.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background-image: url("{% static 'img/fondo_clinica.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏥 Lista de Pacientes Hospitalizados</h1>
+
+    {% if hospitalizaciones %}
+    <table class="tabla-hospitalizados">
+        <thead>
+            <tr>
+                <th>👤 Nombre del Paciente</th>
+                <th>🛏️ Tipo de Habitación</th>
+                <th>🛌 Número de Cama</th>
+                <th>⚙️ Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hosp in hospitalizaciones %}
+            <tr>
+                <td>{{ hosp.pacienteid.nombres }} {{ hosp.pacienteid.apellidos }}</td>
+                <td>{{ hosp.habitacionid.tipohabitacionid.nombre|default:"-" }}</td>
+                <td>{{ hosp.habitacionid.numero|default:"-" }}</td>
+                <td>
+                    <!-- Redirigir a ServiciosHospitalizacion.html al hacer clic en el botón -->
+                    <button class="btn-ver-servicio" type="button">
+                        <a href="{% url 'servicios_hospitalizacion' hosp.hospitalizacionid %}">
+                            <i class="fas fa-notes-medical"></i> Servicios
+                        </a>
+                    </button>
+                    
+                    <button class="btn-alta" type="button">
+                        <a href="{% url 'alta_doctor' hosp.hospitalizacionid %}">
+                        <i class="fas fa-user-check"></i> ALTA
+                        </a>
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="sin-hospitalizados">⚠️ No hay pacientes hospitalizados actualmente.</p>
+    {% endif %}
+</div>
+
+<script src="{% static 'doctor/js/Hospitalizaciones.js' %}"></script>
+</body>
+</html>

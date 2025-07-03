@@ -3,45 +3,61 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Camas Ocupadas</title>
+    <title>Pacientes Hospitalizados</title>
     <link rel="stylesheet" href="{% static 'enfermeria/css/Hospitalizacion.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background-image: url("{% static 'img/fondo_clinica.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
 </head>
 <body>
-    <h1>🛏 Camas Ocupadas</h1>
 
-    <div class="contenedor-camas">
-        {% for cama in privadas %}
-            {% if cama.ocupada %}
-            <div class="cama">
-                <img src="{% static 'enfermeria/iconoEnfermeria/cama.png' %}" alt="Cama" width="80">
-                <p><strong>{{ cama.nombre }}</strong></p>
-                <p>Habitación: {{ cama.habitacion }}</p>
-                <p>Tipo: <span class="tipo">Privada</span></p>
-            </div>
-            {% endif %}
-        {% endfor %}
+<!-- Contenedor general centrado -->
+<div class="contenedor-principal">
+    <div class="container">
+        <h1>🏥 Lista de Pacientes Hospitalizados</h1>
 
-        {% for cama in suites %}
-            {% if cama.ocupada %}
-            <div class="cama">
-                <img src="{% static 'enfermeria/iconoEnfermeria/cama.png' %}" alt="Cama" width="80">
-                <p><strong>{{ cama.nombre }}</strong></p>
-                <p>Habitación: {{ cama.habitacion }}</p>
-                <p>Tipo: <span class="tipo">Suite</span></p>
-            </div>
-            {% endif %}
-        {% endfor %}
-
-        {% for cama in salas %}
-            {% if cama.ocupada %}
-            <div class="cama">
-                <img src="{% static 'enfermeria/iconoEnfermeria/cama.png' %}" alt="Cama" width="80">
-                <p><strong>{{ cama.nombre }}</strong></p>
-                <p>Habitación: {{ cama.habitacion }}</p>
-                <p>Tipo: <span class="tipo">Sala</span></p>
-            </div>
-            {% endif %}
-        {% endfor %}
+        {% if hospitalizaciones %}
+        <table class="tabla-hospitalizados">
+            <thead>
+                <tr>
+                    <th>👤 Nombre del Paciente</th>
+                    <th>🛏️ Tipo de Habitación</th>
+                    <th>🛌 Número de Cama</th>
+                    <th>⚙️ Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hosp in hospitalizaciones %}
+                <tr>
+                    <td>{{ hosp.pacienteid.nombres }} {{ hosp.pacienteid.apellidos }}</td>
+                    <td>{{ hosp.habitacionid.tipohabitacionid.nombre|default:"-" }}</td>
+                    <td>{{ hosp.habitacionid.numero|default:"-" }}</td>
+                    <td>
+                        <button class="btn-ver-servicio" type="button">
+                            <a href="{% url 'servicios_hospitalizacion_enfermeria' hosp.hospitalizacionid %}">
+                                <i class="fas fa-notes-medical"></i> Servicios
+                            </a>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="sin-hospitalizados">⚠️ No hay pacientes hospitalizados actualmente.</p>
+        {% endif %}
     </div>
+</div>
+
+<script src="{% static 'enfermeria/js/Hospitalizaciones.js' %}"></script>
 </body>
 </html>

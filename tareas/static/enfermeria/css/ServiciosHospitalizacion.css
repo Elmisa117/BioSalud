@@ -1,0 +1,83 @@
+/* Contenedor principal */
+.contenedor {
+    max-width: 1000px;
+    margin: 50px auto;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+/* Título principal */
+h2 {
+    text-align: center;
+    color: #00796b;
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+
+/* Botón volver */
+.volver {
+    margin-bottom: 20px;
+}
+
+.volver a {
+    text-decoration: none;
+    background-color: #0288d1;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.volver a:hover {
+    background-color: #0277bd;
+}
+
+/* Tabla de servicios */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+thead {
+    background-color: #00695c;
+    color: white;
+}
+
+th, td {
+    padding: 12px 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #e0f2f1;
+}
+
+/* Estado del servicio */
+.estado-activo {
+    color: green;
+    font-weight: bold;
+}
+
+.estado-anulado {
+    color: red;
+    font-weight: bold;
+}
+
+/* Texto cuando no hay servicios */
+.sin-servicios {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: #d32f2f;
+    margin-top: 30px;
+}
