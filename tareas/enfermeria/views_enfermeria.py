@@ -104,21 +104,12 @@ def perfil_paciente_enfermeria(request, paciente_id):
         'direccion': fila[8],
         'telefono': fila[9],
         'email': fila[10],
-<<<<<<< HEAD
         'gruposanguineo': fila[11],
         'alergias': fila[12],
         'observaciones': fila[13],
         'nombre_contacto_emergencia': fila[14],
         'telefono_contacto_emergencia': fila[15],
         'parentesco_contacto_emergencia': fila[16],
-=======
-        'nombre_contacto_emergencia': fila[11],
-        'telefono_contacto_emergencia': fila[12],
-        'parentesco_contacto_emergencia': fila[13],
-        'gruposanguineo': fila[14],
-        'alergias': fila[15],
-        'observaciones': fila[16],
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
         'enfermedades_base': fila[17],
         'idioma_principal': fila[18],
     }
@@ -201,62 +192,32 @@ def registrar_paciente_enfermeria(request):
                     UPDATE pacientes SET
                         nombres = %s, apellidos = %s, numerodocumento = %s, tipodocumento = %s,
                         fechanacimiento = %s, edad = %s, genero = %s, direccion = %s,
-<<<<<<< HEAD
                         telefono = %s, email = %s, gruposanguineo = %s, alergias = %s, observaciones = %s,
                         nombre_contacto_emergencia = %s, telefono_contacto_emergencia = %s,
                         parentesco_contacto_emergencia = %s, enfermedades_base = %s, idioma_principal = %s
-=======
-                        telefono = %s, email = %s,
-                        nombre_contacto_emergencia = %s, telefono_contacto_emergencia = %s,
-                        parentesco_contacto_emergencia = %s,
-                        gruposanguineo = %s, alergias = %s, observaciones = %s,
-                        enfermedades_base = %s, idioma_principal = %s
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                     WHERE pacienteid = %s
                 """, [
                     nombres, apellidos, numero_documento, tipo_documento,
                     fecha_nacimiento, edad, genero, direccion,
-<<<<<<< HEAD
                     telefono, email, grupo_sanguineo, alergias, observaciones,
                     nombre_contacto, telefono_contacto, parentesco_contacto,
                     enfermedades_base, idioma_principal, paciente_id
-=======
-                    telefono, email,
-                    nombre_contacto_emergencia, telefono_contacto_emergencia,
-                    parentesco_contacto_emergencia,
-                    grupo_sanguineo, alergias, observaciones,
-                    enfermedades_base, idioma_principal,
-                    paciente_id
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                 ])
             else:
                 cursor.execute("""
                     INSERT INTO pacientes (
                         nombres, apellidos, numerodocumento, tipodocumento,
                         fechanacimiento, edad, genero, direccion, telefono,
-<<<<<<< HEAD
                         email, gruposanguineo, alergias, observaciones,
                         nombre_contacto_emergencia, telefono_contacto_emergencia,
                         parentesco_contacto_emergencia, enfermedades_base, idioma_principal,
-=======
-                        email, nombre_contacto_emergencia, telefono_contacto_emergencia,
-                        parentesco_contacto_emergencia,
-                        gruposanguineo, alergias, observaciones,
-                        enfermedades_base, idioma_principal,
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                         fecharegistro, estado
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, TRUE)
                 """, [
                     nombres, apellidos, numero_documento, tipo_documento,
                     fecha_nacimiento, edad, genero, direccion,
-<<<<<<< HEAD
                     telefono, email, grupo_sanguineo, alergias, observaciones,
                     nombre_contacto, telefono_contacto, parentesco_contacto,
-=======
-                    telefono, email, nombre_contacto_emergencia, telefono_contacto_emergencia,
-                    parentesco_contacto_emergencia,
-                    grupo_sanguineo, alergias, observaciones,
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                     enfermedades_base, idioma_principal
                 ])
 
@@ -272,16 +233,9 @@ def registrar_paciente_enfermeria(request):
             cursor.execute("""
                 SELECT nombres, apellidos, numerodocumento, tipodocumento,
                        fechanacimiento, edad, genero, direccion, telefono,
-<<<<<<< HEAD
                        email, gruposanguineo, alergias, observaciones,
                        nombre_contacto_emergencia, telefono_contacto_emergencia,
                        parentesco_contacto_emergencia, enfermedades_base, idioma_principal
-=======
-                       email, nombre_contacto_emergencia, telefono_contacto_emergencia,
-                       parentesco_contacto_emergencia,
-                       gruposanguineo, alergias, observaciones,
-                       enfermedades_base, idioma_principal
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                 FROM pacientes
                 WHERE pacienteid = %s
             """, [paciente_id])
@@ -299,7 +253,6 @@ def registrar_paciente_enfermeria(request):
                     'direccion': fila[7],
                     'telefono': fila[8],
                     'email': fila[9],
-<<<<<<< HEAD
                     'gruposanguineo': fila[10],
                     'alergias': fila[11],
                     'observaciones': fila[12],
@@ -308,16 +261,6 @@ def registrar_paciente_enfermeria(request):
                     'parentesco_contacto_emergencia': fila[15],
                     'enfermedades_base': fila[16],
                     'idioma_principal': fila[17],
-=======
-                    'nombre_contacto_emergencia': fila[10],
-                    'telefono_contacto_emergencia': fila[11],
-                    'parentesco_contacto_emergencia': fila[12],
-                    'gruposanguineo': fila[13],
-                    'alergias': fila[14],
-                    'observaciones': fila[15],
-                    'enfermedades_base': fila[16],
-                    'idioma_principal': fila[17]
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                 }
 
     return render(request, 'enfermeria/Paciente/RegistrarPaciente/RegistrarPaciente.html', {
