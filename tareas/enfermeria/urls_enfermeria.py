@@ -26,6 +26,12 @@ urlpatterns = [
     # Vista gráfica de hospitalización (mapa de camas)
     path('mapa-habitaciones/', views_enfermeria.vista_hospitalizacion_enfermeria, name='mapa_habitaciones_enfermeria'),
 
+    # ✅ Vista de hospitalizaciones (nombre corregido)
+    path('hospitalizaciones/', views_enfermeria.vista_hospitalizacion_enfermeria, name='ver_hospitalizaciones_enfermeria'),
+
+    # ✅ Vista de servicios de hospitalización
+    path('hospitalizaciones/servicios/<int:id>/', views_enfermeria.servicios_hospitalizacion_enfermeria, name='servicios_hospitalizacion_enfermeria'),
+
     # Perfil del personal logueado
     path('perfil/', views_enfermeria.perfil_personal_enfermeria, name='perfil_personal_enfermeria'),
 ]

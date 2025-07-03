@@ -1,68 +1,109 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f8fc;
-    margin: 0;
+/* Contenedor exterior para centrar vertical y horizontalmente */
+.contenedor-principal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     padding: 20px;
 }
 
-h1 {
+/* Contenedor principal con fondo negro transparente */
+.container {
+    max-width: 1000px;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.65); /* Negro translúcido */
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+/* Título principal */
+.container h1 {
     text-align: center;
-    color: #2b5d9f;
+    font-size: 28px;
     margin-bottom: 30px;
+    color: #ffffff; /* Blanco para contraste */
+    font-weight: 700;
 }
 
-h2 {
-    color: #1f3c63;
-    border-left: 5px solid #2b5d9f;
-    padding-left: 10px;
-    margin-top: 40px;
+/* Tabla */
+.tabla-hospitalizados {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.1); /* fondo tenue para la tabla */
+    color: #ffffff; /* texto blanco para mejor visibilidad */
 }
 
-.bloque-tipo {
-    margin-bottom: 40px;
+.tabla-hospitalizados thead {
+    background-color: rgba(0, 121, 107, 0.9); /* Verde oscuro translúcido */
+    color: #fff;
 }
 
-.contenedor-camas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
-    margin-top: 20px;
-}
-
-.cama {
-    width: 150px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    padding: 10px;
+.tabla-hospitalizados th, 
+.tabla-hospitalizados td {
     text-align: center;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    padding: 12px 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
 }
 
-.cama:hover {
-    transform: scale(1.03);
+.tabla-hospitalizados tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
-.cama img {
-    width: 100px;
-    height: auto;
-    margin-bottom: 8px;
+.tabla-hospitalizados tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* 🟡 Estilo para camas vacías */
-.cama.vacia {
-    background-color: #f0f0f0;
-    border: 1px dashed #bbb;
-    opacity: 0.7;
+/* Botones de acción */
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    margin: 3px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
 }
 
-.cama.vacia img {
-    filter: grayscale(100%);
+button a {
+    text-decoration: none;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.cama.vacia p {
-    color: #888;
-    font-style: italic;
+/* Botón "Ver Servicio" */
+.btn-ver-servicio {
+    background-color: #0288d1;
+}
+
+.btn-ver-servicio:hover {
+    background-color: #0277bd;
+}
+
+/* Botón "Dar Alta" (por si se activa en el futuro) */
+.btn-alta {
+    background-color: #43a047;
+}
+
+.btn-alta:hover {
+    background-color: #388e3c;
+}
+
+/* Texto cuando no hay hospitalizados */
+.sin-hospitalizados {
+    text-align: center;
+    font-size: 18px;
+    color: #ffb74d;
+    margin-top: 30px;
+    font-weight: 500;
+}
+
+/* Íconos */
+i.fas {
+    font-size: 16px;
 }

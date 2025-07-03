@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Servicios de Hospitalización</title>
+    <link rel="stylesheet" href="{% static 'doctor/css/ServiciosHospitalizacion.css' %}">
+    <link rel="stylesheet" href="{% static 'doctor/css/Ser.css' %}">
+    <style>
+        body {
+            background-image: url("{% static 'img/fondo_clinica.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🏥 Servicios de Hospitalización para {{ hospitalizacion.pacienteid.nombres }} {{ hospitalizacion.pacienteid.apellidos }}</h2>
+    <p><strong>Motivo de hospitalización:</strong> {{ hospitalizacion.motivohospitalizacion }}</p>
+    <p><strong>Solicitado por:</strong> {{ personal_solicitante.nombres }} {{ personal_solicitante.apellidos }}</p> <!-- Mostramos el personal solicitante -->
+
+    {% if servicios_hospitalizacion %}
+    <h3>🗂️ Servicios Registrados</h3>
+    <table class="tabla-servicios">
+        <thead>
+            <tr>
+                <th>Servicio</th>
+                <th>Cantidad</th>
+                <th>Fecha</th>
+                <th>Solicitado por</th>
+                <th>Estado</th>
+                <th>Facturado</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in servicios_hospitalizacion %}
+            <tr>
+                <td>{{ s.servicioid.nombre }}</td>
+                <td>{{ s.cantidad }}</td>
+                <td>{{ s.fechaservicio|date:"d/m/Y H:i" }}</td>
+                <td>{{ s.personalsolicitanteid.nombres }} {{ s.personalsolicitanteid.apellidos }}</td>
+                <td>{{ s.estado|yesno:"Activo,Inactivo" }}</td>
+                <td>{{ s.facturado|yesno:"Sí,No" }}</td>
+                <td>{{ s.observaciones|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    {% endif %}
+
+    <hr>
+
+    <h3>➕ Agregar Nuevos Servicios</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {% for servicio in servicios_disponibles %}
+            <div class="servicio-item">
+                <label>
+                    <input type="checkbox" name="servicios" value="{{ servicio.servicioid }}">
+                    {{ servicio.nombre }}
+                </label>
+                <input type="number" name="cantidad_{{ servicio.servicioid }}" placeholder="Cantidad" min="1">
+                <input type="text" name="observacion_{{ servicio.servicioid }}" placeholder="Observaciones (opcional)">
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-guardar">
+            <i class="fas fa-save"></i> Registrar Servicios
+        </button>
+    </form>
+</div>
+
+</body>
+</html>

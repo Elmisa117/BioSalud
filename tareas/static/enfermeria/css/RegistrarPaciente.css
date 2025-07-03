@@ -130,7 +130,7 @@ textarea {
     height: 20px;
 }
 
-/* Mensajes del sistema de Django (por si se usan) */
+/* Mensajes del sistema de Django */
 .messages {
     list-style: none;
     padding: 0;
@@ -157,7 +157,7 @@ textarea {
     border: 1px solid #6ee7b7;
 }
 
-/* ✅ Mensajes de éxito/error por AJAX (mostrar dinámicamente) */
+/* Mensajes de éxito/error por AJAX */
 .mensaje-ajax {
     padding: 12px 20px;
     margin-bottom: 20px;

@@ -25,11 +25,16 @@
             <p><strong>Género:</strong> {{ ficha.pacienteid.genero|default:'No registrado' }}</p>
             <p><strong>Teléfono:</strong> {{ ficha.pacienteid.telefono|default:'No registrado' }}</p>
             <p><strong>Dirección:</strong> {{ ficha.pacienteid.direccion|default:'No registrada' }}</p>
+            <p><strong>Email:</strong> {{ ficha.pacienteid.email|default:'No registrado' }}</p>
             <p><strong>Grupo Sanguíneo:</strong> {{ ficha.pacienteid.gruposanguineo|default:'No registrado' }}</p>
             <p><strong>Alergias:</strong> {{ ficha.pacienteid.alergias|default:'No registradas' }}</p>
-            <p><strong>Email:</strong> {{ ficha.pacienteid.email|default:'No registrado' }}</p>
             <p><strong>Observaciones:</strong> {{ ficha.pacienteid.observaciones|default:'Ninguna' }}</p>
             <p><strong>Fecha de Registro:</strong> {% if ficha.pacienteid.fecharegistro %}{{ ficha.pacienteid.fecharegistro|date:"d/m/Y H:i" }}{% else %}No registrada{% endif %}</p>
+            <p><strong>Contacto de Emergencia:</strong> {{ ficha.pacienteid.contactoemergencia|default:'No registrado' }}</p>
+            <p><strong>Teléfono de Emergencia:</strong> {{ ficha.pacienteid.telefonoemergencia|default:'No registrado' }}</p>
+            <p><strong>Relación de Emergencia:</strong> {{ ficha.pacienteid.relacionemergencia|default:'No registrada' }}</p>
+            <p><strong>Enfermedades de Base:</strong> {{ ficha.pacienteid.enfermedadesbase|default:'No registradas' }}</p>
+            <p><strong>Idioma:</strong> {{ ficha.pacienteid.idioma|default:'No especificado' }}</p>
         </div>
 
         <!-- 📄 Ficha Clínica -->
