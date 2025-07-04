@@ -19,8 +19,12 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 =======
 SECRET_KEY = 'django-insecure-8xjx5zl9u&_o%v^)!%x0fgma^(m5pt4u^fomm9ykj(-qfpl&l!'
 DEBUG = True
+<<<<<<< HEAD
 ALLOWED_HOSTS = ['141.95.161.224', 'localhost', '127.0.0.1']
 >>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
+=======
+ALLOWED_HOSTS = ['141.95.161.224', 'biosalud.cloud', 'www.biosalud.cloud']
+>>>>>>> 7261256c11e8861d0d27a2b76ed8274c27c2c4e4
 
 # 🧩 Aplicaciones instaladas
 INSTALLED_APPS = [
