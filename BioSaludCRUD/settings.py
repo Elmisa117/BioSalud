@@ -106,7 +106,15 @@ USE_I18N = True
 USE_TZ = True
 
 # 📁 Archivos estáticos (CSS, JS, imágenes)
-STATIC_URL = 'static/'
+import os
+
+STATIC_URL = '/static/'  # ✅ Con barra al inicio
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')  # ✅ Para collectstatic
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 STATICFILES_DIRS = [
     BASE_DIR / "tareas" / "static"
 ]
