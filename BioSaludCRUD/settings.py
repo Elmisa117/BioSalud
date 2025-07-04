@@ -3,30 +3,39 @@ Django settings for BioSaludCRUD project.
 """
 
 from pathlib import Path
+<<<<<<< HEAD
 import os
+=======
+>>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
 
 # BASE_DIR apunta a la raíz del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ⚠️ Seguridad
+<<<<<<< HEAD
 SECRET_KEY = 'clave_super_secreta_123'
 DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+=======
+SECRET_KEY = 'django-insecure-8xjx5zl9u&_o%v^)!%x0fgma^(m5pt4u^fomm9ykj(-qfpl&l!'
+DEBUG = True
+ALLOWED_HOSTS = ['141.95.161.224', 'localhost', '127.0.0.1']
+>>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
 
 # 🧩 Aplicaciones instaladas
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.admin',           # Admin Django
+    'django.contrib.auth',            # Sistema de autenticación
+    'django.contrib.contenttypes',    
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'django_extensions',
-    'tareas',
+    'rest_framework',                 # Para APIs
+    'django_extensions',             # Funcionalidades extra (requiere instalación)
+    'tareas',                         # Tu app principal
 ]
 
-# 🧱 Middlewares
+# 🧱 Middlewares (capa intermedia entre request y response)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -40,7 +49,7 @@ MIDDLEWARE = [
 # 🌐 Configuración de URLs
 ROOT_URLCONF = 'BioSaludCRUD.urls'
 
-# 🎨 Templates y contexto
+# 🎨 Templates y procesadores de contexto
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -64,10 +73,14 @@ TEMPLATES = [
     },
 ]
 
-# 🚀 WSGI
+# 🚀 WSGI para producción
 WSGI_APPLICATION = 'BioSaludCRUD.wsgi.application'
 
+<<<<<<< HEAD
 # 🗃️ Base de datos (sin .env)
+=======
+# 🗃️ Base de datos PostgreSQL
+>>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -79,7 +92,7 @@ DATABASES = {
     }
 }
 
-# 🔐 Validadores de contraseña
+# 🔐 Validadores de contraseñas
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -95,22 +108,39 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+<<<<<<< HEAD
 # 🌍 Internacionalización
 LANGUAGE_CODE = 'es-bo'
 TIME_ZONE = 'America/La_Paz'
+=======
+# 🌍 Configuración internacional
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+>>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
 USE_I18N = True
 USE_TZ = True
 
-# 📁 Archivos estáticos
-STATIC_URL = 'static/'
+# 📁 Archivos estáticos (CSS, JS, imágenes)
+import os
+
+STATIC_URL = '/static/'  # ✅ Con barra al inicio
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')  # ✅ Para collectstatic
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 STATICFILES_DIRS = [
     BASE_DIR / "tareas" / "static"
 ]
 
-# 🔑 Clave primaria automática
+# 🔑 Campo por defecto para claves primarias
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+<<<<<<< HEAD
 
 # 🔐 Configuración biométrica (opcional)
 BIOMETRIC_CONFIG = {
     'ENCRYPTION_KEY': 'clavebiometrica123',
 }
+=======
+>>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
