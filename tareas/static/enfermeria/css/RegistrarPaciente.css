@@ -2,8 +2,9 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f472b6, #ec4899);
-    color: #333;
+    background: url("{% static 'img/fondo_clinica.jpg' %}") no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;  /* Texto blanco */
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -12,11 +13,12 @@ body {
 
 /* Contenedor principal */
 .registro-container {
-    background-color: #fff;
+    background-color: rgba(0, 0, 0, 0.7);  /* Contenedor negro transparente */
+    color: #fff;  /* Letras blancas */
     margin-top: 50px;
     padding: 30px 40px;
     border-radius: 15px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);  /* Sombra más tenue */
     width: 100%;
     max-width: 600px;
 }
@@ -24,7 +26,7 @@ body {
 /* Título principal */
 h1 {
     text-align: center;
-    color: #be185d;
+    color: #4F9DFF;  /* Color azul */
     margin-bottom: 30px;
 }
 
@@ -37,7 +39,7 @@ form {
 label {
     margin-top: 10px;
     font-weight: bold;
-    color: #4b5563;
+    color: #d1d5db;  /* Gris claro */
 }
 
 input[type="text"],
@@ -54,14 +56,38 @@ textarea {
     transition: border-color 0.3s;
     width: 100%;
     box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.3);  /* Fondo semi-transparente para los campos */
+    color: #fff;  /* Texto blanco dentro de los campos */
+}
+
+/* Estilo para los campos select (desplegables) */
+select {
+    background-color: rgba(0, 0, 0, 0.5);  /* Fondo oscuro para los desplegables */
+    color: #fff;  /* Texto blanco */
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+select option {
+    background-color: #1f2937;  /* Fondo oscuro para las opciones */
+    color: #fff;  /* Texto blanco para las opciones */
+}
+
+select:focus {
+    outline: none;
+    border-color: #4F9DFF;  /* Azul al enfocarse */
+    box-shadow: 0 0 5px rgba(79, 157, 255, 0.3);  /* Sombra azul */
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: #ec4899;
-    box-shadow: 0 0 5px rgba(236, 72, 153, 0.3);
+    border-color: #4F9DFF;  /* Azul al enfocarse */
+    box-shadow: 0 0 5px rgba(79, 157, 255, 0.3);  /* Sombra azul */
 }
 
 textarea {
@@ -77,7 +103,7 @@ textarea {
 }
 
 .botones-acciones button {
-    background-color: #ec4899;
+    background-color: #4F9DFF;  /* Azul */
     color: #fff;
     border: none;
     padding: 12px 22px;
@@ -92,7 +118,7 @@ textarea {
 }
 
 .botones-acciones button:hover {
-    background-color: #db2777;
+    background-color: #3B7ED6;  /* Azul más oscuro */
     transform: scale(1.05);
 }
 
@@ -112,7 +138,7 @@ textarea {
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background-color: #e11d48;
+    background-color: #e11d48;  /* Rojo */
     color: white;
     text-decoration: none;
     border-radius: 8px;
@@ -122,7 +148,7 @@ textarea {
 }
 
 .boton-regresar a:hover {
-    background-color: #be123c;
+    background-color: #be123c;  /* Rojo más oscuro */
 }
 
 .boton-regresar img {
@@ -131,6 +157,10 @@ textarea {
 }
 
 /* Mensajes del sistema de Django */
+.messages-container {
+    margin-bottom: 20px;  /* Espacio entre los mensajes y el formulario */
+}
+
 .messages {
     list-style: none;
     padding: 0;
@@ -138,19 +168,22 @@ textarea {
 }
 
 .messages li {
-    padding: 12px 16px;
+    padding: 20px 30px;  /* Mayor espacio para los mensajes */
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-weight: bold;
     text-align: center;
+    font-size: 20px;  /* Tamaño de letra grande */
 }
 
+/* Estilos para los mensajes de error */
 .messages .error {
     background-color: #fee2e2;
     color: #991b1b;
     border: 1px solid #fca5a5;
 }
 
+/* Estilos para los mensajes de éxito */
 .messages .success {
     background-color: #d1fae5;
     color: #065f46;
@@ -164,7 +197,7 @@ textarea {
     border-radius: 8px;
     font-weight: bold;
     text-align: center;
-    font-size: 15px;
+    font-size: 20px;  /* Tamaño de letra grande */
 }
 
 .mensaje-ajax.success {

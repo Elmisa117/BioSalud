@@ -4,24 +4,25 @@ body {
     background-size: cover;
     margin: 0;
     padding: 0;
-    color: #333;
+    color: #ffffff;
 }
 
 /* Contenedor principal */
 .ficha-container {
-    max-width: 750px;
+    background-color: rgba(0, 0, 0, 0.7);  /* Fondo oscuro transparente */
+    max-width: 800px;
     margin: 60px auto;
-    background-color: rgba(255, 255, 255, 0.95);
     padding: 35px 40px;
-    border-radius: 16px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
-    position: relative;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid #cacdcd2a;
 }
 
 /* Título principal */
 .ficha-container h1 {
     text-align: center;
-    color: #0ea5e9;
+    color: #ffffff;
     margin-bottom: 30px;
 }
 
@@ -62,7 +63,7 @@ label {
     display: block;
     margin-top: 16px;
     font-weight: 600;
-    color: #1e293b;
+    color: #ffffffdb;
 }
 
 input[type="text"],
@@ -126,4 +127,34 @@ button[type="submit"]:hover {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
+}
+
+/* Mensajes de éxito y error */
+.alert-messages {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    animation: fadein 0.4s ease-in;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.alert-success {
+    background-color: #15803d; /* verde oscuro */
+    color: #ffffff;
+}
+
+.alert-error {
+    background-color: #b91c1c; /* rojo oscuro */
+    color: #ffffff;
+}
+
+@keyframes fadein {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
