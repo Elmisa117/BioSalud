@@ -75,14 +75,8 @@ def perfil_paciente_enfermeria(request, paciente_id):
             SELECT
                 pacienteid, nombres, apellidos, numerodocumento, tipodocumento,
                 fechanacimiento, edad, genero, direccion, telefono, email,
-<<<<<<< HEAD
                 gruposanguineo, alergias, observaciones,
                 nombre_contacto_emergencia, telefono_contacto_emergencia, parentesco_contacto_emergencia,
-=======
-                nombre_contacto_emergencia, telefono_contacto_emergencia,
-                parentesco_contacto_emergencia,
-                gruposanguineo, alergias, observaciones,
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                 enfermedades_base, idioma_principal
             FROM pacientes
             WHERE pacienteid = %s
@@ -104,21 +98,12 @@ def perfil_paciente_enfermeria(request, paciente_id):
         'direccion': fila[8],
         'telefono': fila[9],
         'email': fila[10],
-<<<<<<< HEAD
         'gruposanguineo': fila[11],
         'alergias': fila[12],
         'observaciones': fila[13],
         'nombre_contacto_emergencia': fila[14],
         'telefono_contacto_emergencia': fila[15],
         'parentesco_contacto_emergencia': fila[16],
-=======
-        'nombre_contacto_emergencia': fila[11],
-        'telefono_contacto_emergencia': fila[12],
-        'parentesco_contacto_emergencia': fila[13],
-        'gruposanguineo': fila[14],
-        'alergias': fila[15],
-        'observaciones': fila[16],
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
         'enfermedades_base': fila[17],
         'idioma_principal': fila[18],
     }
@@ -182,9 +167,9 @@ def registrar_paciente_enfermeria(request):
         # Verificar duplicado
         if not paciente_id:
             with connection.cursor() as cursor:
-                cursor.execute("""
+                cursor.execute(""" 
                     SELECT COUNT(*) FROM pacientes 
-                    WHERE numerodocumento = %s AND tipodocumento = %s
+                    WHERE numerodocumento = %s AND tipodocumento = %s 
                 """, [numero_documento, tipo_documento])
                 if cursor.fetchone()[0] > 0:
                     if is_ajax:
@@ -195,76 +180,51 @@ def registrar_paciente_enfermeria(request):
                             "paciente": request.POST
                         })
 
+        # Guardar paciente y obtener el ID en PostgreSQL
         with connection.cursor() as cursor:
             if paciente_id:
-                cursor.execute("""
+                cursor.execute(""" 
                     UPDATE pacientes SET
                         nombres = %s, apellidos = %s, numerodocumento = %s, tipodocumento = %s,
                         fechanacimiento = %s, edad = %s, genero = %s, direccion = %s,
-<<<<<<< HEAD
                         telefono = %s, email = %s, gruposanguineo = %s, alergias = %s, observaciones = %s,
                         nombre_contacto_emergencia = %s, telefono_contacto_emergencia = %s,
                         parentesco_contacto_emergencia = %s, enfermedades_base = %s, idioma_principal = %s
-=======
-                        telefono = %s, email = %s,
-                        nombre_contacto_emergencia = %s, telefono_contacto_emergencia = %s,
-                        parentesco_contacto_emergencia = %s,
-                        gruposanguineo = %s, alergias = %s, observaciones = %s,
-                        enfermedades_base = %s, idioma_principal = %s
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                     WHERE pacienteid = %s
                 """, [
                     nombres, apellidos, numero_documento, tipo_documento,
                     fecha_nacimiento, edad, genero, direccion,
-<<<<<<< HEAD
                     telefono, email, grupo_sanguineo, alergias, observaciones,
                     nombre_contacto, telefono_contacto, parentesco_contacto,
                     enfermedades_base, idioma_principal, paciente_id
-=======
-                    telefono, email,
-                    nombre_contacto_emergencia, telefono_contacto_emergencia,
-                    parentesco_contacto_emergencia,
-                    grupo_sanguineo, alergias, observaciones,
-                    enfermedades_base, idioma_principal,
-                    paciente_id
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                 ])
             else:
-                cursor.execute("""
+                cursor.execute(""" 
                     INSERT INTO pacientes (
                         nombres, apellidos, numerodocumento, tipodocumento,
                         fechanacimiento, edad, genero, direccion, telefono,
-<<<<<<< HEAD
                         email, gruposanguineo, alergias, observaciones,
                         nombre_contacto_emergencia, telefono_contacto_emergencia,
                         parentesco_contacto_emergencia, enfermedades_base, idioma_principal,
-=======
-                        email, nombre_contacto_emergencia, telefono_contacto_emergencia,
-                        parentesco_contacto_emergencia,
-                        gruposanguineo, alergias, observaciones,
-                        enfermedades_base, idioma_principal,
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                         fecharegistro, estado
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, TRUE)
+                    RETURNING pacienteid;
                 """, [
                     nombres, apellidos, numero_documento, tipo_documento,
                     fecha_nacimiento, edad, genero, direccion,
-<<<<<<< HEAD
                     telefono, email, grupo_sanguineo, alergias, observaciones,
                     nombre_contacto, telefono_contacto, parentesco_contacto,
-=======
-                    telefono, email, nombre_contacto_emergencia, telefono_contacto_emergencia,
-                    parentesco_contacto_emergencia,
-                    grupo_sanguineo, alergias, observaciones,
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                     enfermedades_base, idioma_principal
                 ])
+                paciente_id = cursor.fetchone()[0]  # Captura el ID del paciente recién insertado
 
-        if is_ajax:
-            return JsonResponse({"mensaje": "ok"})
-        else:
-            messages.success(request, "Paciente guardado exitosamente.")
-            return redirect('vista_pacientes_enfermeria')
+        # Mostrar el mensaje de éxito con el ID del paciente
+        messages.success(request, f"Paciente guardado exitosamente. ID: {paciente_id}")
+        
+        # Renderiza la misma página sin redirigir, mostrando el mensaje de éxito
+        return render(request, 'enfermeria/Paciente/RegistrarPaciente/RegistrarPaciente.html', {
+            'paciente': request.POST  # Mantener los datos del formulario para que se muestren de nuevo
+        })
 
     # Carga si es edición
     if paciente_id:
@@ -272,16 +232,9 @@ def registrar_paciente_enfermeria(request):
             cursor.execute("""
                 SELECT nombres, apellidos, numerodocumento, tipodocumento,
                        fechanacimiento, edad, genero, direccion, telefono,
-<<<<<<< HEAD
                        email, gruposanguineo, alergias, observaciones,
                        nombre_contacto_emergencia, telefono_contacto_emergencia,
                        parentesco_contacto_emergencia, enfermedades_base, idioma_principal
-=======
-                       email, nombre_contacto_emergencia, telefono_contacto_emergencia,
-                       parentesco_contacto_emergencia,
-                       gruposanguineo, alergias, observaciones,
-                       enfermedades_base, idioma_principal
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                 FROM pacientes
                 WHERE pacienteid = %s
             """, [paciente_id])
@@ -299,7 +252,6 @@ def registrar_paciente_enfermeria(request):
                     'direccion': fila[7],
                     'telefono': fila[8],
                     'email': fila[9],
-<<<<<<< HEAD
                     'gruposanguineo': fila[10],
                     'alergias': fila[11],
                     'observaciones': fila[12],
@@ -308,23 +260,11 @@ def registrar_paciente_enfermeria(request):
                     'parentesco_contacto_emergencia': fila[15],
                     'enfermedades_base': fila[16],
                     'idioma_principal': fila[17],
-=======
-                    'nombre_contacto_emergencia': fila[10],
-                    'telefono_contacto_emergencia': fila[11],
-                    'parentesco_contacto_emergencia': fila[12],
-                    'gruposanguineo': fila[13],
-                    'alergias': fila[14],
-                    'observaciones': fila[15],
-                    'enfermedades_base': fila[16],
-                    'idioma_principal': fila[17]
->>>>>>> 535e34b6a2cb62206cad612d452fabae9506212c
                 }
 
     return render(request, 'enfermeria/Paciente/RegistrarPaciente/RegistrarPaciente.html', {
         'paciente': paciente_datos
     })
-
-
 # ----------------------------
 # REGISTRAR FICHA CLÍNICA
 # ----------------------------
@@ -420,12 +360,18 @@ def ficha_clinico_enfermeria(request, id):
             signosvitales=signos_vitales,
             tratamientosugerido=tratamiento,
             observaciones=observaciones,
-            estado="Activa",  # Asignamos un estado explícito
-            tipoatencion=tipoatencion,  # Agregamos el tipo de atención seleccionado
-            personalid=enfermera  # Guardamos el personal de la enfermera que creó la ficha
+            estado="Activa",
+            tipoatencion=tipoatencion,
+            personalid=enfermera
         )
         ficha.save()
-        return redirect('vista_pacientes_enfermeria')
+
+        # Mostrar mensaje de éxito y mantener en la misma página
+        messages.success(request, "Ficha clínica guardada exitosamente.")
+        return render(request, 'enfermeria/Paciente/FichaClinico/FichaClinico.html', {
+            'paciente': paciente,
+            'doctores': doctores
+        })
 
     # Si el método es GET, mostramos el formulario
     return render(request, 'enfermeria/Paciente/FichaClinico/FichaClinico.html', {
@@ -473,42 +419,61 @@ def historial_enfermeria(request, id):
 def ver_historial_enfermeria(request, fichaid):
     # Obtener la ficha clínica
     ficha = get_object_or_404(Fichaclinico, fichaid=fichaid)
-
+    
     # Deserializar los signos vitales de la ficha (si existen)
     signos_dict = ficha.signosvitales if ficha.signosvitales else {}
-
-    # Obtener el usuario actual, que es la enfermera responsable si está autenticado
+    
+    # Inicializar variables
     enfermera_responsable = None
-    if request.user and request.user.is_authenticated:
-        if request.user.groups.filter(name='Enfermería').exists():
-            enfermera_responsable = request.user
-
-    # Obtener las consultas con servicios relacionados
+    doctor_responsable = None
+    
+    # Verificar el rol del personal de la ficha actual
+    if ficha.personalid.rol == 'Enfermería':
+        enfermera_responsable = ficha.personalid
+    elif ficha.personalid.rol == 'Doctor':
+        doctor_responsable = ficha.personalid
+    
+    # Si necesitas buscar el otro tipo de personal, puedes hacerlo así:
+    # Si ya tienes una enfermera, buscar doctor
+    if enfermera_responsable and not doctor_responsable:
+        doctor_responsable = Personal.objects.filter(
+            rol='Doctor',
+            # Puedes agregar más filtros aquí si necesitas un doctor específico
+        ).first()
+    
+    # Si ya tienes un doctor, buscar enfermera
+    elif doctor_responsable and not enfermera_responsable:
+        enfermera_responsable = Personal.objects.filter(
+            rol='Enfermería',
+            # Puedes agregar más filtros aquí si necesitas una enfermera específica
+        ).first()
+    
+    # Resto del código igual...
     consultas = Consultas.objects.filter(pacienteid=ficha.pacienteid)\
         .select_related('personalid')\
         .order_by('-fechaconsulta')
-
+    
     for consulta in consultas:
         consulta.servicios = Consultaservicios.objects.filter(consultaid=consulta.consultaid)\
             .select_related('servicioid')
-
-    # Obtener las hospitalizaciones con sus servicios
+    
     hospitalizaciones = Hospitalizaciones.objects.filter(pacienteid=ficha.pacienteid)\
         .select_related('habitacionid', 'habitacionid__tipohabitacionid', 'tipoaltaid', 'personalid')\
         .order_by('-fechaingreso')
-
+    
     for hosp in hospitalizaciones:
         hosp.servicios = Hospitalizacionservicios.objects.filter(hospitalizacionid=hosp.hospitalizacionid)\
             .select_related('servicioid')
-
-    # Renderizar la plantilla
+    
     return render(request, 'enfermeria/Paciente/Historial/VerHistorial.html', {
         'ficha': ficha,
         'signos_vitales': signos_dict,
         'enfermera_responsable': enfermera_responsable,
+        'doctor_responsable': doctor_responsable,
         'consultas': consultas,
         'hospitalizaciones': hospitalizaciones
     })
+
 
 def vista_hospitalizacion_enfermeria(request):
     """Vista que muestra todas las hospitalizaciones activas en forma de tabla (para enfermería)."""

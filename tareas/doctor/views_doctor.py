@@ -582,22 +582,25 @@ def historial_paciente(request, pacienteid):
 #
 def ver_historial_detalle_doctor(request, fichaid):
     """Muestra todos los detalles clínicos de una ficha específica (módulo Doctor)"""
+    
     if not validar_doctor(request):
         return redirect('login')
 
     try:
-        ficha = get_object_or_404(Fichaclinico, fichaid=fichaid)  # ✅ Campo corregido
+        # Obtener la ficha clínica específica
+        ficha = get_object_or_404(Fichaclinico, fichaid=fichaid)
 
-        doctor_responsable = ficha.personalid if ficha.personalid.rol == 'Doctor' else None
+        # Obtener el doctor responsable si aplica
+        doctor_responsable = ficha.personalid if ficha.personalid and ficha.personalid.rol == 'Doctor' else None
 
+        # Consultas médicas del paciente (sin filtrar por fecha)
         consultas = Consultas.objects.filter(
-            pacienteid=ficha.pacienteid,
-            fechaconsulta__gte=ficha.fechaapertura
+            pacienteid=ficha.pacienteid
         ).order_by('-fechaconsulta')
 
+        # Hospitalizaciones del paciente (sin filtrar por fecha)
         hospitalizaciones = Hospitalizaciones.objects.filter(
-            pacienteid=ficha.pacienteid,
-            fechaingreso__gte=ficha.fechaapertura
+            pacienteid=ficha.pacienteid
         ).order_by('-fechaingreso')
 
         return render(request, 'doctor/PacienteDoctor/Ver_Historial_Doctor.html', {

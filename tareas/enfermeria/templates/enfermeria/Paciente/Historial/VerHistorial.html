@@ -30,24 +30,15 @@
             <p><strong>Alergias:</strong> {{ ficha.pacienteid.alergias|default:'No registradas' }}</p>
             <p><strong>Observaciones:</strong> {{ ficha.pacienteid.observaciones|default:'Ninguna' }}</p>
             <p><strong>Fecha de Registro:</strong> {% if ficha.pacienteid.fecharegistro %}{{ ficha.pacienteid.fecharegistro|date:"d/m/Y H:i" }}{% else %}No registrada{% endif %}</p>
-            <p><strong>Contacto de Emergencia:</strong> {{ ficha.pacienteid.contactoemergencia|default:'No registrado' }}</p>
-            <p><strong>Teléfono de Emergencia:</strong> {{ ficha.pacienteid.telefonoemergencia|default:'No registrado' }}</p>
-            <p><strong>Relación de Emergencia:</strong> {{ ficha.pacienteid.relacionemergencia|default:'No registrada' }}</p>
-            <p><strong>Enfermedades de Base:</strong> {{ ficha.pacienteid.enfermedadesbase|default:'No registradas' }}</p>
-            <p><strong>Idioma:</strong> {{ ficha.pacienteid.idioma|default:'No especificado' }}</p>
         </div>
 
         <!-- 📄 Ficha Clínica -->
         <div class="ficha-clinica">
             <h2>📄 Ficha Clínica</h2>
             <p><strong>Tipo de Atención:</strong> 
-                {% if ficha.tipoatencion == 'Emergencia' %}
-                    Emergencia
-                {% elif ficha.tipoatencion == 'Consulta Externa' %}
-                    Consulta Externa
-                {% else %}
-                    No especificado
-                {% endif %}
+                {% if ficha.tipoatencion == 'Emergencia' %}Emergencia
+                {% elif ficha.tipoatencion == 'Consulta Externa' %}Consulta Externa
+                {% else %}No especificado{% endif %}
             </p>
             <p><strong>Fecha de Apertura:</strong> {% if ficha.fechaapertura %}{{ ficha.fechaapertura|date:"d/m/Y H:i" }}{% else %}No registrada{% endif %}</p>
             <p><strong>Motivo de Consulta:</strong> {{ ficha.motivoconsulta|default:'No registrado' }}</p>
@@ -73,11 +64,17 @@
             <p><strong>Observaciones:</strong> {{ ficha.observaciones|default:'Ninguna' }}</p>
             <p><strong>Estado:</strong> {{ ficha.estado|default:'Activa' }}</p>
 
-            <!-- Mostrar información de la enfermera responsable -->
+            <!-- Mostrar información del personal responsable -->
             {% if enfermera_responsable %}
-                <p><strong>Enfermera Responsable:</strong> {{ enfermera_responsable.nombres }} {{ enfermera_responsable.apellidos }}</p>
+                <p><strong>Enfermera Responsable:</strong> {{ enfermera_responsable.nombres }} {{ enfermera_responsable.apellidos }} (Enfermería)</p>
             {% else %}
                 <p><strong>Enfermera Responsable:</strong> No asignada</p>
+            {% endif %}
+
+            {% if doctor_responsable %}
+                <p><strong>Doctor Responsable:</strong> {{ doctor_responsable.nombres }} {{ doctor_responsable.apellidos }} (Doctor)</p>
+            {% else %}
+                <p><strong>Doctor Responsable:</strong> No asignado</p>
             {% endif %}
         </div>
 
@@ -120,29 +117,10 @@
                     <div class="hospitalizacion-item">
                         <p><strong>Fecha de Ingreso:</strong> {% if hosp.fechaingreso %}{{ hosp.fechaingreso|date:"d/m/Y H:i" }}{% else %}No registrada{% endif %}</p>
                         <p><strong>Fecha de Alta:</strong> {% if hosp.fechaalta %}{{ hosp.fechaalta|date:"d/m/Y H:i" }}{% else %}Aún hospitalizado{% endif %}</p>
-                        
-                        {% if hosp.habitacionid %}
-                            <p><strong>Habitación:</strong> {{ hosp.habitacionid.numero|default:'No asignada' }}</p>
-                            {% if hosp.habitacionid.tipohabitacionid %}
-                                <p><strong>Tipo de Habitación:</strong> {{ hosp.habitacionid.tipohabitacionid.nombre|default:'No especificado' }}</p>
-                                <p><strong>Costo Diario:</strong> {% if hosp.habitacionid.tipohabitacionid.costodiario %}Bs. {{ hosp.habitacionid.tipohabitacionid.costodiario }}{% else %}No registrado{% endif %}</p>
-                            {% endif %}
-                            <p><strong>Capacidad:</strong> {{ hosp.habitacionid.capacidad|default:'No especificada' }}</p>
-                            <p><strong>Disponible:</strong> {% if hosp.habitacionid.disponible %}Sí{% else %}No{% endif %}</p>
-                        {% else %}
-                            <p><strong>Habitación:</strong> No asignada</p>
-                        {% endif %}
-                        
                         <p><strong>Diagnóstico:</strong> {{ hosp.diagnostico|default:'No registrado' }}</p>
                         <p><strong>Tratamiento Aplicado:</strong> {{ hosp.tratamientoaplicado|default:'No registrado' }}</p>
                         <p><strong>Motivo Hospitalización:</strong> {{ hosp.motivohospitalizacion|default:'No especificado' }}</p>
                         <p><strong>Observaciones:</strong> {{ hosp.observaciones|default:'Ninguna' }}</p>
-                        
-                        {% if hosp.tipoaltaid %}
-                            <p><strong>Tipo de Alta:</strong> {{ hosp.tipoaltaid.nombre|default:'No especificado' }}</p>
-                        {% else %}
-                            <p><strong>Tipo de Alta:</strong> No registrado</p>
-                        {% endif %}
 
                         {% if hosp.personalid %}
                             <p><strong>{% if hosp.personalid.rol == 'Enfermería' %}Enfermería{% elif hosp.personalid.rol == 'Doctor' %}Doctor{% else %}Personal{% endif %} Responsable:</strong> 
