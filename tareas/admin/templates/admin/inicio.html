@@ -1,708 +1,77 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - BioSalud</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% extends 'admin/MenuAdmin.html' %}
+{% load static %}
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #1a1d29;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">
+{% endblock %}
 
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            min-height: 100vh;
-        }
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const pagosMetodo = {{ pagos_metodo_json|safe }};
+  const diagnosticosData = {{ diagnosticos_json|safe }};
+  const actividadData = {{ actividad_json|safe }};
+  const accionesData = {{ acciones_json|safe }};
+  const camasOcupadas = {{ camas_ocupadas }};
+  const camasDisponibles = {{ camas_disponibles }};
+</script>
+<script src="{% static 'admin/js/dashboard.js' %}"></script>
+{% endblock %}
 
-        /* Sidebar */
-        .sidebar {
-            background: #252836;
-            padding: 20px;
-            border-right: 1px solid #2d3142;
-        }
+{% block title %}Dashboard - BioSalud{% endblock %}
 
-        .sidebar h2 {
-            color: #ffffff;
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 8px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            color: #8b92b2;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: #2d3142;
-            color: #ffffff;
-        }
-
-        .nav-link i {
-            margin-right: 12px;
-            font-size: 1.1rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            background: #1a1d29;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #2d3142;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            background: #252836;
-            border: 1px solid #2d3142;
-            padding: 10px 15px 10px 40px;
-            border-radius: 8px;
-            color: #ffffff;
-            width: 300px;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8b92b2;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        /* Stats Cards */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: #252836;
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #2d3142;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent-color);
-        }
-
-        .stat-card.caja { --accent-color: #3b82f6; }
-        .stat-card.enfermeria { --accent-color: #10b981; }
-        .stat-card.doctor { --accent-color: #8b5cf6; }
-        .stat-card.emergency { --accent-color: #ef4444; }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            color: #8b92b2;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-
-        .stat-change {
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .stat-change.positive { color: #10b981; }
-        .stat-change.negative { color: #ef4444; }
-
-        /* Charts Section */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .chart-large {
-            background: #252836;
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid #2d3142;
-        }
-
-        .chart-small {
-            background: #252836;
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #2d3142;
-        }
-
-        .chart-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-        }
-
-        .chart-container.small {
-            height: 200px;
-        }
-
-        /* Bottom Grid */
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-        }
-
-        .widget {
-            background: #252836;
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #2d3142;
-        }
-
-        .widget-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 15px;
-        }
-
-        .patient-list {
-            list-style: none;
-        }
-
-        .patient-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #2d3142;
-        }
-
-        .patient-item:last-child {
-            border-bottom: none;
-        }
-
-        .patient-name {
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        .patient-visits {
-            color: #8b92b2;
-            font-size: 0.9rem;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 0;
-        }
-
-        .activity-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-        }
-
-        .activity-icon.caja { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .activity-icon.enfermeria { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .activity-icon.doctor { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
-
-        .activity-text {
-            flex: 1;
-        }
-
-        .activity-title {
-            color: #ffffff;
-            font-size: 0.9rem;
-            margin-bottom: 2px;
-        }
-
-        .activity-time {
-            color: #8b92b2;
-            font-size: 0.8rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                display: none;
-            }
-            
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .stats-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .search-box input {
-                width: 200px;
-            }
-            
-            .header {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <h2><i class="bi bi-heart-pulse"></i> BioSalud</h2>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#" class="nav-link active">
-                        <i class="bi bi-speedometer2"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-people"></i>
-                        Pacientes
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-calendar-check"></i>
-                        Citas
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-file-medical"></i>
-                        Historiales
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-graph-up"></i>
-                        Estadísticas
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-gear"></i>
-                        Configuración
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1>Dashboard</h1>
-                <div class="header-actions">
-                    <div class="search-box">
-                        <i class="bi bi-search"></i>
-                        <input type="text" placeholder="Buscar...">
-                    </div>
-                    <div class="user-avatar">JS</div>
-                </div>
-            </div>
-
-            <!-- Stats Cards -->
-            <div class="stats-row">
-                <div class="stat-card caja">
-                    <div class="stat-header">
-                        <div>
-                            <div class="stat-value">$32,125</div>
-                            <div class="stat-label">Recaudado Mes</div>
-                            <div class="stat-change positive">
-                                <i class="bi bi-arrow-up"></i>
-                                +12.5%
-                            </div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="bi bi-cash-stack"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card enfermeria">
-                    <div class="stat-header">
-                        <div>
-                            <div class="stat-value">127</div>
-                            <div class="stat-label">Fichas Semana</div>
-                            <div class="stat-change positive">
-                                <i class="bi bi-arrow-up"></i>
-                                +8.2%
-                            </div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="bi bi-clipboard-pulse"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card doctor">
-                    <div class="stat-header">
-                        <div>
-                            <div class="stat-value">198</div>
-                            <div class="stat-label">Consultas Semana</div>
-                            <div class="stat-change positive">
-                                <i class="bi bi-arrow-up"></i>
-                                +15.3%
-                            </div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="bi bi-stethoscope"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card emergency">
-                    <div class="stat-header">
-                        <div>
-                            <div class="stat-value">3</div>
-                            <div class="stat-label">Pacientes Críticos</div>
-                            <div class="stat-change negative">
-                                <i class="bi bi-arrow-down"></i>
-                                -2 desde ayer
-                            </div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="bi bi-exclamation-triangle"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts Section -->
-            <div class="charts-grid">
-                <div class="chart-large">
-                    <div class="chart-title">
-                        <i class="bi bi-graph-up"></i>
-                        Actividad por Hora
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="activityChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-small">
-                    <div class="chart-title">
-                        <i class="bi bi-pie-chart"></i>
-                        Métodos de Pago
-                    </div>
-                    <div class="chart-container small">
-                        <canvas id="paymentChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom Grid -->
-            <div class="bottom-grid">
-                <div class="widget">
-                    <div class="widget-title">
-                        <i class="bi bi-star"></i>
-                        Top Pacientes
-                    </div>
-                    <ul class="patient-list">
-                        <li class="patient-item">
-                            <div class="patient-name">María García López</div>
-                            <div class="patient-visits">8 visitas</div>
-                        </li>
-                        <li class="patient-item">
-                            <div class="patient-name">Carlos Rodríguez</div>
-                            <div class="patient-visits">6 visitas</div>
-                        </li>
-                        <li class="patient-item">
-                            <div class="patient-name">Ana Martínez Silva</div>
-                            <div class="patient-visits">5 visitas</div>
-                        </li>
-                        <li class="patient-item">
-                            <div class="patient-name">Juan Pablo Morales</div>
-                            <div class="patient-visits">4 visitas</div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="widget">
-                    <div class="widget-title">
-                        <i class="bi bi-activity"></i>
-                        Actividad Reciente
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon doctor">
-                            <i class="bi bi-stethoscope"></i>
-                        </div>
-                        <div class="activity-text">
-                            <div class="activity-title">Nueva consulta registrada</div>
-                            <div class="activity-time">Hace 5 minutos</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon enfermeria">
-                            <i class="bi bi-clipboard-pulse"></i>
-                        </div>
-                        <div class="activity-text">
-                            <div class="activity-title">Signos vitales actualizados</div>
-                            <div class="activity-time">Hace 12 minutos</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon caja">
-                            <i class="bi bi-cash-stack"></i>
-                        </div>
-                        <div class="activity-text">
-                            <div class="activity-title">Pago procesado</div>
-                            <div class="activity-time">Hace 18 minutos</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="widget">
-                    <div class="widget-title">
-                        <i class="bi bi-hospital"></i>
-                        Estado de Camas
-                    </div>
-                    <div class="chart-container small">
-                        <canvas id="bedsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+{% block contenido %}
+<div class="dashboard-container">
+  <div class="stats-cards">
+    <div class="card-role caja">
+      <h4><i class="bi bi-cash-stack"></i> Caja</h4>
+      <p class="stat">Facturas hoy: {{ caja_facturas_hoy }}</p>
+      <p class="stat">Recaudado hoy: {{ caja_total_hoy }}</p>
+      <p class="stat">Recaudado semana: {{ caja_total_semana }}</p>
+      <p class="stat">Recaudado mes: {{ caja_total_mes }}</p>
+      <canvas id="metodoPagoChart" height="180"></canvas>
     </div>
 
-    <script>
-        // Configuración global de Chart.js
-        Chart.defaults.color = '#8b92b2';
-        Chart.defaults.borderColor = '#2d3142';
-        Chart.defaults.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+    <div class="card-role enfermeria">
+      <h4><i class="bi bi-clipboard-pulse"></i> Enfermería</h4>
+      <p class="stat">Fichas hoy: {{ enf_fichas_hoy }}</p>
+      <p class="stat">Fichas semana: {{ enf_fichas_semana }}</p>
+      <p class="stat">Fichas mes: {{ enf_fichas_mes }}</p>
+      <p class="stat">Pacientes hospitalizados: {{ hospitalizados }}</p>
+      <p class="stat">Signos críticos hoy: {{ signos_criticos }}</p>
+      <canvas id="camasChart" height="180"></canvas>
+    </div>
 
-        // Gráfico de actividad por hora
-        const activityCtx = document.getElementById('activityChart').getContext('2d');
-        new Chart(activityCtx, {
-            type: 'line',
-            data: {
-                labels: ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
-                datasets: [{
-                    label: 'Consultas',
-                    data: [5, 12, 18, 25, 22, 15, 8, 3],
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#3b82f6',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2
-                }, {
-                    label: 'Emergencias',
-                    data: [1, 2, 3, 4, 3, 2, 1, 0],
-                    borderColor: '#ef4444',
-                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#ef4444',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: '#2d3142'
-                        },
-                        ticks: {
-                            color: '#8b92b2'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: '#2d3142'
-                        },
-                        ticks: {
-                            color: '#8b92b2'
-                        }
-                    }
-                }
-            }
-        });
+    <div class="card-role doctor">
+      <h4><i class="bi bi-stethoscope"></i> Doctor</h4>
+      <p class="stat">Consultas hoy: {{ cons_hoy }}</p>
+      <p class="stat">Consultas semana: {{ cons_semana }}</p>
+      <p class="stat">Consultas mes: {{ cons_mes }}</p>
+      <p class="stat">Doctores activos: {{ doctores_activos }}</p>
+      <p class="stat">Consultas sin cerrar: {{ consultas_abiertas }}</p>
+      <canvas id="diagChart" height="180"></canvas>
+    </div>
+  </div>
 
-        // Gráfico de métodos de pago
-        const paymentCtx = document.getElementById('paymentChart').getContext('2d');
-        new Chart(paymentCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Efectivo', 'Tarjeta', 'Transferencia', 'Seguro'],
-                datasets: [{
-                    data: [45, 25, 20, 10],
-                    backgroundColor: ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            usePointStyle: true
-                        }
-                    }
-                }
-            }
-        });
-
-        // Gráfico de camas
-        const bedsCtx = document.getElementById('bedsChart').getContext('2d');
-        new Chart(bedsCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Ocupadas', 'Disponibles'],
-                datasets: [{
-                    data: [12, 8],
-                    backgroundColor: ['#ef4444', '#10b981'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            usePointStyle: true
-                        }
-                    }
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+  <div class="charts-row">
+    <div class="chart-box">
+      <h5>Actividad por hora</h5>
+      <canvas id="actividadChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h5>Acciones por Rol</h5>
+      <canvas id="rolChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h5>Top pacientes de la semana</h5>
+      <ul class="top-pacientes">
+        {% for p in pacientes_top %}
+          <li>{{ p.pacienteid__nombres }} {{ p.pacienteid__apellidos }} ({{ p.total }})</li>
+        {% empty %}
+          <li>Sin datos</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
