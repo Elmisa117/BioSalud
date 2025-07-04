@@ -17,6 +17,11 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost"
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://biosalud.cloud",
+    "https://www.biosalud.cloud"
+]
+
 
 # 🧩 Aplicaciones instaladas
 INSTALLED_APPS = [
