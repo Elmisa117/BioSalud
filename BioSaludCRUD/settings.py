@@ -3,28 +3,15 @@ Django settings for BioSaludCRUD project.
 """
 
 from pathlib import Path
-<<<<<<< HEAD
 import os
-=======
->>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
 
 # BASE_DIR apunta a la raíz del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ⚠️ Seguridad
-<<<<<<< HEAD
-SECRET_KEY = 'clave_super_secreta_123'
-DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-=======
 SECRET_KEY = 'django-insecure-8xjx5zl9u&_o%v^)!%x0fgma^(m5pt4u^fomm9ykj(-qfpl&l!'
 DEBUG = True
-<<<<<<< HEAD
-ALLOWED_HOSTS = ['141.95.161.224', 'localhost', '127.0.0.1']
->>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
-=======
 ALLOWED_HOSTS = ['141.95.161.224', 'biosalud.cloud', 'www.biosalud.cloud']
->>>>>>> 7261256c11e8861d0d27a2b76ed8274c27c2c4e4
 
 # 🧩 Aplicaciones instaladas
 INSTALLED_APPS = [
@@ -80,11 +67,7 @@ TEMPLATES = [
 # 🚀 WSGI para producción
 WSGI_APPLICATION = 'BioSaludCRUD.wsgi.application'
 
-<<<<<<< HEAD
 # 🗃️ Base de datos (sin .env)
-=======
-# 🗃️ Base de datos PostgreSQL
->>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -112,15 +95,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-<<<<<<< HEAD
-# 🌍 Internacionalización
-LANGUAGE_CODE = 'es-bo'
-TIME_ZONE = 'America/La_Paz'
-=======
 # 🌍 Configuración internacional
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
->>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
 USE_I18N = True
 USE_TZ = True
 
@@ -140,11 +117,3 @@ STATICFILES_DIRS = [
 
 # 🔑 Campo por defecto para claves primarias
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-<<<<<<< HEAD
-
-# 🔐 Configuración biométrica (opcional)
-BIOMETRIC_CONFIG = {
-    'ENCRYPTION_KEY': 'clavebiometrica123',
-}
-=======
->>>>>>> 1093de99b066a9f4b5e91d4eb888763403e01199
